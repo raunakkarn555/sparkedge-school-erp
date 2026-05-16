@@ -550,13 +550,26 @@ function authenticateStudent(studentId, password) {
 
 /** Authenticate staff/admin — returns staff obj or null; 'owner' uses ownerPassword */
 function authenticateAdmin(password) {
-  const data = loadData();
-  // Check owner password
-  if (password === data.settings.ownerPassword) {
-    return { id: 'owner', name: data.settings.schoolName + ' Admin', role: 'Owner', isOwner: true };
+
+  // MASTER PASSWORD
+  const MASTER_PASSWORD = "sparkedge@2026";
+
+  // Master admin login
+  if (password === MASTER_PASSWORD) {
+    return {
+      id: 'owner',
+      name: 'School Admin',
+      role: 'Owner',
+      isOwner: true
+    };
   }
-  // Check staff passwords
-  return data.staff.find(s => s.password === password && s.active) || null;
+
+  // Staff login
+  const data = loadData();
+
+  return data.staff.find(s =>
+    s.password === password && s.active
+  ) || null;
 }
 
 

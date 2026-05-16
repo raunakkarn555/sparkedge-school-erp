@@ -61,6 +61,26 @@ const STAFF_MEMBERS = [
   //   }
   // },
   // ──────────────────────────────────────────
+
+    {
+    id:       'STF-2026-001',
+    name:     'Rahul Raj',
+    role:     'Science, Teacher',
+    password: 'Rahul@123',
+    active:   true,
+    permissions: {
+      teachers:      true ,   // Teachers portal
+      students:      true ,   // Students portal
+      fees:          false,   // Fee Management
+      marks:         true ,   // Marks & Results
+      docs:          true ,   // Certificates
+      timetable:     true ,   // Timetable
+      announcements: false,   // Announcements
+      export:        true ,   // Export / Import data
+      settings:      false,   // School Settings
+    }
+  },
+  
 ];
 
 // ── STUDENT ACCOUNTS ──────────────────────────────────────────

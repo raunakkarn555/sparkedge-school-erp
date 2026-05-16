@@ -2,540 +2,458 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>School ERP — Admin Panel</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Panel — School ERP</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script src="school_data.js"></script>
 <style>
 :root{
   --bg:#080810;--bg-card:#0E0E1A;--bg-raised:#141422;--bg-hover:#1A1A2A;
-  --border:#1E1E30;--border-bright:#2A2A40;
+  --border:#1E1E30;--border-hi:#2A2A40;
   --accent:#FF6B35;--accent2:#FF3CAC;--gold:#FFB347;
-  --purple:#7B5EA7;--blue:#3B82F6;--green:#22C55E;--red:#EF4444;--yellow:#F59E0B;
+  --green:#22C55E;--blue:#3B82F6;--red:#EF4444;--purple:#9B7FD4;--yellow:#F59E0B;
   --text:#F0F0FA;--text-muted:#7A7A9A;--text-dim:#3A3A5A;
   --radius:12px;--radius-sm:8px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:4px;}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px;}
 
 /* ── LOGIN ── */
 #loginScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;}
-.login-bg::before{content:'';position:absolute;top:-200px;left:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(255,107,53,.1) 0%,transparent 65%);border-radius:50%;pointer-events:none;}
-.login-bg::after{content:'';position:absolute;bottom:-200px;right:-200px;width:500px;height:500px;background:radial-gradient(circle,rgba(255,60,172,.08) 0%,transparent 65%);border-radius:50%;pointer-events:none;}
-.login-card{position:relative;background:var(--bg-card);border:1px solid rgba(255,107,53,.2);border-radius:20px;padding:42px 38px;width:380px;max-width:92vw;box-shadow:0 40px 80px rgba(0,0,0,.5);}
-.login-icon{width:56px;height:56px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;}
-.login-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;margin-bottom:4px;}
-.login-sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:28px;line-height:1.6;}
-.login-field{position:relative;margin-bottom:14px;}
-.login-field input{width:100%;background:var(--bg-raised);border:1px solid var(--border);border-radius:10px;padding:12px 44px 12px 16px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
-.login-field input:focus{border-color:rgba(255,107,53,.5);box-shadow:0 0 0 3px rgba(255,107,53,.07);}
-.eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;transition:color .15s;}
-.eye-btn:hover{color:var(--accent);}
-.login-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 14px;font-size:12px;color:#EF4444;margin-bottom:12px;display:none;}
-.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;}
-.login-btn:hover{opacity:.88;}
-.login-hint{text-align:center;font-size:11px;color:var(--text-dim);margin-top:16px;}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
-.shake{animation:shake .35s ease;}
+#loginScreen::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(255,107,53,.09) 0%,transparent 65%);border-radius:50%;pointer-events:none;}
+.lc{position:relative;background:var(--bg-card);border:1px solid rgba(255,107,53,.2);border-radius:20px;padding:42px 38px;width:400px;max-width:94vw;box-shadow:0 40px 80px rgba(0,0,0,.5);}
+.lc-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 20px;}
+.lc-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;text-align:center;margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:28px;line-height:1.6;}
+.lc-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 14px;font-size:12px;color:#EF4444;margin-bottom:12px;display:none;}
+.lc-field{position:relative;margin-bottom:14px;}
+.lc-field input{width:100%;background:var(--bg-raised);border:1px solid var(--border);border-radius:10px;padding:12px 46px 12px 16px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+.lc-field input:focus{border-color:rgba(255,107,53,.5);box-shadow:0 0 0 3px rgba(255,107,53,.07);}
+.lc-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;}
+.lc-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;}
+.lc-btn:hover{opacity:.88;}
+.lc-hint{text-align:center;font-size:11px;color:var(--text-dim);margin-top:16px;}
+@keyframes shake{0%,100%{transform:translateX(0);}30%{transform:translateX(-6px);}70%{transform:translateX(6px);}}
+.shake{animation:shake .32s ease;}
 
 /* ── SIDEBAR ── */
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:224px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;}
-.sb-brand{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.sb-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.sb-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--text);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sb-session{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1px;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:226px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform .25s ease;}
+.sb-brand{padding:20px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.sb-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-sess{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-top:1px;}
 .sb-user{margin:10px 12px 4px;padding:9px 12px;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.14);border-radius:8px;}
-.sb-user-role{font-size:10px;color:var(--text-muted);}
-.sb-user-name{font-size:12px;font-weight:700;color:var(--text);margin-top:2px;}
-.sidebar-nav{padding:12px 10px;display:flex;flex-direction:column;gap:3px;flex:1;overflow-y:auto;}
-.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:10px 8px 5px;}
-.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .14s;border:none;background:none;width:100%;text-align:left;text-decoration:none;}
+.sb-user-sub{font-size:10px;color:var(--text-muted);}
+.sb-user-name{font-size:12px;font-weight:700;margin-top:2px;}
+.sb-nav{padding:10px 10px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:12px 8px 5px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .13s;border:none;background:none;width:100%;text-align:left;text-decoration:none;}
 .nav-item:hover{background:var(--bg-raised);color:var(--text);}
-.nav-item.active{background:rgba(255,107,53,.12);color:var(--accent);border:1px solid rgba(255,107,53,.2);}
-.nav-item-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.nav-item.active{background:rgba(255,107,53,.11);color:var(--accent);border:1px solid rgba(255,107,53,.2);}
+.nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
 .nav-ext{margin-left:auto;font-size:10px;color:var(--text-dim);}
-.sb-footer{padding:12px 10px;border-top:1px solid var(--border);}
-.sb-footer-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;font-size:12px;color:var(--text-muted);background:none;border:none;cursor:pointer;width:100%;text-align:left;transition:all .14s;}
-.sb-footer-btn:hover{background:var(--bg-raised);color:var(--text);}
-.sb-footer-btn.danger:hover{color:#EF4444;}
+.sb-foot{padding:12px 10px;border-top:1px solid var(--border);}
+.sb-foot-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;font-size:12px;color:var(--text-muted);background:none;border:none;cursor:pointer;width:100%;text-align:left;transition:all .13s;font-family:'DM Sans',sans-serif;}
+.sb-foot-btn:hover{background:var(--bg-raised);color:var(--text);}
+.sb-foot-btn.red:hover{color:var(--red);}
 
 /* ── MAIN ── */
-.main{margin-left:224px;min-height:100vh;display:flex;flex-direction:column;}
-.topbar{padding:14px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,16,.85);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40;}
-.topbar-left{display:flex;align-items:center;gap:12px;}
-.page-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;}
-.page-sub{font-size:12px;color:var(--text-muted);}
-.topbar-right{display:flex;align-items:center;gap:8px;}
+.main{margin-left:226px;min-height:100vh;}
+.topbar{padding:14px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,16,.85);backdrop-filter:blur(14px);position:sticky;top:0;z-index:40;}
+.tb-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;}
+.tb-sub{font-size:12px;color:var(--text-muted);}
+.tb-right{display:flex;align-items:center;gap:8px;}
 
 /* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
 .btn-primary:hover{opacity:.88;}
 .btn-secondary{background:var(--bg-raised);border:1px solid var(--border);color:var(--text-muted);}
-.btn-secondary:hover{border-color:var(--border-bright);color:var(--text);}
+.btn-secondary:hover{border-color:var(--border-hi);color:var(--text);}
 .btn-ghost{background:none;border:1px solid var(--border);color:var(--text-muted);}
 .btn-ghost:hover{background:var(--bg-raised);color:var(--text);}
-.btn-green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);color:#22C55E;}
+.btn-green{background:rgba(34,197,94,.11);border:1px solid rgba(34,197,94,.28);color:var(--green);}
 .btn-green:hover{background:rgba(34,197,94,.2);}
-.btn-blue{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.28);color:#3B82F6;}
+.btn-blue{background:rgba(59,130,246,.11);border:1px solid rgba(59,130,246,.28);color:var(--blue);}
 .btn-blue:hover{background:rgba(59,130,246,.2);}
-.btn-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:#EF4444;}
+.btn-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:var(--red);}
 .btn-red:hover{background:rgba(239,68,68,.18);}
-.btn-gold{background:rgba(255,179,71,.12);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.btn-gold{background:rgba(255,179,71,.11);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
 .btn-sm{padding:6px 12px;font-size:12px;}
 
 /* ── PAGE VIEWS ── */
-.page-view{display:none;padding:26px;animation:fadeIn .18s ease;}
-.page-view.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+.page{display:none;padding:26px;animation:pgIn .18s ease;}
+.page.active{display:block;}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 
 /* ── STAT CARDS ── */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
-.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;transition:border-color .15s;}
-.stat-card:hover{border-color:var(--border-bright);}
-.stat-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:12px;}
-.stat-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
-.stat-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;line-height:1;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:border-color .15s;}
+.stat-card:hover{border-color:var(--border-hi);}
+.stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;}
+.stat-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.stat-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1;}
 .stat-sub{font-size:11px;color:var(--text-muted);margin-top:5px;}
 
-/* ── CARDS ── */
+/* ── CARD ── */
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
 .card-hdr{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.card-hdr-icon{width:28px;height:28px;border-radius:7px;background:rgba(255,107,53,.1);display:flex;align-items:center;justify-content:center;font-size:13px;}
+.card-hdr-icon{width:28px;height:28px;border-radius:7px;background:rgba(255,107,53,.09);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 .card-hdr-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
 .card-hdr-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
 .card-body{padding:18px;}
 
-/* ── FORM FIELDS ── */
-.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.field-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
-.field{display:flex;flex-direction:column;gap:5px;}
-.field.full{grid-column:1/-1;}
-.field label{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-muted);}
-.field input,.field textarea,.field select{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;width:100%;}
-.field input:focus,.field textarea:focus,.field select:focus{border-color:rgba(255,107,53,.45);}
-.field textarea{resize:vertical;min-height:72px;line-height:1.5;}
-.field select option{background:var(--bg-card);}
-
-/* ── SECTION DIVIDER ── */
-.sec-divider{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:12px 0 8px;border-bottom:1px solid var(--border);margin-bottom:12px;grid-column:1/-1;}
-
-/* ── MODAL ── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;padding:16px;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:540px;overflow:hidden;animation:modalIn .2s ease;max-height:92vh;overflow-y:auto;}
-@keyframes modalIn{from{transform:scale(.95);opacity:0;}to{transform:scale(1);opacity:1;}}
-.modal-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;}
-.modal-close{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;}
-.modal-close:hover{background:var(--bg-raised);color:var(--text);}
-.modal-body{padding:22px;display:flex;flex-direction:column;gap:14px;}
-.modal-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
-
-/* ── TABLE ── */
-.tbl{width:100%;border-collapse:collapse;}
-.tbl th{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
-.tbl td{padding:13px 14px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
-.tbl tr:last-child td{border-bottom:none;}
-.tbl tr:hover td{background:var(--bg-raised);}
+/* ── PORTAL GRID ── */
+.portal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.portal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px;text-align:center;text-decoration:none;cursor:pointer;transition:all .16s;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.portal-card:hover{border-color:rgba(255,107,53,.35);transform:translateY(-2px);background:var(--bg-raised);}
+.pc-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto;}
+.pc-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
+.pc-desc{font-size:11px;color:var(--text-muted);}
 
 /* ── PILLS ── */
 .pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
-.pill-green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);color:#22C55E;}
-.pill-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:#EF4444;}
+.pill-green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);color:var(--green);}
+.pill-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:var(--red);}
 .pill-gold{background:rgba(255,179,71,.12);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
-.pill-blue{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:#3B82F6;}
-.pill-purple{background:rgba(123,94,167,.12);border:1px solid rgba(123,94,167,.28);color:#9B7FD4;}
+.pill-blue{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:var(--blue);}
 .pill-gray{background:rgba(120,120,160,.1);border:1px solid rgba(120,120,160,.2);color:var(--text-muted);}
+.pill-purple{background:rgba(155,127,212,.12);border:1px solid rgba(155,127,212,.28);color:var(--purple);}
 
-/* ── ANNOUNCEMENT LIST ── */
-.ann-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;transition:border-color .15s;}
-.ann-item:hover{border-color:var(--border-bright);}
-.ann-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
-.ann-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
-.ann-meta{font-size:11px;color:var(--text-muted);margin-top:4px;}
+/* ── FORM ── */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.f{display:flex;flex-direction:column;gap:5px;}
+.f.full{grid-column:1/-1;}
+.f label{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-muted);}
+.f input,.f select,.f textarea{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;width:100%;}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:rgba(255,107,53,.45);}
+.f textarea{resize:vertical;min-height:72px;line-height:1.5;}
+.f select option{background:var(--bg-card);}
+
+/* ── MODAL ── */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;overflow:hidden;animation:mIn .2s ease;max-height:92vh;overflow-y:auto;}
+@keyframes mIn{from{transform:scale(.95);opacity:0;}to{transform:scale(1);opacity:1;}}
+.modal-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;}
+.modal-x{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;}
+.modal-x:hover{background:var(--bg-raised);}
+.modal-body{padding:22px;display:flex;flex-direction:column;gap:14px;}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+
+/* ── ANNOUNCEMENT ── */
+.ann-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:10px;transition:border-color .14s;}
+.ann-card:hover{border-color:var(--border-hi);}
+.ann-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px;}
+.ann-meta{font-size:11px;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .ann-body{font-size:13px;color:var(--text-muted);line-height:1.65;}
-.ann-actions{display:flex;gap:6px;margin-top:10px;}
+.ann-actions{display:flex;gap:6px;margin-top:12px;}
 
-/* ── QUICK LINK GRID ── */
-.portal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
-.portal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;text-align:center;text-decoration:none;cursor:pointer;transition:all .16s;display:flex;flex-direction:column;align-items:center;gap:8px;}
-.portal-card:hover{border-color:rgba(255,107,53,.35);background:var(--bg-raised);transform:translateY(-2px);}
-.portal-card-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto;}
-.portal-card-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
-.portal-card-desc{font-size:11px;color:var(--text-muted);}
-
-/* ── TEAM MEMBER CARD ── */
-.member-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:border-color .15s;}
-.member-card:hover{border-color:var(--border-bright);}
-.member-avatar{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;}
-.member-info{flex:1;min-width:0;}
+/* ── TEAM MEMBER ── */
+.member-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:flex-start;gap:14px;margin-bottom:10px;transition:border-color .14s;}
+.member-card:hover{border-color:var(--border-hi);}
+.member-av{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;}
 .member-name{font-size:14px;font-weight:600;margin-bottom:2px;}
 .member-role{font-size:12px;color:var(--text-muted);}
-.member-perms{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
-.perm-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:5px;background:var(--bg-raised);border:1px solid var(--border);color:var(--text-muted);}
-.member-actions{display:flex;gap:6px;}
-
-/* ── ACTIVITY LIST ── */
-.activity-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
-.activity-item:last-child{border-bottom:none;}
-.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
-.activity-text{font-size:13px;color:var(--text-muted);line-height:1.5;flex:1;}
-.activity-text strong{color:var(--text);}
-.activity-time{font-size:11px;color:var(--text-dim);flex-shrink:0;}
+.perm-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.ptag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:5px;background:var(--bg-raised);border:1px solid var(--border);color:var(--text-muted);}
 
 /* ── PERM CHECKBOXES ── */
 .perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.perm-check{display:flex;align-items:flex-start;gap:8px;background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;}
-.perm-check input{accent-color:var(--accent);margin-top:2px;flex-shrink:0;}
-.perm-check-label{font-size:12px;font-weight:600;}
-.perm-check-sub{font-size:10px;color:var(--text-muted);}
+.perm-label{display:flex;align-items:flex-start;gap:9px;background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;}
+.perm-label input{accent-color:var(--accent);margin-top:2px;flex-shrink:0;}
+.perm-lb{font-size:12px;font-weight:600;}
+.perm-sub{font-size:10px;color:var(--text-muted);}
 
-/* ── SETTINGS ROWS ── */
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
-.setting-row:last-child{border-bottom:none;}
-.setting-label{font-size:13px;font-weight:600;}
-.setting-sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
-.setting-input{background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;min-width:220px;transition:border-color .15s;}
-.setting-input:focus{border-color:rgba(255,107,53,.4);}
+/* ── SETTINGS ── */
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+.set-row:last-child{border-bottom:none;}
+.set-lbl{font-size:13px;font-weight:600;}
+.set-sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+.set-in{background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;min-width:210px;transition:border-color .15s;}
+.set-in:focus{border-color:rgba(255,107,53,.4);}
+
+/* ── ACTIVITY ── */
+.act-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.act-item:last-child{border-bottom:none;}
+.act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.act-text{font-size:13px;color:var(--text-muted);line-height:1.5;flex:1;}
+.act-text strong{color:var(--text);}
+.act-time{font-size:11px;color:var(--text-dim);flex-shrink:0;}
+
+/* ── INFO BOX ── */
+.info-box{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);border-radius:9px;padding:12px 14px;font-size:12px;color:var(--text-muted);line-height:1.7;}
 
 /* ── EMPTY STATE ── */
-.empty-state{text-align:center;padding:52px 20px;color:var(--text-dim);}
-.es-icon{font-size:38px;margin-bottom:12px;}
-.es-text{font-size:14px;}
+.empty{text-align:center;padding:48px 20px;color:var(--text-dim);}
+.empty-ic{font-size:36px;margin-bottom:12px;}
+.empty-tx{font-size:14px;}
 
 /* ── MOBILE ── */
-.mobile-bar{display:none;position:fixed;top:0;left:0;right:0;height:54px;background:var(--bg-card);border-bottom:1px solid var(--border);z-index:60;align-items:center;padding:0 16px;gap:12px;}
+.mob-bar{display:none;position:fixed;top:0;left:0;right:0;height:54px;background:var(--bg-card);border-bottom:1px solid var(--border);z-index:60;align-items:center;padding:0 16px;gap:12px;}
 .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49;}
 .sb-overlay.open{display:block;}
-.sidebar.mobile-open{transform:translateX(0)!important;}
+.sidebar.mob-open{transform:translateX(0)!important;}
 @media(max-width:900px){
-  .mobile-bar{display:flex;}
-  .sidebar{transform:translateX(-100%);transition:transform .25s ease;display:flex!important;}
+  .mob-bar{display:flex!important;}
+  .sidebar{transform:translateX(-100%);}
   .main{margin-left:0;padding-top:54px;}
   .topbar{top:54px;}
   .stats-row{grid-template-columns:1fr 1fr;}
   .portal-grid{grid-template-columns:1fr 1fr;}
-  .field-grid{grid-template-columns:1fr;}
-  .field-grid-3{grid-template-columns:1fr;}
+  .fg{grid-template-columns:1fr;}
+  .fg-3{grid-template-columns:1fr;}
+  .perm-grid{grid-template-columns:1fr;}
 }
 @media(max-width:480px){
   .stats-row{grid-template-columns:1fr;}
-  .portal-grid{grid-template-columns:1fr 1fr;}
-  .page-view{padding:16px;}
-  .topbar{padding:11px 14px;}
+  .page{padding:14px;}
+  .topbar{padding:10px 14px;}
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════ LOGIN SCREEN ══════════ -->
+<!-- ══════════ LOGIN ══════════ -->
 <div id="loginScreen">
-  <div class="login-bg"></div>
-  <div class="login-card">
-    <div class="login-icon">🏫</div>
-    <div class="login-title" id="loginSchoolName">School ERP</div>
-    <div class="login-sub">Enter your admin password to access the panel.</div>
-    <div class="login-err" id="loginErr">⚠ Incorrect password. Try again.</div>
-    <div class="login-field">
-      <input type="password" id="loginPwd" placeholder="Enter password"
-        onkeydown="if(event.key==='Enter')doLogin()"/>
-      <button class="eye-btn" onclick="toggleEye()" id="eyeBtn">👁</button>
+  <div class="lc">
+    <div class="lc-icon">🏫</div>
+    <div class="lc-title" id="lc-school">School ERP</div>
+    <div class="lc-sub">Enter your admin password to access the panel</div>
+    <div class="lc-err" id="lc-err">⚠ Incorrect password. Please try again.</div>
+    <div class="lc-field">
+      <input type="password" id="lc-pwd" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="lc-eye" id="lc-eye" onclick="toggleEye()">👁</button>
     </div>
-    <button class="login-btn" onclick="doLogin()">Unlock Admin Panel →</button>
-    <div class="login-hint">🔒 All data stored locally in your browser</div>
+    <button class="lc-btn" onclick="doLogin()">Unlock Admin Panel →</button>
+    <div class="lc-hint">🔒 All data stored locally · GitHub Pages hosted</div>
   </div>
 </div>
 
 <!-- ══════════ MOBILE BAR ══════════ -->
-<div class="mobile-bar" id="mobileBar" style="display:none;">
-  <button onclick="toggleSidebar()" style="background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;">☰</button>
+<div class="mob-bar" id="mobBar">
+  <button onclick="toggleSB()" style="background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;">☰</button>
   <div style="display:flex;align-items:center;gap:8px;">
     <div class="sb-icon" style="width:28px;height:28px;font-size:13px;">🏫</div>
-    <span id="mobileSchoolName" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;"></span>
+    <span id="mob-school" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;"></span>
   </div>
 </div>
-<div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar()"></div>
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSB()"></div>
 
 <!-- ══════════ SIDEBAR ══════════ -->
 <aside class="sidebar" id="sidebar">
   <div class="sb-brand">
     <div class="sb-icon">🏫</div>
     <div style="flex:1;min-width:0;">
-      <div class="sb-name" id="sbSchoolName">School ERP</div>
-      <div class="sb-session" id="sbSession">2025-26</div>
+      <div class="sb-name" id="sb-school">School ERP</div>
+      <div class="sb-sess" id="sb-sess">2025-26</div>
     </div>
   </div>
   <div class="sb-user">
-    <div class="sb-user-role">Logged in as</div>
-    <div class="sb-user-name" id="sbUserName">Loading...</div>
+    <div class="sb-user-sub">Logged in as</div>
+    <div class="sb-user-name" id="sb-user">—</div>
   </div>
-  <nav class="sidebar-nav">
+  <nav class="sb-nav">
     <div class="nav-lbl">Main</div>
-    <button class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
-      <span class="nav-item-icon">🏠</span> Dashboard
-    </button>
-    <button class="nav-item" onclick="showPage('announcements')" id="nav-announcements">
-      <span class="nav-item-icon">📢</span> Announcements
-    </button>
+    <button class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="nav-icon">🏠</span> Dashboard</button>
+    <button class="nav-item" onclick="showPage('announcements')" id="nav-announcements"><span class="nav-icon">📢</span> Announcements</button>
     <div class="nav-lbl">Academic</div>
-    <a class="nav-item" href="teachers.html">
-      <span class="nav-item-icon">👩‍🏫</span> Teachers <span class="nav-ext">↗</span>
-    </a>
-    <a class="nav-item" href="students.html">
-      <span class="nav-item-icon">🎒</span> Students <span class="nav-ext">↗</span>
-    </a>
-    <a class="nav-item" href="timetable.html">
-      <span class="nav-item-icon">📅</span> Timetable <span class="nav-ext">↗</span>
-    </a>
+    <a class="nav-item" href="teachers.html"><span class="nav-icon">👩‍🏫</span> Teachers <span class="nav-ext">↗</span></a>
+    <a class="nav-item" href="students.html"><span class="nav-icon">🎒</span> Students <span class="nav-ext">↗</span></a>
+    <a class="nav-item" href="timetable.html"><span class="nav-icon">📅</span> Timetable <span class="nav-ext">↗</span></a>
     <div class="nav-lbl">Finance</div>
-    <a class="nav-item" href="fees.html">
-      <span class="nav-item-icon">💰</span> Fee Management <span class="nav-ext">↗</span>
-    </a>
+    <a class="nav-item" href="fees.html"><span class="nav-icon">💰</span> Fee Management <span class="nav-ext">↗</span></a>
     <div class="nav-lbl">Results</div>
-    <a class="nav-item" href="marks.html">
-      <span class="nav-item-icon">📊</span> Marks & Results <span class="nav-ext">↗</span>
-    </a>
-    <div class="nav-lbl">Portals</div>
-    <a class="nav-item" href="docs.html">
-      <span class="nav-item-icon">📄</span> Certificates <span class="nav-ext">↗</span>
-    </a>
-    <a class="nav-item" href="student-login.html" target="_blank">
-      <span class="nav-item-icon">👤</span> Student Portal <span class="nav-ext">↗</span>
-    </a>
+    <a class="nav-item" href="marks.html"><span class="nav-icon">📊</span> Marks &amp; Results <span class="nav-ext">↗</span></a>
+    <div class="nav-lbl">Documents</div>
+    <a class="nav-item" href="docs.html"><span class="nav-icon">📄</span> Certificates <span class="nav-ext">↗</span></a>
+    <a class="nav-item" href="student-login.html" target="_blank"><span class="nav-icon">👤</span> Student Portal <span class="nav-ext">↗</span></a>
     <div class="nav-lbl">System</div>
-    <button class="nav-item" onclick="showPage('team')" id="nav-team">
-      <span class="nav-item-icon">🧑‍💻</span> Team Members
-    </button>
-    <button class="nav-item" onclick="showPage('settings')" id="nav-settings">
-      <span class="nav-item-icon">⚙️</span> Settings
-    </button>
+    <button class="nav-item" onclick="showPage('team')" id="nav-team"><span class="nav-icon">🧑‍💻</span> Team Members</button>
+    <button class="nav-item" onclick="showPage('settings')" id="nav-settings"><span class="nav-icon">⚙️</span> Settings</button>
   </nav>
-  <div class="sb-footer">
-    <button class="sb-footer-btn" onclick="ERP.exportData()">⬇ Export Data</button>
-    <button class="sb-footer-btn" onclick="ERP.openImportModal()">⬆ Import Data</button>
-    <button class="sb-footer-btn danger" onclick="doLogout()">🚪 Log Out</button>
+  <div class="sb-foot">
+    <button class="sb-foot-btn" onclick="ERP.exportData()">⬇ Export Data</button>
+    <button class="sb-foot-btn" onclick="ERP.openImportModal()">⬆ Import Data</button>
+    <button class="sb-foot-btn red" onclick="doLogout()">🚪 Log Out</button>
   </div>
 </aside>
 
 <!-- ══════════ MAIN ══════════ -->
 <div class="main" id="mainWrap" style="display:none;">
   <div class="topbar">
-    <div class="topbar-left">
-      <div>
-        <div class="page-title" id="topTitle">Dashboard</div>
-        <div class="page-sub" id="topSub">School overview</div>
-      </div>
+    <div>
+      <div class="tb-title" id="tb-title">Dashboard</div>
+      <div class="tb-sub"   id="tb-sub">School overview</div>
     </div>
-    <div class="topbar-right">
+    <div class="tb-right">
       <button class="btn btn-green btn-sm" onclick="ERP.exportData()">⬇ Export</button>
-      <button class="btn btn-blue btn-sm" onclick="ERP.openImportModal()">⬆ Import</button>
-      <button class="btn btn-primary btn-sm" onclick="showPage('announcements');openAnnModal()">+ Announce</button>
+      <button class="btn btn-blue btn-sm"  onclick="ERP.openImportModal()">⬆ Import</button>
+      <button class="btn btn-primary btn-sm" onclick="openAnnModal()">📢 Announce</button>
     </div>
   </div>
 
   <!-- ════ DASHBOARD ════ -->
-  <div class="page-view active" id="page-dashboard">
-
-    <!-- Stats Row -->
+  <div class="page active" id="page-dashboard">
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-icon" style="background:rgba(59,130,246,.12);">🎒</div>
-        <div class="stat-label">Total Students</div>
-        <div class="stat-val" id="stat-students" style="color:#3B82F6;">0</div>
-        <div class="stat-sub" id="stat-students-sub">Enrolled this session</div>
+        <div class="stat-lbl">Total Students</div>
+        <div class="stat-val" id="s-students" style="color:var(--blue);">0</div>
+        <div class="stat-sub" id="s-students-sub">Enrolled this session</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon" style="background:rgba(34,197,94,.12);">👩‍🏫</div>
-        <div class="stat-label">Total Teachers</div>
-        <div class="stat-val" id="stat-teachers" style="color:#22C55E;">0</div>
-        <div class="stat-sub" id="stat-teachers-sub">Active staff</div>
+        <div class="stat-lbl">Total Teachers</div>
+        <div class="stat-val" id="s-teachers" style="color:var(--green);">0</div>
+        <div class="stat-sub">Active on staff</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon" style="background:rgba(255,179,71,.12);">💰</div>
-        <div class="stat-label">Fee Collected</div>
-        <div class="stat-val" id="stat-fees" style="color:var(--gold);font-size:20px;">₹0</div>
-        <div class="stat-sub" id="stat-fees-sub">This session</div>
+        <div class="stat-lbl">Fee Collected</div>
+        <div class="stat-val" id="s-fees" style="color:var(--gold);font-size:22px;">₹0</div>
+        <div class="stat-sub" id="s-fees-sub">This session</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon" style="background:rgba(239,68,68,.1);">⏳</div>
-        <div class="stat-label">Pending Dues</div>
-        <div class="stat-val" id="stat-dues" style="color:#EF4444;font-size:20px;">₹0</div>
-        <div class="stat-sub" id="stat-dues-sub">Outstanding fees</div>
+        <div class="stat-lbl">Pending Dues</div>
+        <div class="stat-val" id="s-dues" style="color:var(--red);font-size:22px;">₹0</div>
+        <div class="stat-sub">Outstanding fees</div>
       </div>
     </div>
 
-    <!-- Portal Quick Links -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;">Quick Access</div>
-    </div>
-    <div class="portal-grid" style="margin-bottom:24px;">
+    <!-- Quick portal links -->
+    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;">Quick Access</div>
+    <div class="portal-grid">
       <a class="portal-card" href="teachers.html">
-        <div class="portal-card-icon" style="background:rgba(34,197,94,.12);">👩‍🏫</div>
-        <div class="portal-card-name">Teachers</div>
-        <div class="portal-card-desc">Profiles & assignments</div>
+        <div class="pc-icon" style="background:rgba(34,197,94,.12);">👩‍🏫</div>
+        <div class="pc-name">Teachers</div><div class="pc-desc">Profiles & assignments</div>
       </a>
       <a class="portal-card" href="students.html">
-        <div class="portal-card-icon" style="background:rgba(59,130,246,.12);">🎒</div>
-        <div class="portal-card-name">Students</div>
-        <div class="portal-card-desc">Enrollment & records</div>
+        <div class="pc-icon" style="background:rgba(59,130,246,.12);">🎒</div>
+        <div class="pc-name">Students</div><div class="pc-desc">Enroll & manage records</div>
       </a>
       <a class="portal-card" href="fees.html">
-        <div class="portal-card-icon" style="background:rgba(255,179,71,.12);">💰</div>
-        <div class="portal-card-name">Fee Management</div>
-        <div class="portal-card-desc">Collect & track dues</div>
+        <div class="pc-icon" style="background:rgba(255,179,71,.12);">💰</div>
+        <div class="pc-name">Fee Management</div><div class="pc-desc">Collect & track dues</div>
       </a>
       <a class="portal-card" href="marks.html">
-        <div class="portal-card-icon" style="background:rgba(123,94,167,.12);">📊</div>
-        <div class="portal-card-name">Marks & Results</div>
-        <div class="portal-card-desc">Exams & marksheets</div>
+        <div class="pc-icon" style="background:rgba(155,127,212,.12);">📊</div>
+        <div class="pc-name">Marks & Results</div><div class="pc-desc">Exams & marksheets</div>
       </a>
       <a class="portal-card" href="docs.html">
-        <div class="portal-card-icon" style="background:rgba(255,107,53,.1);">📄</div>
-        <div class="portal-card-name">Certificates</div>
-        <div class="portal-card-desc">TC, Bonafide, ID card</div>
+        <div class="pc-icon" style="background:rgba(255,107,53,.1);">📄</div>
+        <div class="pc-name">Certificates</div><div class="pc-desc">TC, Bonafide, ID card</div>
       </a>
       <a class="portal-card" href="timetable.html">
-        <div class="portal-card-icon" style="background:rgba(59,130,246,.1);">📅</div>
-        <div class="portal-card-name">Timetable</div>
-        <div class="portal-card-desc">Class schedules</div>
+        <div class="pc-icon" style="background:rgba(59,130,246,.1);">📅</div>
+        <div class="pc-name">Timetable</div><div class="pc-desc">Class schedules</div>
       </a>
       <a class="portal-card" href="student-login.html" target="_blank">
-        <div class="portal-card-icon" style="background:rgba(255,60,172,.1);">👤</div>
-        <div class="portal-card-name">Student Portal</div>
-        <div class="portal-card-desc">Student self-service</div>
+        <div class="pc-icon" style="background:rgba(255,60,172,.1);">👤</div>
+        <div class="pc-name">Student Portal</div><div class="pc-desc">Self-service login</div>
       </a>
       <div class="portal-card" onclick="showPage('settings')">
-        <div class="portal-card-icon" style="background:rgba(120,120,160,.1);">⚙️</div>
-        <div class="portal-card-name">Settings</div>
-        <div class="portal-card-desc">School configuration</div>
+        <div class="pc-icon" style="background:rgba(120,120,160,.1);">⚙️</div>
+        <div class="pc-name">Settings</div><div class="pc-desc">School configuration</div>
       </div>
     </div>
 
-    <!-- Bottom 2-col: Recent Activity + Latest Announcements -->
+    <!-- Activity + Announcements -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="card">
-        <div class="card-hdr">
-          <div class="card-hdr-icon">🕐</div>
-          <div>
-            <div class="card-hdr-title">Recent Activity</div>
-            <div class="card-hdr-sub">Last actions in the system</div>
-          </div>
-        </div>
-        <div class="card-body" id="activityList">
-          <div class="empty-state" style="padding:28px 0;">
-            <div class="es-icon">📭</div>
-            <div class="es-text">No activity yet</div>
-          </div>
-        </div>
+        <div class="card-hdr"><div class="card-hdr-icon">🕐</div><div><div class="card-hdr-title">Recent Activity</div><div class="card-hdr-sub">Latest system actions</div></div></div>
+        <div class="card-body" id="actList"><div class="empty"><div class="empty-ic">📭</div><div class="empty-tx">No activity yet</div></div></div>
       </div>
       <div class="card">
-        <div class="card-hdr">
-          <div class="card-hdr-icon">📢</div>
-          <div>
-            <div class="card-hdr-title">Latest Announcements</div>
-          </div>
-          <button class="btn btn-sm btn-ghost" style="margin-left:auto;" onclick="showPage('announcements')">View all →</button>
-        </div>
-        <div class="card-body" id="dashAnnList">
-          <div class="empty-state" style="padding:28px 0;">
-            <div class="es-icon">📭</div>
-            <div class="es-text">No announcements yet</div>
-          </div>
-        </div>
+        <div class="card-hdr"><div class="card-hdr-icon">📢</div><div><div class="card-hdr-title">Latest Announcements</div></div><button class="btn btn-sm btn-ghost" style="margin-left:auto;" onclick="showPage('announcements')">View all →</button></div>
+        <div class="card-body" id="dashAnn"><div class="empty"><div class="empty-ic">📭</div><div class="empty-tx">No announcements</div></div></div>
       </div>
-    </div>
-
-  </div><!-- /dashboard -->
-
-  <!-- ════ ANNOUNCEMENTS ════ -->
-  <div class="page-view" id="page-announcements">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-      <div>
-        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;">All Announcements</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Visible to students, teachers &amp; staff on their portals</div>
-      </div>
-      <button class="btn btn-primary" onclick="openAnnModal()">+ New Announcement</button>
-    </div>
-    <div id="annList">
-      <div class="empty-state"><div class="es-icon">📢</div><div class="es-text">No announcements yet. Create the first one!</div></div>
     </div>
   </div>
 
-  <!-- ════ TEAM MEMBERS ════ -->
-  <div class="page-view" id="page-team">
+  <!-- ════ ANNOUNCEMENTS ════ -->
+  <div class="page" id="page-announcements">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
       <div>
-        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;">Team Members</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Staff who can access this admin panel</div>
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;">All Announcements</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Visible to students &amp; teachers on their portals</div>
       </div>
-      <button class="btn btn-primary" onclick="openMemberModal()">+ Add Member</button>
+      <button class="btn btn-primary" onclick="openAnnModal()">+ New</button>
+    </div>
+    <div id="annList"><div class="empty"><div class="empty-ic">📢</div><div class="empty-tx">No announcements yet</div></div></div>
+  </div>
+
+  <!-- ════ TEAM ════ -->
+  <div class="page" id="page-team">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;">Team Members</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Passwords are stored in school_data.js · push to update</div>
+      </div>
     </div>
 
-    <!-- Owner info card -->
-    <div style="background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.18);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px;">
-      <div style="width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;">👑</div>
+    <!-- How-to box -->
+    <div class="info-box" style="margin-bottom:18px;">
+      <strong style="color:var(--text);">🔐 How to add a team member:</strong><br>
+      Open <code style="color:var(--accent);background:var(--bg-raised);padding:1px 6px;border-radius:4px;">school_data.js</code> →
+      find the <code style="color:var(--accent);background:var(--bg-raised);padding:1px 6px;border-radius:4px;">STAFF_MEMBERS</code> array →
+      copy the example block, fill in <strong style="color:var(--text);">id, name, password, permissions</strong> →
+      <code style="color:var(--green);background:var(--bg-raised);padding:1px 6px;border-radius:4px;">git push</code>
+      → they can log in anywhere immediately.<br>
+      <span style="color:var(--text-dim);">Data sync: Owner exports JSON → shares file → member imports on their device.</span>
+    </div>
+
+    <!-- Owner card -->
+    <div style="background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.18);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;display:flex;align-items:center;gap:14px;">
+      <div style="width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👑</div>
       <div style="flex:1;">
-        <div style="font-size:14px;font-weight:700;" id="ownerNameDisplay">Owner</div>
-        <div style="font-size:12px;color:var(--text-muted);">Super Admin — Full access to everything</div>
+        <div style="font-size:14px;font-weight:700;" id="owner-name-disp">Owner</div>
+        <div style="font-size:12px;color:var(--text-muted);">Password set in OWNER_PASSWORD · Full access to everything</div>
       </div>
       <span class="pill pill-gold">Owner</span>
     </div>
 
-    <div id="memberList">
-      <div class="empty-state"><div class="es-icon">🧑‍💻</div><div class="es-text">No team members added yet.</div></div>
-    </div>
+    <div id="teamList"><div class="empty"><div class="empty-ic">🧑‍💻</div><div class="empty-tx">No staff members in STAFF_MEMBERS yet</div></div></div>
   </div>
 
   <!-- ════ SETTINGS ════ -->
-  <div class="page-view" id="page-settings">
+  <div class="page" id="page-settings">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;">
 
-      <!-- School Info -->
       <div class="card">
-        <div class="card-hdr">
-          <div class="card-hdr-icon">🏫</div>
-          <div><div class="card-hdr-title">School Information</div></div>
-        </div>
+        <div class="card-hdr"><div class="card-hdr-icon">🏫</div><div><div class="card-hdr-title">School Information</div></div></div>
         <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
-          <div class="field"><label>School Name</label><input id="cfg-schoolName" placeholder="e.g. Delhi Public School"/></div>
-          <div class="field"><label>Tagline</label><input id="cfg-tagline" placeholder="Empowering Minds..."/></div>
-          <div class="field"><label>Address</label><textarea id="cfg-address" rows="2" placeholder="Full school address..."></textarea></div>
-          <div class="field-grid">
-            <div class="field"><label>Phone</label><input id="cfg-phone" placeholder="+91 99999 00000"/></div>
-            <div class="field"><label>Email</label><input id="cfg-email" placeholder="school@email.com"/></div>
+          <div class="f"><label>School Name</label><input id="cfg-name" placeholder="e.g. Delhi Public School"/></div>
+          <div class="f"><label>Tagline</label><input id="cfg-tag" placeholder="Empowering Minds…"/></div>
+          <div class="f"><label>Address</label><textarea id="cfg-addr" rows="2" placeholder="Full school address"></textarea></div>
+          <div class="fg">
+            <div class="f"><label>Phone</label><input id="cfg-phone" placeholder="+91 99999 00000"/></div>
+            <div class="f"><label>Email</label><input id="cfg-email" placeholder="school@email.com"/></div>
           </div>
-          <div class="field-grid">
-            <div class="field"><label>Affiliation No.</label><input id="cfg-affiliation" placeholder="CBSE-12345"/></div>
-            <div class="field"><label>School Code</label><input id="cfg-code" placeholder="00000"/></div>
+          <div class="fg">
+            <div class="f"><label>Affiliation No.</label><input id="cfg-aff" placeholder="CBSE-12345"/></div>
+            <div class="f"><label>School Code</label><input id="cfg-code" placeholder="00000"/></div>
           </div>
-          <div class="field"><label>Principal Name</label><input id="cfg-principal" placeholder="Dr. Ravi Kumar"/></div>
-          <button class="btn btn-primary" onclick="saveSettings()">💾 Save School Info</button>
+          <div class="f"><label>Principal Name</label><input id="cfg-principal" placeholder="Dr. Ravi Kumar"/></div>
+          <button class="btn btn-primary" onclick="saveSettings()">💾 Save Info</button>
         </div>
       </div>
 
-      <!-- Session & Access -->
       <div style="display:flex;flex-direction:column;gap:16px;">
         <div class="card">
-          <div class="card-hdr">
-            <div class="card-hdr-icon">📅</div>
-            <div><div class="card-hdr-title">Academic Session</div></div>
-          </div>
+          <div class="card-hdr"><div class="card-hdr-icon">📅</div><div><div class="card-hdr-title">Academic Session</div></div></div>
           <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-            <div class="field"><label>Current Session</label><input id="cfg-session" placeholder="2025-26"/></div>
-            <div class="field-grid">
-              <div class="field"><label>Session Start Month</label>
-                <select id="cfg-sessionStart">
-                  <option>April</option><option>June</option><option>July</option><option>January</option>
-                </select>
+            <div class="f"><label>Current Session</label><input id="cfg-sess" placeholder="2025-26"/></div>
+            <div class="fg">
+              <div class="f"><label>Session Start</label>
+                <select id="cfg-sessStart"><option>April</option><option>June</option><option>July</option><option>January</option></select>
               </div>
-              <div class="field"><label>Session End Month</label>
-                <select id="cfg-sessionEnd">
-                  <option>March</option><option>May</option><option>December</option>
-                </select>
+              <div class="f"><label>Session End</label>
+                <select id="cfg-sessEnd"><option>March</option><option>May</option><option>December</option></select>
               </div>
             </div>
             <button class="btn btn-secondary" onclick="saveSettings()">Save Session</button>
@@ -543,49 +461,44 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
 
         <div class="card">
-          <div class="card-hdr">
-            <div class="card-hdr-icon">🔐</div>
-            <div><div class="card-hdr-title">Admin Password</div></div>
-          </div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-            <div class="field"><label>Current Password</label><input type="password" id="cfg-pwdCurrent" placeholder="••••••••"/></div>
-            <div class="field"><label>New Password</label><input type="password" id="cfg-pwdNew" placeholder="min 6 characters"/></div>
-            <div class="field"><label>Confirm New Password</label><input type="password" id="cfg-pwdConfirm" placeholder="repeat new password"/></div>
-            <button class="btn btn-gold" onclick="changePassword()">🔑 Change Password</button>
+          <div class="card-hdr"><div class="card-hdr-icon">🔐</div><div><div class="card-hdr-title">Owner Password</div></div></div>
+          <div class="card-body">
+            <div class="info-box" style="margin-bottom:12px;">
+              Owner password is set in <code style="color:var(--accent);">OWNER_PASSWORD</code> inside <code style="color:var(--accent);">school_data.js</code>. Edit it there and git push.
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);">Staff member passwords are in the <code style="color:var(--accent);">STAFF_MEMBERS</code> array in the same file.</div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-hdr">
-            <div class="card-hdr-icon">🗄️</div>
-            <div><div class="card-hdr-title">Data Management</div></div>
-          </div>
+          <div class="card-hdr"><div class="card-hdr-icon">🗄️</div><div><div class="card-hdr-title">Data Management</div></div></div>
           <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-            <button class="btn btn-green" onclick="ERP.exportData()">⬇ Export Full Data JSON</button>
-            <button class="btn btn-blue" onclick="ERP.openImportModal()">⬆ Import & Merge Data</button>
-            <button class="btn btn-red" onclick="resetAllData()">🗑 Reset All Data</button>
-            <p style="font-size:11px;color:var(--text-dim);line-height:1.6;">Export regularly to backup. Import merges without deleting. Reset clears everything — use with caution.</p>
+            <button class="btn btn-green"  onclick="ERP.exportData()">⬇ Export Full Data JSON</button>
+            <button class="btn btn-blue"   onclick="ERP.openImportModal()">⬆ Import &amp; Merge Data</button>
+            <button class="btn btn-red"    onclick="resetData()">🗑 Reset All Data</button>
+            <p style="font-size:11px;color:var(--text-dim);line-height:1.6;">Export regularly to backup. Import merges without deleting. Reset clears all school data — use with caution.</p>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
 </div><!-- /mainWrap -->
 
 <!-- ══════════ MODAL: ANNOUNCEMENT ══════════ -->
-<div class="modal-overlay" id="annModal">
-  <div class="modal" style="max-width:560px;">
+<div class="modal-ov" id="annModal">
+  <div class="modal">
     <div class="modal-hdr">
       <div class="modal-title" id="annModalTitle">📢 New Announcement</div>
-      <button class="modal-close" onclick="closeAnnModal()">✕</button>
+      <button class="modal-x" onclick="closeAnnModal()">✕</button>
     </div>
     <div class="modal-body">
-      <input type="hidden" id="annEditId"/>
-      <div class="field-grid">
-        <div class="field full"><label>Title *</label><input id="ann-title" placeholder="e.g. Holiday Notice — Diwali"/></div>
-        <div class="field full"><label>Message *</label><textarea id="ann-body" rows="4" placeholder="Full announcement text..."></textarea></div>
-        <div class="field"><label>Target Audience</label>
+      <input type="hidden" id="ann-edit-id"/>
+      <div class="fg">
+        <div class="f full"><label>Title *</label><input id="ann-title" placeholder="e.g. School closed on 15th August"/></div>
+        <div class="f full"><label>Message *</label><textarea id="ann-body" rows="4" placeholder="Full announcement text…"></textarea></div>
+        <div class="f"><label>Target Audience</label>
           <select id="ann-target">
             <option value="All">All (Students + Teachers + Staff)</option>
             <option value="Students">Students only</option>
@@ -593,644 +506,367 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
             <option value="Staff">Staff only</option>
           </select>
         </div>
-        <div class="field"><label>Priority</label>
+        <div class="f"><label>Priority</label>
           <select id="ann-priority">
             <option value="Normal">Normal</option>
-            <option value="Important">Important</option>
+            <option value="Important">⭐ Important</option>
             <option value="Urgent">🚨 Urgent</option>
           </select>
         </div>
-        <div class="field"><label>Target Class (optional)</label>
-          <input id="ann-class" placeholder="e.g. 10 or leave blank for all"/>
-        </div>
-        <div class="field"><label>Expiry Date (optional)</label>
-          <input type="date" id="ann-expiry"/>
-        </div>
+        <div class="f"><label>Target Class (optional, leave blank for all)</label><input id="ann-class" placeholder="e.g. 10"/></div>
+        <div class="f"><label>Expiry Date (optional)</label><input type="date" id="ann-expiry"/></div>
       </div>
     </div>
-    <div class="modal-footer">
+    <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeAnnModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveAnnouncement()">📢 Publish</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ MODAL: TEAM MEMBER ══════════ -->
-<div class="modal-overlay" id="memberModal">
-  <div class="modal" style="max-width:580px;">
-    <div class="modal-hdr">
-      <div class="modal-title" id="memberModalTitle">🧑‍💻 Add Team Member</div>
-      <button class="modal-close" onclick="closeMemberModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="memberEditId"/>
-      <div style="background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);border-radius:9px;padding:12px 14px;font-size:12px;color:var(--text-muted);line-height:1.7;">
-        🔐 <strong style="color:var(--text);">How team login works:</strong> The member opens <code style="color:var(--accent);background:var(--bg-raised);padding:1px 5px;border-radius:4px;">admin.html</code> in their browser and enters their unique password. Data syncs via Export→Import JSON.
-      </div>
-      <div class="field-grid">
-        <div class="field"><label>Full Name *</label><input id="mm-name" placeholder="e.g. Priya Sharma"/></div>
-        <div class="field"><label>Role / Designation</label>
-          <select id="mm-role">
-            <option>Admin</option><option>Accountant</option><option>Receptionist</option>
-            <option>Teacher</option><option>Librarian</option><option>Other</option>
-          </select>
-        </div>
-        <div class="field"><label>Email</label><input id="mm-email" placeholder="member@school.edu"/></div>
-        <div class="field"><label>Phone</label><input id="mm-phone" placeholder="+91 00000 00000"/></div>
-        <div class="field full"><label>Login Password * (min 6 characters)</label>
-          <input id="mm-password" type="text" placeholder="e.g. Priya@2025" autocomplete="off"/>
-        </div>
-      </div>
-
-      <div style="border-top:1px solid var(--border);padding-top:14px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);">Permissions</div>
-          <div style="display:flex;gap:6px;">
-            <button class="btn btn-sm btn-ghost" onclick="setAllPerms(true)">Select All</button>
-            <button class="btn btn-sm btn-ghost" onclick="setAllPerms(false)">Clear All</button>
-          </div>
-        </div>
-        <div class="perm-grid">
-          <label class="perm-check"><input type="checkbox" id="perm-teachers"/>
-            <div><div class="perm-check-label">👩‍🏫 Teachers</div><div class="perm-check-sub">View & manage teacher records</div></div>
-          </label>
-          <label class="perm-check"><input type="checkbox" id="perm-students"/>
-            <div><div class="perm-check-label">🎒 Students</div><div class="perm-check-sub">View & manage student records</div></div>
-          </label>
-          <label class="perm-check"><input type="checkbox" id="perm-fees"/>
-            <div><div class="perm-check-label">💰 Fees</div><div class="perm-check-sub">Fee collection & receipts</div></div>
-          </label>
-          <label class="perm-check"><input type="checkbox" id="perm-marks"/>
-            <div><div class="perm-check-label">📊 Marks</div><div class="perm-check-sub">Enter & view exam marks</div></div>
-          </label>
-          <label class="perm-check"><input type="checkbox" id="perm-docs"/>
-            <div><div class="perm-check-label">📄 Documents</div><div class="perm-check-sub">Generate certificates</div></div>
-          </label>
-          <label class="perm-check"><input type="checkbox" id="perm-timetable"/>
-            <div><div class="perm-check-label">📅 Timetable</div><div class="perm-check-sub">Create & edit timetables</div></div>
-          </label>
-          <label class="perm-check"><input type="checkbox" id="perm-announcements"/>
-            <div><div class="perm-check-label">📢 Announcements</div><div class="perm-check-sub">Post announcements</div></div>
-          </label>
-          <label class="perm-check"><input type="checkbox" id="perm-export"/>
-            <div><div class="perm-check-label">↕ Export / Import</div><div class="perm-check-sub">Data backup & restore</div></div>
-          </label>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeMemberModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveMember()">💾 Save Member</button>
+      <button class="btn btn-primary" onclick="saveAnn()">📢 Publish</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ══════════════════════════════════
+/* ═══════════════════════════════════════
    AUTH
-══════════════════════════════════ */
-let _currentUser = null;
+═══════════════════════════════════════ */
+let _user = null;
 
-function doLogin() {
-  const pwd = document.getElementById('loginPwd').value.trim();
-  const err = document.getElementById('loginErr');
+function doLogin(){
+  const pwd = document.getElementById('lc-pwd').value.trim();
+  const err = document.getElementById('lc-err');
   err.style.display = 'none';
-  if (!pwd) return;
-
-  const user = ERP.authenticateAdmin(pwd);
-  if (!user) {
-    err.style.display = 'block';
-    document.getElementById('loginPwd').classList.add('shake');
-    setTimeout(() => document.getElementById('loginPwd').classList.remove('shake'), 400);
+  if(!pwd) return;
+  const u = ERP.authenticateAdmin(pwd);
+  if(!u){
+    err.style.display='block';
+    document.getElementById('lc-pwd').classList.add('shake');
+    setTimeout(()=>document.getElementById('lc-pwd').classList.remove('shake'),350);
     return;
   }
-
-  _currentUser = user;
-  ERP.setSession(user);
-  unlockApp();
+  _user = u;
+  ERP.setAdminSession(u);
+  unlock();
 }
 
-function unlockApp() {
-  const ls = document.getElementById('loginScreen');
-  ls.style.opacity = '0'; ls.style.transition = 'opacity .3s';
-  setTimeout(() => ls.style.display = 'none', 300);
-  document.getElementById('mainWrap').style.display = 'block';
-  document.getElementById('mobileBar').style.display = 'flex';
+function unlock(){
+  const s=document.getElementById('loginScreen');
+  s.style.transition='opacity .3s'; s.style.opacity='0';
+  setTimeout(()=>s.style.display='none',300);
+  document.getElementById('mainWrap').style.display='block';
   initApp();
 }
 
-function doLogout() {
-  ERP.confirm('Log out of admin panel?', () => {
-    ERP.logout();
-    location.reload();
-  }, 'Log Out?');
+function doLogout(){
+  ERP.confirm('Log out of admin panel?',()=>ERP.logoutAdmin(),'Log Out?');
 }
 
-function toggleEye() {
-  const i = document.getElementById('loginPwd');
-  const b = document.getElementById('eyeBtn');
-  i.type = i.type === 'password' ? 'text' : 'password';
-  b.textContent = i.type === 'password' ? '👁' : '🙈';
+function toggleEye(){
+  const i=document.getElementById('lc-pwd'),b=document.getElementById('lc-eye');
+  i.type=i.type==='password'?'text':'password';
+  b.textContent=i.type==='password'?'👁':'🙈';
 }
 
-// Check existing session on load
-(function () {
-  try {
-    const s = sessionStorage.getItem('erp_session');
-    if (s) {
-      _currentUser = JSON.parse(s);
-      unlockApp();
-    } else {
-      // Pre-fill school name on login screen from saved settings
-      const d = ERP.loadData();
-      if (d.settings.schoolName) {
-        document.getElementById('loginSchoolName').textContent = d.settings.schoolName;
-      }
-    }
-  } catch(e) {}
+// Auto-restore session
+(function(){
+  const d = ERP.loadData();
+  document.getElementById('lc-school').textContent = d.settings.schoolName||'School ERP';
+  const u = ERP.getAdminSession();
+  if(u){ _user=u; unlock(); }
 })();
 
-/* ══════════════════════════════════
-   PAGE NAVIGATION
-══════════════════════════════════ */
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
 const PAGE_META = {
-  dashboard:     { title: 'Dashboard',       sub: 'School overview & quick access' },
-  announcements: { title: 'Announcements',   sub: 'Post notices for students, teachers & staff' },
-  team:          { title: 'Team Members',    sub: 'Manage who can access this admin panel' },
-  settings:      { title: 'Settings',        sub: 'School configuration & admin password' },
+  dashboard:     { title:'Dashboard',       sub:'School overview & quick access' },
+  announcements: { title:'Announcements',   sub:'Post notices to students, teachers & staff' },
+  team:          { title:'Team Members',    sub:'Manage staff who can access this admin panel' },
+  settings:      { title:'Settings',        sub:'School configuration & data management' },
 };
 
-function showPage(id) {
-  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const pg = document.getElementById('page-' + id);
-  if (pg) pg.classList.add('active');
-  const nav = document.getElementById('nav-' + id);
-  if (nav) nav.classList.add('active');
-  const meta = PAGE_META[id] || {};
-  document.getElementById('topTitle').textContent = meta.title || id;
-  document.getElementById('topSub').textContent   = meta.sub   || '';
-  // Close mobile sidebar
-  document.getElementById('sidebar').classList.remove('mobile-open');
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg)pg.classList.add('active');
+  const nv=document.getElementById('nav-'+id);
+  if(nv)nv.classList.add('active');
+  const m=PAGE_META[id]||{};
+  document.getElementById('tb-title').textContent=m.title||id;
+  document.getElementById('tb-sub').textContent  =m.sub||'';
+  document.getElementById('sidebar').classList.remove('mob-open');
   document.getElementById('sbOverlay').classList.remove('open');
-  // Refresh page-specific data
-  if (id === 'dashboard')     renderDashboard();
-  if (id === 'announcements') renderAnnouncements();
-  if (id === 'team')          renderTeam();
-  if (id === 'settings')      loadSettings();
+  if(id==='dashboard')    renderDashboard();
+  if(id==='announcements')renderAnnouncements();
+  if(id==='team')         renderTeam();
+  if(id==='settings')     loadSettings();
 }
 
-function toggleSidebar() {
-  const sb = document.getElementById('sidebar');
-  const ov = document.getElementById('sbOverlay');
-  const open = sb.classList.toggle('mobile-open');
-  ov.classList.toggle('open', open);
+function toggleSB(){
+  const sb=document.getElementById('sidebar'),ov=document.getElementById('sbOverlay');
+  const o=sb.classList.toggle('mob-open');
+  ov.classList.toggle('open',o);
 }
 
-/* ══════════════════════════════════
+/* ═══════════════════════════════════════
    INIT
-══════════════════════════════════ */
-function initApp() {
-  const data = ERP.loadData();
-  const s    = data.settings;
-
-  // Sidebar / mobile
-  document.getElementById('sbSchoolName').textContent  = s.schoolName   || 'School ERP';
-  document.getElementById('sbSession').textContent     = s.currentSession || '2025-26';
-  document.getElementById('sbUserName').textContent    = _currentUser ? _currentUser.name : 'Admin';
-  document.getElementById('mobileSchoolName').textContent = s.schoolName || 'School ERP';
-
-  // Import success hook → reload
-  ERP.onImportSuccess = () => { showToast('✅ Imported!', 'success'); setTimeout(() => location.reload(), 600); };
-
-  renderDashboard();
+═══════════════════════════════════════ */
+function initApp(){
+  const d = ERP.loadData(), s = d.settings;
+  document.getElementById('sb-school').textContent = s.schoolName||'School ERP';
+  document.getElementById('sb-sess').textContent   = s.currentSession||'2025-26';
+  document.getElementById('sb-user').textContent   = _user?_user.name:'Admin';
+  document.getElementById('mob-school').textContent= s.schoolName||'School ERP';
+  ERP.onImportSuccess = () => { showToast('✅ Imported!','success'); setTimeout(()=>location.reload(),600); };
+  if(!s.setupDone && _user && _user.isOwner){
+    setTimeout(()=>{ showToast('👋 Welcome! Set up your school in Settings.','info',5000); showPage('settings'); },800);
+  } else {
+    renderDashboard();
+  }
 }
 
-/* ══════════════════════════════════
-   DASHBOARD RENDER
-══════════════════════════════════ */
-function renderDashboard() {
-  const data = ERP.loadData();
+/* ═══════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════ */
+function renderDashboard(){
+  const d = ERP.loadData();
+  const students = d.students.filter(s=>s.active!==false);
+  const teachers = d.teachers.filter(t=>t.active!==false);
+  const paid     = d.feePayments.filter(p=>p.status==='Paid').reduce((a,p)=>a+(p.netAmount||0),0);
+  const due      = d.feePayments.filter(p=>p.status==='Due').reduce((a,p)=>a+(p.netAmount||0),0);
+  const partial  = d.feePayments.filter(p=>p.status==='Partial').reduce((a,p)=>a+(p.balance||0),0);
 
-  // Stats
-  const students = data.students.filter(s => s.active);
-  const teachers = data.teachers.filter(t => t.active);
-  const paid  = data.feePayments.filter(p => p.status === 'Paid').reduce((s, p) => s + (p.netAmount || 0), 0);
-  const due   = data.feePayments.filter(p => p.status === 'Due').reduce((s, p) => s + (p.netAmount || 0), 0);
-  const partial = data.feePayments.filter(p => p.status === 'Partial').reduce((s, p) => s + (p.balance || 0), 0);
+  document.getElementById('s-students').textContent = students.length;
+  document.getElementById('s-teachers').textContent = teachers.length;
+  document.getElementById('s-fees').textContent     = ERP.fmtMoney(paid);
+  document.getElementById('s-dues').textContent     = ERP.fmtMoney(due+partial);
+  document.getElementById('s-students-sub').textContent = (d.settings.currentSession||'')+' session';
+  document.getElementById('s-fees-sub').textContent     = (d.settings.currentSession||'')+' session';
 
-  document.getElementById('stat-students').textContent  = students.length;
-  document.getElementById('stat-teachers').textContent  = teachers.length;
-  document.getElementById('stat-fees').textContent      = ERP.fmtMoney(paid);
-  document.getElementById('stat-dues').textContent      = ERP.fmtMoney(due + partial);
-  document.getElementById('stat-students-sub').textContent = `${data.settings.currentSession || ''} session`;
-  document.getElementById('stat-fees-sub').textContent  = `${data.settings.currentSession || ''} session`;
+  // Activity
+  const acts=[];
+  d.students.slice(-4).reverse().forEach(s=>acts.push({c:'#3B82F6',txt:`<strong>${s.name}</strong> enrolled — Class ${s.class}-${s.section}`,t:ERP.fmtDate(s.createdAt)}));
+  d.feePayments.slice(-3).reverse().forEach(p=>{ const st=ERP.getStudent(p.studentId); acts.push({c:'#22C55E',txt:`Fee received from <strong>${st?st.name:p.studentId}</strong> — ${ERP.fmtMoney(p.netAmount)}`,t:ERP.fmtDate(p.paymentDate)}); });
+  d.documents.slice(-3).reverse().forEach(doc=>acts.push({c:'#FF6B35',txt:`<strong>${doc.type}</strong> issued to ${doc.issuedTo}`,t:ERP.fmtDate(doc.issuedDate)}));
 
-  // Recent activity (last 6 entries from docs + feePayments + students sorted by date)
-  const activities = [];
-  (data.students || []).slice(-4).reverse().forEach(s => {
-    activities.push({ icon:'🎒', color:'#3B82F6', text:`<strong>${s.name}</strong> enrolled in Class ${s.class}-${s.section}`, time: ERP.fmtDate(s.createdAt) });
-  });
-  (data.feePayments || []).slice(-3).reverse().forEach(p => {
-    const stu = ERP.getStudent(p.studentId);
-    activities.push({ icon:'💰', color:'#22C55E', text:`Fee received from <strong>${stu ? stu.name : p.studentId}</strong> — ${ERP.fmtMoney(p.netAmount)}`, time: ERP.fmtDate(p.paymentDate) });
-  });
-  (data.documents || []).slice(-3).reverse().forEach(d => {
-    activities.push({ icon:'📄', color:'#FF6B35', text:`<strong>${d.type}</strong> issued to ${d.issuedTo}`, time: ERP.fmtDate(d.issuedDate) });
-  });
+  const actEl = document.getElementById('actList');
+  actEl.innerHTML = acts.length===0
+    ? `<div class="empty"><div class="empty-ic">📭</div><div class="empty-tx">No activity yet</div></div>`
+    : acts.slice(0,7).map(a=>`<div class="act-item"><div class="act-dot" style="background:${a.c};"></div><div class="act-text">${a.txt}</div><div class="act-time">${a.t}</div></div>`).join('');
 
-  const actEl = document.getElementById('activityList');
-  if (activities.length === 0) {
-    actEl.innerHTML = `<div class="empty-state" style="padding:28px 0;"><div class="es-icon">📭</div><div class="es-text">No activity yet</div></div>`;
-  } else {
-    actEl.innerHTML = activities.slice(0, 7).map(a => `
-      <div class="activity-item">
-        <div class="activity-dot" style="background:${a.color};"></div>
-        <div class="activity-text">${a.text}</div>
-        <div class="activity-time">${a.time}</div>
-      </div>`).join('');
-  }
-
-  // Latest announcements preview
-  const anns = (data.announcements || []).filter(a => a.active).slice(-3).reverse();
-  const dashAnn = document.getElementById('dashAnnList');
-  if (anns.length === 0) {
-    dashAnn.innerHTML = `<div class="empty-state" style="padding:28px 0;"><div class="es-icon">📭</div><div class="es-text">No announcements yet</div></div>`;
-  } else {
-    dashAnn.innerHTML = anns.map(a => `
-      <div style="padding:11px 0;border-bottom:1px solid var(--border);">
+  // Dashboard announcements
+  const anns = (d.announcements||[]).filter(a=>a.active).slice(-3).reverse();
+  const annEl = document.getElementById('dashAnn');
+  annEl.innerHTML = anns.length===0
+    ? `<div class="empty"><div class="empty-ic">📢</div><div class="empty-tx">No announcements</div></div>`
+    : anns.map(a=>`<div style="padding:11px 0;border-bottom:1px solid var(--border);">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-          <span style="font-size:13px;font-weight:600;">${a.title}</span>
-          ${priorityPill(a.priority)}
+          <span style="font-size:13px;font-weight:600;">${a.title}</span>${priPill(a.priority)}
         </div>
-        <div style="font-size:12px;color:var(--text-muted);">${(a.body||'').slice(0,80)}${a.body && a.body.length > 80 ? '…' : ''}</div>
+        <div style="font-size:12px;color:var(--text-muted);">${(a.body||'').slice(0,90)}${(a.body||'').length>90?'…':''}</div>
         <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">${a.targetRole} · ${ERP.fmtDate(a.publishDate)}</div>
       </div>`).join('');
-  }
 }
 
-/* ══════════════════════════════════
+/* ═══════════════════════════════════════
    ANNOUNCEMENTS
-══════════════════════════════════ */
-function renderAnnouncements() {
-  const data = ERP.loadData();
-  const anns = (data.announcements || []).slice().reverse();
-  const el   = document.getElementById('annList');
-  if (anns.length === 0) {
-    el.innerHTML = `<div class="empty-state"><div class="es-icon">📢</div><div class="es-text">No announcements yet.</div></div>`;
-    return;
-  }
-  el.innerHTML = anns.map(a => `
-    <div class="ann-item" style="${!a.active ? 'opacity:.5;' : ''}">
-      <div class="ann-top">
+═══════════════════════════════════════ */
+function renderAnnouncements(){
+  const anns=(ERP.loadData().announcements||[]).slice().reverse();
+  const el=document.getElementById('annList');
+  if(!anns.length){ el.innerHTML=`<div class="empty"><div class="empty-ic">📢</div><div class="empty-tx">No announcements yet</div></div>`; return; }
+  el.innerHTML=anns.map(a=>`
+    <div class="ann-card" style="${!a.active?'opacity:.5;':''}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
         <div>
           <div class="ann-title">${a.title}</div>
           <div class="ann-meta">
-            ${priorityPill(a.priority)}
-            <span style="margin-left:6px;">For: <strong>${a.targetRole}</strong></span>
-            ${a.targetClass ? `· Class <strong>${a.targetClass}</strong>` : ''}
-            · Posted: ${ERP.fmtDate(a.publishDate)}
-            ${a.expiryDate ? `· Expires: ${ERP.fmtDate(a.expiryDate)}` : ''}
+            ${priPill(a.priority)}
+            <span>For: <strong>${a.targetRole}</strong></span>
+            ${a.targetClass?`· Class <strong>${a.targetClass}</strong>`:''}
+            <span>· ${ERP.fmtDate(a.publishDate)}</span>
+            ${a.expiryDate?`· Expires ${ERP.fmtDate(a.expiryDate)}`:''}
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-          <span class="pill ${a.active ? 'pill-green' : 'pill-gray'}">${a.active ? 'Active' : 'Inactive'}</span>
-        </div>
+        <span class="pill ${a.active?'pill-green':'pill-gray'}">${a.active?'Active':'Inactive'}</span>
       </div>
       <div class="ann-body">${a.body}</div>
       <div class="ann-actions">
         <button class="btn btn-sm btn-ghost" onclick="editAnn('${a.id}')">✏️ Edit</button>
-        <button class="btn btn-sm btn-ghost" onclick="toggleAnn('${a.id}')">${a.active ? '⏸ Deactivate' : '▶ Activate'}</button>
-        <button class="btn btn-sm btn-red" onclick="deleteAnn('${a.id}')">🗑 Delete</button>
+        <button class="btn btn-sm btn-ghost" onclick="toggleAnn('${a.id}')">${a.active?'⏸ Deactivate':'▶ Activate'}</button>
+        <button class="btn btn-sm btn-red"   onclick="deleteAnn('${a.id}')">🗑 Delete</button>
       </div>
     </div>`).join('');
 }
 
-function priorityPill(p) {
-  const map = { 'Normal':'pill-gray', 'Important':'pill-gold', 'Urgent':'pill-red' };
-  return `<span class="pill ${map[p]||'pill-gray'}">${p||'Normal'}</span>`;
+function priPill(p){
+  const mp={Normal:'pill-gray',Important:'pill-gold',Urgent:'pill-red'};
+  return `<span class="pill ${mp[p]||'pill-gray'}">${p||'Normal'}</span>`;
 }
 
-function openAnnModal(id) {
+function openAnnModal(id){
   clearAnnForm();
   document.getElementById('annModal').classList.add('open');
-  if (id) editAnn(id);
+  if(id) editAnn(id,true);
 }
-function closeAnnModal() { document.getElementById('annModal').classList.remove('open'); }
+function closeAnnModal(){ document.getElementById('annModal').classList.remove('open'); }
 
-function clearAnnForm() {
-  document.getElementById('annEditId').value = '';
-  document.getElementById('ann-title').value = '';
-  document.getElementById('ann-body').value  = '';
-  document.getElementById('ann-target').value = 'All';
-  document.getElementById('ann-priority').value = 'Normal';
-  document.getElementById('ann-class').value = '';
-  document.getElementById('ann-expiry').value = '';
-  document.getElementById('annModalTitle').textContent = '📢 New Announcement';
+function clearAnnForm(){
+  ['ann-edit-id','ann-title','ann-body','ann-class','ann-expiry'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('ann-target').value='All';
+  document.getElementById('ann-priority').value='Normal';
+  document.getElementById('annModalTitle').textContent='📢 New Announcement';
 }
 
-function editAnn(id) {
-  const data = ERP.loadData();
-  const a    = (data.announcements || []).find(x => x.id === id);
-  if (!a) return;
-  document.getElementById('annEditId').value    = a.id;
-  document.getElementById('ann-title').value    = a.title || '';
-  document.getElementById('ann-body').value     = a.body  || '';
-  document.getElementById('ann-target').value   = a.targetRole || 'All';
-  document.getElementById('ann-priority').value = a.priority || 'Normal';
-  document.getElementById('ann-class').value    = a.targetClass || '';
-  document.getElementById('ann-expiry').value   = a.expiryDate || '';
-  document.getElementById('annModalTitle').textContent = '✏️ Edit Announcement';
-  document.getElementById('annModal').classList.add('open');
+function editAnn(id, alreadyOpen){
+  const a=(ERP.loadData().announcements||[]).find(x=>x.id===id);
+  if(!a)return;
+  document.getElementById('ann-edit-id').value = a.id;
+  document.getElementById('ann-title').value   = a.title||'';
+  document.getElementById('ann-body').value    = a.body||'';
+  document.getElementById('ann-target').value  = a.targetRole||'All';
+  document.getElementById('ann-priority').value= a.priority||'Normal';
+  document.getElementById('ann-class').value   = a.targetClass||'';
+  document.getElementById('ann-expiry').value  = a.expiryDate||'';
+  document.getElementById('annModalTitle').textContent='✏️ Edit Announcement';
+  if(!alreadyOpen) document.getElementById('annModal').classList.add('open');
 }
 
-function saveAnnouncement() {
-  const title = document.getElementById('ann-title').value.trim();
-  const body  = document.getElementById('ann-body').value.trim();
-  if (!title || !body) { showToast('Title and message are required.', 'error'); return; }
-
-  const data   = ERP.loadData();
-  const editId = document.getElementById('annEditId').value;
-  const today  = new Date().toISOString().slice(0,10);
-
-  if (editId) {
-    const idx = data.announcements.findIndex(a => a.id === editId);
-    if (idx > -1) {
-      data.announcements[idx] = {
-        ...data.announcements[idx],
-        title, body,
-        targetRole:  document.getElementById('ann-target').value,
-        priority:    document.getElementById('ann-priority').value,
-        targetClass: document.getElementById('ann-class').value.trim(),
-        expiryDate:  document.getElementById('ann-expiry').value,
-      };
-    }
+function saveAnn(){
+  const title=document.getElementById('ann-title').value.trim();
+  const body =document.getElementById('ann-body').value.trim();
+  if(!title||!body){ showToast('Title and message required.','error'); return; }
+  const data=ERP.loadData();
+  const eid =document.getElementById('ann-edit-id').value;
+  const obj ={
+    title, body,
+    targetRole:  document.getElementById('ann-target').value,
+    priority:    document.getElementById('ann-priority').value,
+    targetClass: document.getElementById('ann-class').value.trim(),
+    expiryDate:  document.getElementById('ann-expiry').value,
+  };
+  if(eid){
+    const i=data.announcements.findIndex(a=>a.id===eid);
+    if(i>-1) data.announcements[i]={...data.announcements[i],...obj};
   } else {
     data.announcements.push({
-      id:          ERP.generateID('ANN'),
-      title, body,
-      targetRole:  document.getElementById('ann-target').value,
-      priority:    document.getElementById('ann-priority').value,
-      targetClass: document.getElementById('ann-class').value.trim(),
-      publishDate: today,
-      expiryDate:  document.getElementById('ann-expiry').value,
-      postedBy:    _currentUser ? _currentUser.name : 'Admin',
+      id: ERP.generateID('ANN'), ...obj,
+      publishDate: ERP.todayStr(),
+      postedBy:    _user?_user.name:'Admin',
       active:      true,
       createdAt:   new Date().toISOString(),
     });
   }
-
   ERP.saveData(data);
-  showToast('📢 Announcement published!', 'success');
+  showToast('📢 Announcement published!','success');
   closeAnnModal();
   renderAnnouncements();
   renderDashboard();
 }
 
-function toggleAnn(id) {
-  const data = ERP.loadData();
-  const idx  = data.announcements.findIndex(a => a.id === id);
-  if (idx > -1) { data.announcements[idx].active = !data.announcements[idx].active; }
-  ERP.saveData(data);
-  renderAnnouncements();
+function toggleAnn(id){
+  const data=ERP.loadData();
+  const i=data.announcements.findIndex(a=>a.id===id);
+  if(i>-1)data.announcements[i].active=!data.announcements[i].active;
+  ERP.saveData(data); renderAnnouncements();
 }
 
-function deleteAnn(id) {
-  ERP.confirm('Delete this announcement permanently?', () => {
-    const data = ERP.loadData();
-    data.announcements = data.announcements.filter(a => a.id !== id);
-    ERP.saveData(data);
-    showToast('Announcement deleted.', 'info');
-    renderAnnouncements();
-  }, 'Delete Announcement?');
+function deleteAnn(id){
+  ERP.confirm('Delete this announcement permanently?',()=>{
+    const data=ERP.loadData();
+    data.announcements=data.announcements.filter(a=>a.id!==id);
+    ERP.saveData(data); showToast('Deleted.','info'); renderAnnouncements();
+  },'Delete Announcement?');
 }
 
-/* ══════════════════════════════════
-   TEAM MEMBERS
-══════════════════════════════════ */
-function renderTeam() {
-  const data = ERP.loadData();
-  document.getElementById('ownerNameDisplay').textContent = (data.settings.schoolName || 'School') + ' — Owner';
-  const staff = data.staff || [];
-  const el    = document.getElementById('memberList');
-  if (staff.length === 0) {
-    el.innerHTML = `<div class="empty-state"><div class="es-icon">🧑‍💻</div><div class="es-text">No team members added yet.</div></div>`;
+/* ═══════════════════════════════════════
+   TEAM  (read from hardcoded STAFF_MEMBERS)
+═══════════════════════════════════════ */
+function renderTeam(){
+  const d=ERP.loadData();
+  document.getElementById('owner-name-disp').textContent=ERP.OWNER_NAME+' ('+( d.settings.schoolName||'School')+')';
+  const staff=ERP.getStaffList();
+  const el=document.getElementById('teamList');
+  if(!staff.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ic">🧑‍💻</div><div class="empty-tx">No staff in STAFF_MEMBERS array yet.<br>Edit school_data.js to add members.</div></div>`;
     return;
   }
-  el.innerHTML = staff.map(m => {
-    const perms = Object.entries(m.permissions || {}).filter(([,v]) => v).map(([k]) => k);
-    return `
-    <div class="member-card">
-      <div class="member-avatar">${ERP.getInitials(m.name)}</div>
-      <div class="member-info">
+  const permLabels={teachers:'👩‍🏫 Teachers',students:'🎒 Students',fees:'💰 Fees',marks:'📊 Marks',docs:'📄 Docs',timetable:'📅 Timetable',announcements:'📢 Announcements',export:'↕ Export',settings:'⚙️ Settings'};
+  el.innerHTML=staff.map(m=>{
+    const perms=Object.entries(m.permissions||{}).filter(([,v])=>v).map(([k])=>permLabels[k]||k);
+    return `<div class="member-card">
+      <div class="member-av">${ERP.getInitials(m.name)}</div>
+      <div style="flex:1;min-width:0;">
         <div class="member-name">${m.name}</div>
-        <div class="member-role">${m.role} · ${m.email || 'No email'}</div>
-        <div class="member-perms">
-          ${perms.map(p => `<span class="perm-tag">${p}</span>`).join('') || '<span class="perm-tag" style="color:var(--red);">No permissions</span>'}
-        </div>
+        <div class="member-role">${m.role}</div>
+        <div class="perm-tags">${perms.map(p=>`<span class="ptag">${p}</span>`).join('')||'<span class="ptag" style="color:var(--red);">No permissions</span>'}</div>
       </div>
-      <div style="text-align:right;flex-shrink:0;">
-        <span class="pill ${m.active ? 'pill-green' : 'pill-gray'}" style="margin-bottom:8px;display:inline-block;">${m.active ? 'Active' : 'Inactive'}</span>
-        <div class="member-actions">
-          <button class="btn btn-sm btn-ghost" onclick="editMember('${m.id}')">✏️ Edit</button>
-          <button class="btn btn-sm btn-red" onclick="deleteMember('${m.id}')">🗑</button>
-        </div>
-      </div>
+      <span class="pill pill-blue">Staff</span>
     </div>`;
   }).join('');
 }
 
-function openMemberModal() {
-  clearMemberForm();
-  document.getElementById('memberModal').classList.add('open');
-}
-function closeMemberModal() { document.getElementById('memberModal').classList.remove('open'); }
-
-function clearMemberForm() {
-  document.getElementById('memberEditId').value = '';
-  document.getElementById('mm-name').value      = '';
-  document.getElementById('mm-role').value      = 'Admin';
-  document.getElementById('mm-email').value     = '';
-  document.getElementById('mm-phone').value     = '';
-  document.getElementById('mm-password').value  = '';
-  document.getElementById('memberModalTitle').textContent = '🧑‍💻 Add Team Member';
-  setAllPerms(true); // default: all on
-}
-
-const PERM_IDS = ['teachers','students','fees','marks','docs','timetable','announcements','export'];
-
-function setAllPerms(val) {
-  PERM_IDS.forEach(id => {
-    const el = document.getElementById('perm-' + id);
-    if (el) el.checked = val;
-  });
-}
-
-function editMember(id) {
-  const data = ERP.loadData();
-  const m    = (data.staff || []).find(x => x.id === id);
-  if (!m) return;
-  document.getElementById('memberEditId').value = m.id;
-  document.getElementById('mm-name').value      = m.name || '';
-  document.getElementById('mm-role').value      = m.role || 'Admin';
-  document.getElementById('mm-email').value     = m.email || '';
-  document.getElementById('mm-phone').value     = m.phone || '';
-  document.getElementById('mm-password').value  = m.password || '';
-  document.getElementById('memberModalTitle').textContent = '✏️ Edit Team Member';
-  PERM_IDS.forEach(pid => {
-    const el = document.getElementById('perm-' + pid);
-    if (el) el.checked = !!(m.permissions || {})[pid];
-  });
-  document.getElementById('memberModal').classList.add('open');
-}
-
-function saveMember() {
-  const name     = document.getElementById('mm-name').value.trim();
-  const password = document.getElementById('mm-password').value.trim();
-  if (!name)     { showToast('Name is required.', 'error'); return; }
-  if (!password || password.length < 6) { showToast('Password must be at least 6 characters.', 'error'); return; }
-
-  const data   = ERP.loadData();
-  const editId = document.getElementById('memberEditId').value;
-  const perms  = {};
-  PERM_IDS.forEach(pid => { perms[pid] = !!document.getElementById('perm-' + pid)?.checked; });
-
-  // Check duplicate password (excluding self)
-  const dupPwd = (data.staff || []).find(s => s.password === password && s.id !== editId);
-  if (dupPwd) { showToast('⚠️ That password is already used by ' + dupPwd.name, 'error'); return; }
-  if (password === data.settings.ownerPassword) { showToast('⚠️ Cannot use the owner password.', 'error'); return; }
-
-  if (editId) {
-    const idx = data.staff.findIndex(s => s.id === editId);
-    if (idx > -1) {
-      data.staff[idx] = { ...data.staff[idx], name, role: document.getElementById('mm-role').value, email: document.getElementById('mm-email').value.trim(), phone: document.getElementById('mm-phone').value.trim(), password, permissions: perms };
-    }
-  } else {
-    if (!data.staff) data.staff = [];
-    data.staff.push({
-      id:          ERP.generateID('STF'),
-      name,
-      role:        document.getElementById('mm-role').value,
-      email:       document.getElementById('mm-email').value.trim(),
-      phone:       document.getElementById('mm-phone').value.trim(),
-      password,
-      permissions: perms,
-      active:      true,
-      joiningDate: new Date().toISOString().slice(0,10),
-      createdAt:   new Date().toISOString(),
-    });
-  }
-
-  ERP.saveData(data);
-  showToast('✅ Team member saved!', 'success');
-  closeMemberModal();
-  renderTeam();
-}
-
-function deleteMember(id) {
-  ERP.confirm('Remove this team member? They will no longer be able to log in.', () => {
-    const data = ERP.loadData();
-    data.staff = data.staff.filter(s => s.id !== id);
-    ERP.saveData(data);
-    showToast('Member removed.', 'info');
-    renderTeam();
-  }, 'Remove Member?');
-}
-
-/* ══════════════════════════════════
+/* ═══════════════════════════════════════
    SETTINGS
-══════════════════════════════════ */
-function loadSettings() {
-  const s = ERP.loadData().settings;
-  document.getElementById('cfg-schoolName').value   = s.schoolName   || '';
-  document.getElementById('cfg-tagline').value      = s.schoolTagline|| '';
-  document.getElementById('cfg-address').value      = s.schoolAddress || '';
-  document.getElementById('cfg-phone').value        = s.schoolPhone  || '';
-  document.getElementById('cfg-email').value        = s.schoolEmail  || '';
-  document.getElementById('cfg-affiliation').value  = s.affiliationNo|| '';
-  document.getElementById('cfg-code').value         = s.schoolCode   || '';
-  document.getElementById('cfg-principal').value    = s.principalName|| '';
-  document.getElementById('cfg-session').value      = s.currentSession || '2025-26';
-  const sm = s.sessionStart || 'April';
-  const se = s.sessionEnd   || 'March';
-  const ssEl = document.getElementById('cfg-sessionStart');
-  const seEl = document.getElementById('cfg-sessionEnd');
-  for (let o of ssEl.options) o.selected = (o.value === sm);
-  for (let o of seEl.options) o.selected = (o.value === se);
+═══════════════════════════════════════ */
+function loadSettings(){
+  const s=ERP.loadData().settings;
+  document.getElementById('cfg-name').value      = s.schoolName||'';
+  document.getElementById('cfg-tag').value       = s.schoolTagline||'';
+  document.getElementById('cfg-addr').value      = s.schoolAddress||'';
+  document.getElementById('cfg-phone').value     = s.schoolPhone||'';
+  document.getElementById('cfg-email').value     = s.schoolEmail||'';
+  document.getElementById('cfg-aff').value       = s.affiliationNo||'';
+  document.getElementById('cfg-code').value      = s.schoolCode||'';
+  document.getElementById('cfg-principal').value = s.principalName||'';
+  document.getElementById('cfg-sess').value      = s.currentSession||'2025-26';
+  for(let o of document.getElementById('cfg-sessStart').options) o.selected=o.value===(s.sessionStart||'April');
+  for(let o of document.getElementById('cfg-sessEnd').options)   o.selected=o.value===(s.sessionEnd||'March');
 }
 
-function saveSettings() {
-  const data = ERP.loadData();
-  data.settings.schoolName    = document.getElementById('cfg-schoolName').value.trim();
-  data.settings.schoolTagline = document.getElementById('cfg-tagline').value.trim();
-  data.settings.schoolAddress = document.getElementById('cfg-address').value.trim();
-  data.settings.schoolPhone   = document.getElementById('cfg-phone').value.trim();
-  data.settings.schoolEmail   = document.getElementById('cfg-email').value.trim();
-  data.settings.affiliationNo = document.getElementById('cfg-affiliation').value.trim();
-  data.settings.schoolCode    = document.getElementById('cfg-code').value.trim();
-  data.settings.principalName = document.getElementById('cfg-principal').value.trim();
-  data.settings.currentSession= document.getElementById('cfg-session').value.trim();
-  data.settings.sessionStart  = document.getElementById('cfg-sessionStart').value;
-  data.settings.sessionEnd    = document.getElementById('cfg-sessionEnd').value;
-  data.settings.setupDone     = true;
+function saveSettings(){
+  const data=ERP.loadData();
+  const s=data.settings;
+  s.schoolName    = document.getElementById('cfg-name').value.trim();
+  s.schoolTagline = document.getElementById('cfg-tag').value.trim();
+  s.schoolAddress = document.getElementById('cfg-addr').value.trim();
+  s.schoolPhone   = document.getElementById('cfg-phone').value.trim();
+  s.schoolEmail   = document.getElementById('cfg-email').value.trim();
+  s.affiliationNo = document.getElementById('cfg-aff').value.trim();
+  s.schoolCode    = document.getElementById('cfg-code').value.trim();
+  s.principalName = document.getElementById('cfg-principal').value.trim();
+  s.currentSession= document.getElementById('cfg-sess').value.trim();
+  s.sessionStart  = document.getElementById('cfg-sessStart').value;
+  s.sessionEnd    = document.getElementById('cfg-sessEnd').value;
+  s.setupDone     = true;
   ERP.saveData(data);
-  showToast('✅ Settings saved!', 'success');
-  // Update sidebar
-  document.getElementById('sbSchoolName').textContent = data.settings.schoolName || 'School ERP';
-  document.getElementById('sbSession').textContent    = data.settings.currentSession || '';
-  document.getElementById('mobileSchoolName').textContent = data.settings.schoolName || 'School ERP';
+  document.getElementById('sb-school').textContent = s.schoolName||'School ERP';
+  document.getElementById('sb-sess').textContent   = s.currentSession||'';
+  document.getElementById('mob-school').textContent= s.schoolName||'School ERP';
+  showToast('✅ Settings saved!','success');
 }
 
-function changePassword() {
-  const cur     = document.getElementById('cfg-pwdCurrent').value;
-  const nw      = document.getElementById('cfg-pwdNew').value;
-  const confirm = document.getElementById('cfg-pwdConfirm').value;
-  const data    = ERP.loadData();
-
-  if (cur !== data.settings.ownerPassword) { showToast('❌ Current password is incorrect.', 'error'); return; }
-  if (!nw || nw.length < 6)               { showToast('❌ New password must be at least 6 characters.', 'error'); return; }
-  if (nw !== confirm)                      { showToast('❌ Passwords do not match.', 'error'); return; }
-
-  data.settings.ownerPassword = nw;
-  ERP.saveData(data);
-  ERP.setSession({ ..._currentUser });
-  showToast('✅ Password changed successfully!', 'success');
-  document.getElementById('cfg-pwdCurrent').value = '';
-  document.getElementById('cfg-pwdNew').value      = '';
-  document.getElementById('cfg-pwdConfirm').value  = '';
-}
-
-function resetAllData() {
+function resetData(){
   ERP.confirm(
-    'This will PERMANENTLY delete all students, teachers, fees, marks, and documents. This cannot be undone. Type your password to confirm.',
-    () => {
-      const pwd = prompt('Enter admin password to confirm reset:');
-      const data = ERP.loadData();
-      if (pwd !== data.settings.ownerPassword) { showToast('❌ Incorrect password. Reset cancelled.', 'error'); return; }
-      const fresh = JSON.parse(JSON.stringify(ERP.DEFAULT_SCHEMA));
-      fresh.settings.ownerPassword = data.settings.ownerPassword;
-      fresh.settings.schoolName    = data.settings.schoolName;
+    'This will permanently delete ALL students, teachers, fees, marks and documents. Are you absolutely sure?',
+    ()=>{
+      const pwd=prompt('Enter OWNER_PASSWORD to confirm reset:');
+      // We verify against the running constant
+      if(pwd!==document.getElementById('lc-pwd').value && !window._ownerPwdCache){
+        // Can't re-read OWNER_PASSWORD after login but we can ask user
+        showToast('❌ Verification failed. Edit school_data.js directly to reset if needed.','error');
+        return;
+      }
+      const fresh=JSON.parse(JSON.stringify(ERP.DEFAULT_SCHEMA));
+      const curr =ERP.loadData();
+      fresh.settings.schoolName    = curr.settings.schoolName;
+      fresh.settings.currentSession= curr.settings.currentSession;
       ERP.saveData(fresh);
-      showToast('⚠️ All data reset.', 'warning');
-      setTimeout(() => location.reload(), 1000);
+      showToast('⚠️ All data reset.','warning');
+      setTimeout(()=>location.reload(),1000);
     },
     '⚠️ Reset All Data?'
   );
 }
-
-/* ══════════════════════════════════
-   FIRST-RUN: Setup prompt
-══════════════════════════════════ */
-function checkFirstRun() {
-  const data = ERP.loadData();
-  if (!data.settings.setupDone && _currentUser && _currentUser.isOwner) {
-    setTimeout(() => {
-      showToast('👋 Welcome! Go to Settings to configure your school details.', 'info', 5000);
-      showPage('settings');
-    }, 800);
-  }
-}
 </script>
-
 </body>
 </html>

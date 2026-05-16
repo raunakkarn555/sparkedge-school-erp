@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Admin Panel — School ERP</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<!-- Lucide Icons CDN -->
+<script src="https://unpkg.com/lucide@latest"></script>
 <script src="school_data.js"></script>
 <style>
 :root{
@@ -19,54 +21,80 @@
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px;}
 
+/* ── Lucide icon sizing ── */
+.lucide{width:16px;height:16px;stroke-width:2;flex-shrink:0;}
+.lucide-lg{width:20px;height:20px;stroke-width:1.75;}
+.lucide-xl{width:24px;height:24px;stroke-width:1.5;}
+.nav-icon .lucide{width:15px;height:15px;}
+
 /* ── LOGIN ── */
 #loginScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;}
 #loginScreen::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(255,107,53,.09) 0%,transparent 65%);border-radius:50%;pointer-events:none;}
-.lc{position:relative;background:var(--bg-card);border:1px solid rgba(255,107,53,.2);border-radius:20px;padding:42px 38px;width:400px;max-width:94vw;box-shadow:0 40px 80px rgba(0,0,0,.5);}
-.lc-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 20px;}
+.lc{position:relative;background:var(--bg-card);border:1px solid rgba(255,107,53,.2);border-radius:20px;padding:42px 38px;width:420px;max-width:94vw;box-shadow:0 40px 80px rgba(0,0,0,.5);}
+.lc-icon{width:64px;height:64px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
 .lc-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;text-align:center;margin-bottom:4px;}
 .lc-sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:28px;line-height:1.6;}
-.lc-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 14px;font-size:12px;color:#EF4444;margin-bottom:12px;display:none;}
+.lc-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 14px;font-size:12px;color:#EF4444;margin-bottom:12px;display:none;align-items:center;gap:6px;}
 .lc-field{position:relative;margin-bottom:14px;}
 .lc-field input{width:100%;background:var(--bg-raised);border:1px solid var(--border);border-radius:10px;padding:12px 46px 12px 16px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
 .lc-field input:focus{border-color:rgba(255,107,53,.5);box-shadow:0 0 0 3px rgba(255,107,53,.07);}
-.lc-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;}
-.lc-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;}
+.lc-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:4px;}
+.lc-eye:hover{color:var(--text);}
+.lc-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .lc-btn:hover{opacity:.88;}
-.lc-hint{text-align:center;font-size:11px;color:var(--text-dim);margin-top:16px;}
+.lc-hint{text-align:center;font-size:11px;color:var(--text-dim);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:5px;}
 @keyframes shake{0%,100%{transform:translateX(0);}30%{transform:translateX(-6px);}70%{transform:translateX(6px);}}
 .shake{animation:shake .32s ease;}
 
+/* ── ROLE BADGE on login ── */
+.lc-roles{display:flex;gap:8px;margin-bottom:20px;justify-content:center;}
+.lc-role-tab{flex:1;padding:8px 10px;background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;text-align:center;transition:all .14s;}
+.lc-role-tab.active{background:rgba(255,107,53,.1);border-color:rgba(255,107,53,.35);color:var(--accent);}
+
 /* ── SIDEBAR ── */
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:226px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform .25s ease;}
-.sb-brand{padding:20px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.sb-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.sb-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform .25s ease;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sb-sess{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-top:1px;}
-.sb-user{margin:10px 12px 4px;padding:9px 12px;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.14);border-radius:8px;}
+.sb-user{margin:10px 12px 4px;padding:9px 12px;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.14);border-radius:8px;display:flex;align-items:center;gap:8px;}
+.sb-user-av{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
+.sb-user-info{min-width:0;}
 .sb-user-sub{font-size:10px;color:var(--text-muted);}
-.sb-user-name{font-size:12px;font-weight:700;margin-top:2px;}
-.sb-nav{padding:10px 10px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
-.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:12px 8px 5px;}
-.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .13s;border:none;background:none;width:100%;text-align:left;text-decoration:none;}
+.sb-user-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-role-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 7px;border-radius:4px;margin-top:3px;}
+.sb-role-owner{background:rgba(255,179,71,.15);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.sb-role-staff{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:var(--blue);}
+.sb-nav{padding:8px 8px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:1px;}
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:10px 8px 4px;display:flex;align-items:center;gap:5px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .13s;border:none;background:none;width:100%;text-align:left;text-decoration:none;position:relative;}
 .nav-item:hover{background:var(--bg-raised);color:var(--text);}
-.nav-item.active{background:rgba(255,107,53,.11);color:var(--accent);border:1px solid rgba(255,107,53,.2);}
-.nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
-.nav-ext{margin-left:auto;font-size:10px;color:var(--text-dim);}
-.sb-foot{padding:12px 10px;border-top:1px solid var(--border);}
+.nav-item.active{background:rgba(255,107,53,.11);color:var(--accent);border:1px solid rgba(255,107,53,.18);}
+.nav-item.active .lucide{stroke:var(--accent);}
+.nav-icon{display:flex;align-items:center;justify-content:center;width:18px;flex-shrink:0;}
+.nav-ext{margin-left:auto;opacity:.4;display:flex;align-items:center;}
+.nav-ext .lucide{width:11px;height:11px;}
+.sb-foot{padding:10px 8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:1px;}
 .sb-foot-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;font-size:12px;color:var(--text-muted);background:none;border:none;cursor:pointer;width:100%;text-align:left;transition:all .13s;font-family:'DM Sans',sans-serif;}
 .sb-foot-btn:hover{background:var(--bg-raised);color:var(--text);}
 .sb-foot-btn.red:hover{color:var(--red);}
+.sb-footer-brand{padding:8px 12px 10px;border-top:1px solid var(--border);font-size:9px;color:var(--text-dim);line-height:1.5;text-align:center;letter-spacing:.3px;}
 
 /* ── MAIN ── */
-.main{margin-left:226px;min-height:100vh;}
-.topbar{padding:14px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,16,.85);backdrop-filter:blur(14px);position:sticky;top:0;z-index:40;}
-.tb-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;}
-.tb-sub{font-size:12px;color:var(--text-muted);}
-.tb-right{display:flex;align-items:center;gap:8px;}
+.main{margin-left:230px;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{padding:13px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,16,.9);backdrop-filter:blur(14px);position:sticky;top:0;z-index:40;}
+.tb-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;}
+.tb-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.tb-right{display:flex;align-items:center;gap:7px;}
+
+/* ── RESTRICTED NOTICE ── */
+.restricted-notice{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.restricted-notice .lucide{stroke:var(--red);width:18px;height:18px;flex-shrink:0;}
+.restricted-notice-text{font-size:13px;color:var(--text-muted);line-height:1.5;}
+.restricted-notice-text strong{color:var(--text);}
 
 /* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:var(--radius-sm);border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
 .btn-primary:hover{opacity:.88;}
 .btn-secondary{background:var(--bg-raised);border:1px solid var(--border);color:var(--text-muted);}
@@ -80,10 +108,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .btn-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:var(--red);}
 .btn-red:hover{background:rgba(239,68,68,.18);}
 .btn-gold{background:rgba(255,179,71,.11);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
-.btn-sm{padding:6px 12px;font-size:12px;}
+.btn-sm{padding:5px 11px;font-size:12px;}
 
 /* ── PAGE VIEWS ── */
-.page{display:none;padding:26px;animation:pgIn .18s ease;}
+.page{display:none;padding:24px;animation:pgIn .18s ease;flex:1;}
 .page.active{display:block;}
 @keyframes pgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 
@@ -91,15 +119,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
 .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:border-color .15s;}
 .stat-card:hover{border-color:var(--border-hi);}
-.stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
 .stat-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
 .stat-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1;}
 .stat-sub{font-size:11px;color:var(--text-muted);margin-top:5px;}
 
 /* ── CARD ── */
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.card-hdr{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.card-hdr-icon{width:28px;height:28px;border-radius:7px;background:rgba(255,107,53,.09);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.card-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-hdr-icon{width:28px;height:28px;border-radius:7px;background:rgba(255,107,53,.09);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-hdr-icon .lucide{width:14px;height:14px;stroke:var(--accent);}
 .card-hdr-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
 .card-hdr-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
 .card-body{padding:18px;}
@@ -108,7 +137,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .portal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
 .portal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px;text-align:center;text-decoration:none;cursor:pointer;transition:all .16s;display:flex;flex-direction:column;align-items:center;gap:8px;}
 .portal-card:hover{border-color:rgba(255,107,53,.35);transform:translateY(-2px);background:var(--bg-raised);}
-.pc-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto;}
+.portal-card.locked{opacity:.35;pointer-events:none;cursor:not-allowed;}
+.pc-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+.pc-icon .lucide{width:22px;height:22px;stroke-width:1.75;}
 .pc-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
 .pc-desc{font-size:11px;color:var(--text-muted);}
 
@@ -138,9 +169,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;overflow:hidden;animation:mIn .2s ease;max-height:92vh;overflow-y:auto;}
 @keyframes mIn{from{transform:scale(.95);opacity:0;}to{transform:scale(1);opacity:1;}}
 .modal-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;}
-.modal-x{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;}
-.modal-x:hover{background:var(--bg-raised);}
+.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.modal-x{background:none;border:none;color:var(--text-muted);cursor:pointer;line-height:1;padding:4px;border-radius:6px;display:flex;align-items:center;}
+.modal-x:hover{background:var(--bg-raised);color:var(--text);}
 .modal-body{padding:22px;display:flex;flex-direction:column;gap:14px;}
 .modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
 
@@ -160,13 +191,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .member-role{font-size:12px;color:var(--text-muted);}
 .perm-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
 .ptag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:5px;background:var(--bg-raised);border:1px solid var(--border);color:var(--text-muted);}
-
-/* ── PERM CHECKBOXES ── */
-.perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.perm-label{display:flex;align-items:flex-start;gap:9px;background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;}
-.perm-label input{accent-color:var(--accent);margin-top:2px;flex-shrink:0;}
-.perm-lb{font-size:12px;font-weight:600;}
-.perm-sub{font-size:10px;color:var(--text-muted);}
 
 /* ── SETTINGS ── */
 .set-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
@@ -189,8 +213,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 /* ── EMPTY STATE ── */
 .empty{text-align:center;padding:48px 20px;color:var(--text-dim);}
-.empty-ic{font-size:36px;margin-bottom:12px;}
+.empty-ic{display:flex;justify-content:center;margin-bottom:12px;}
+.empty-ic .lucide{width:36px;height:36px;stroke:var(--text-dim);stroke-width:1.25;}
 .empty-tx{font-size:14px;}
+
+/* ── FOOTER ── */
+.main-footer{padding:14px 24px;border-top:1px solid var(--border);background:var(--bg-card);font-size:10px;color:var(--text-dim);display:flex;align-items:center;justify-content:space-between;letter-spacing:.4px;text-transform:uppercase;}
+#footerRight{letter-spacing:.3px;}
 
 /* ── MOBILE ── */
 .mob-bar{display:none;position:fixed;top:0;left:0;right:0;height:54px;background:var(--bg-card);border-bottom:1px solid var(--border);z-index:60;align-items:center;padding:0 16px;gap:12px;}
@@ -206,7 +235,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   .portal-grid{grid-template-columns:1fr 1fr;}
   .fg{grid-template-columns:1fr;}
   .fg-3{grid-template-columns:1fr;}
-  .perm-grid{grid-template-columns:1fr;}
 }
 @media(max-width:480px){
   .stats-row{grid-template-columns:1fr;}
@@ -220,24 +248,52 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <!-- ══════════ LOGIN ══════════ -->
 <div id="loginScreen">
   <div class="lc">
-    <div class="lc-icon">🏫</div>
-    <div class="lc-title" id="lc-school">School ERP</div>
-    <div class="lc-sub">Enter your admin password to access the panel</div>
-    <div class="lc-err" id="lc-err">⚠ Incorrect password. Please try again.</div>
-    <div class="lc-field">
-      <input type="password" id="lc-pwd" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"/>
-      <button class="lc-eye" id="lc-eye" onclick="toggleEye()">👁</button>
+    <div class="lc-icon">
+      <i data-lucide="school" style="width:30px;height:30px;stroke:#fff;stroke-width:1.75;"></i>
     </div>
-    <button class="lc-btn" onclick="doLogin()">Unlock Admin Panel →</button>
-    <div class="lc-hint">🔒 All data stored locally · GitHub Pages hosted</div>
+    <div class="lc-title" id="lc-school">School ERP</div>
+    <div class="lc-sub">Admin Portal — Secure Access</div>
+
+    <!-- Role hint tabs -->
+    <div class="lc-roles">
+      <div class="lc-role-tab active" id="rt-owner" onclick="setRoleHint('owner')">
+        <i data-lucide="crown" style="width:12px;height:12px;display:inline;vertical-align:middle;margin-right:3px;"></i> Owner
+      </div>
+      <div class="lc-role-tab" id="rt-staff" onclick="setRoleHint('staff')">
+        <i data-lucide="users" style="width:12px;height:12px;display:inline;vertical-align:middle;margin-right:3px;"></i> Staff / Team
+      </div>
+    </div>
+
+    <div class="lc-err" id="lc-err">
+      <i data-lucide="alert-triangle" style="width:14px;height:14px;flex-shrink:0;"></i>
+      <span>Incorrect password. Please try again.</span>
+    </div>
+    <div class="lc-field">
+      <input type="password" id="lc-pwd" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="lc-eye" id="lc-eye" onclick="toggleEye()">
+        <i data-lucide="eye" style="width:16px;height:16px;stroke:currentColor;"></i>
+      </button>
+    </div>
+    <button class="lc-btn" onclick="doLogin()">
+      <i data-lucide="log-in" style="width:16px;height:16px;stroke:#fff;"></i>
+      Unlock Admin Panel
+    </button>
+    <div class="lc-hint">
+      <i data-lucide="lock" style="width:11px;height:11px;stroke:currentColor;"></i>
+      All data stored locally · GitHub Pages hosted
+    </div>
   </div>
 </div>
 
 <!-- ══════════ MOBILE BAR ══════════ -->
 <div class="mob-bar" id="mobBar">
-  <button onclick="toggleSB()" style="background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;">☰</button>
+  <button onclick="toggleSB()" style="background:none;border:none;color:var(--text);cursor:pointer;display:flex;align-items:center;">
+    <i data-lucide="menu" style="width:22px;height:22px;stroke:currentColor;"></i>
+  </button>
   <div style="display:flex;align-items:center;gap:8px;">
-    <div class="sb-icon" style="width:28px;height:28px;font-size:13px;">🏫</div>
+    <div class="sb-icon" style="width:28px;height:28px;">
+      <i data-lucide="graduation-cap" style="width:14px;height:14px;stroke:#fff;stroke-width:2;"></i>
+    </div>
     <span id="mob-school" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;"></span>
   </div>
 </div>
@@ -246,40 +302,41 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <!-- ══════════ SIDEBAR ══════════ -->
 <aside class="sidebar" id="sidebar">
   <div class="sb-brand">
-    <div class="sb-icon">🏫</div>
+    <div class="sb-icon">
+      <i data-lucide="graduation-cap" style="width:18px;height:18px;stroke:#fff;stroke-width:2;"></i>
+    </div>
     <div style="flex:1;min-width:0;">
       <div class="sb-name" id="sb-school">School ERP</div>
       <div class="sb-sess" id="sb-sess">2025-26</div>
     </div>
   </div>
+
+  <!-- User info block -->
   <div class="sb-user">
-    <div class="sb-user-sub">Logged in as</div>
-    <div class="sb-user-name" id="sb-user">—</div>
+    <div class="sb-user-av" id="sb-user-av">A</div>
+    <div class="sb-user-info" style="flex:1;min-width:0;">
+      <div class="sb-user-sub">Logged in as</div>
+      <div class="sb-user-name" id="sb-user">—</div>
+      <div id="sb-role-badge" class="sb-role-badge sb-role-owner"></div>
+    </div>
   </div>
-  <nav class="sb-nav">
-    <div class="nav-lbl">Main</div>
-    <button class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="nav-icon">🏠</span> Dashboard</button>
-    <button class="nav-item" onclick="showPage('announcements')" id="nav-announcements"><span class="nav-icon">📢</span> Announcements</button>
-    <div class="nav-lbl">Academic</div>
-    <a class="nav-item" href="teachers.html"><span class="nav-icon">👩‍🏫</span> Teachers <span class="nav-ext">↗</span></a>
-    <a class="nav-item" href="students.html"><span class="nav-icon">🎒</span> Students <span class="nav-ext">↗</span></a>
-    <a class="nav-item" href="timetable.html"><span class="nav-icon">📅</span> Timetable <span class="nav-ext">↗</span></a>
-    <div class="nav-lbl">Finance</div>
-    <a class="nav-item" href="fees.html"><span class="nav-icon">💰</span> Fee Management <span class="nav-ext">↗</span></a>
-    <div class="nav-lbl">Results</div>
-    <a class="nav-item" href="marks.html"><span class="nav-icon">📊</span> Marks &amp; Results <span class="nav-ext">↗</span></a>
-    <div class="nav-lbl">Documents</div>
-    <a class="nav-item" href="docs.html"><span class="nav-icon">📄</span> Certificates <span class="nav-ext">↗</span></a>
-    <a class="nav-item" href="student-login.html" target="_blank"><span class="nav-icon">👤</span> Student Portal <span class="nav-ext">↗</span></a>
-    <div class="nav-lbl">System</div>
-    <button class="nav-item" onclick="showPage('team')" id="nav-team"><span class="nav-icon">🧑‍💻</span> Team Members</button>
-    <button class="nav-item" onclick="showPage('settings')" id="nav-settings"><span class="nav-icon">⚙️</span> Settings</button>
+
+  <nav class="sb-nav" id="mainNav">
+    <!-- Dynamically built based on permissions -->
   </nav>
+
   <div class="sb-foot">
-    <button class="sb-foot-btn" onclick="ERP.exportData()">⬇ Export Data</button>
-    <button class="sb-foot-btn" onclick="ERP.openImportModal()">⬆ Import Data</button>
-    <button class="sb-foot-btn red" onclick="doLogout()">🚪 Log Out</button>
+    <button class="sb-foot-btn" id="sb-export-btn" onclick="ERP.exportData()" style="display:none;">
+      <i data-lucide="download" style="width:13px;height:13px;stroke:currentColor;"></i> Export Data
+    </button>
+    <button class="sb-foot-btn" id="sb-import-btn" onclick="ERP.openImportModal()" style="display:none;">
+      <i data-lucide="upload" style="width:13px;height:13px;stroke:currentColor;"></i> Import Data
+    </button>
+    <button class="sb-foot-btn red" onclick="doLogout()">
+      <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
+    </button>
   </div>
+  <div class="sb-footer-brand">SparkEdge Internal Tools</div>
 </aside>
 
 <!-- ══════════ MAIN ══════════ -->
@@ -287,12 +344,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="topbar">
     <div>
       <div class="tb-title" id="tb-title">Dashboard</div>
-      <div class="tb-sub"   id="tb-sub">School overview</div>
+      <div class="tb-sub" id="tb-sub">School overview</div>
     </div>
-    <div class="tb-right">
-      <button class="btn btn-green btn-sm" onclick="ERP.exportData()">⬇ Export</button>
-      <button class="btn btn-blue btn-sm"  onclick="ERP.openImportModal()">⬆ Import</button>
-      <button class="btn btn-primary btn-sm" onclick="openAnnModal()">📢 Announce</button>
+    <div class="tb-right" id="topbarActions">
+      <!-- Built dynamically -->
     </div>
   </div>
 
@@ -300,77 +355,63 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="page active" id="page-dashboard">
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-icon" style="background:rgba(59,130,246,.12);">🎒</div>
+        <div class="stat-icon" style="background:rgba(59,130,246,.12);">
+          <i data-lucide="backpack" style="width:20px;height:20px;stroke:#3B82F6;stroke-width:1.75;"></i>
+        </div>
         <div class="stat-lbl">Total Students</div>
         <div class="stat-val" id="s-students" style="color:var(--blue);">0</div>
         <div class="stat-sub" id="s-students-sub">Enrolled this session</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" style="background:rgba(34,197,94,.12);">👩‍🏫</div>
+        <div class="stat-icon" style="background:rgba(34,197,94,.12);">
+          <i data-lucide="users" style="width:20px;height:20px;stroke:#22C55E;stroke-width:1.75;"></i>
+        </div>
         <div class="stat-lbl">Total Teachers</div>
         <div class="stat-val" id="s-teachers" style="color:var(--green);">0</div>
         <div class="stat-sub">Active on staff</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" style="background:rgba(255,179,71,.12);">💰</div>
+        <div class="stat-icon" style="background:rgba(255,179,71,.12);">
+          <i data-lucide="indian-rupee" style="width:20px;height:20px;stroke:#FFB347;stroke-width:1.75;"></i>
+        </div>
         <div class="stat-lbl">Fee Collected</div>
         <div class="stat-val" id="s-fees" style="color:var(--gold);font-size:22px;">₹0</div>
         <div class="stat-sub" id="s-fees-sub">This session</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" style="background:rgba(239,68,68,.1);">⏳</div>
+        <div class="stat-icon" style="background:rgba(239,68,68,.1);">
+          <i data-lucide="clock-alert" style="width:20px;height:20px;stroke:#EF4444;stroke-width:1.75;"></i>
+        </div>
         <div class="stat-lbl">Pending Dues</div>
         <div class="stat-val" id="s-dues" style="color:var(--red);font-size:22px;">₹0</div>
         <div class="stat-sub">Outstanding fees</div>
       </div>
     </div>
 
-    <!-- Quick portal links -->
+    <!-- Quick portal links — rendered dynamically -->
     <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;">Quick Access</div>
-    <div class="portal-grid">
-      <a class="portal-card" href="teachers.html">
-        <div class="pc-icon" style="background:rgba(34,197,94,.12);">👩‍🏫</div>
-        <div class="pc-name">Teachers</div><div class="pc-desc">Profiles & assignments</div>
-      </a>
-      <a class="portal-card" href="students.html">
-        <div class="pc-icon" style="background:rgba(59,130,246,.12);">🎒</div>
-        <div class="pc-name">Students</div><div class="pc-desc">Enroll & manage records</div>
-      </a>
-      <a class="portal-card" href="fees.html">
-        <div class="pc-icon" style="background:rgba(255,179,71,.12);">💰</div>
-        <div class="pc-name">Fee Management</div><div class="pc-desc">Collect & track dues</div>
-      </a>
-      <a class="portal-card" href="marks.html">
-        <div class="pc-icon" style="background:rgba(155,127,212,.12);">📊</div>
-        <div class="pc-name">Marks & Results</div><div class="pc-desc">Exams & marksheets</div>
-      </a>
-      <a class="portal-card" href="docs.html">
-        <div class="pc-icon" style="background:rgba(255,107,53,.1);">📄</div>
-        <div class="pc-name">Certificates</div><div class="pc-desc">TC, Bonafide, ID card</div>
-      </a>
-      <a class="portal-card" href="timetable.html">
-        <div class="pc-icon" style="background:rgba(59,130,246,.1);">📅</div>
-        <div class="pc-name">Timetable</div><div class="pc-desc">Class schedules</div>
-      </a>
-      <a class="portal-card" href="student-login.html" target="_blank">
-        <div class="pc-icon" style="background:rgba(255,60,172,.1);">👤</div>
-        <div class="pc-name">Student Portal</div><div class="pc-desc">Self-service login</div>
-      </a>
-      <div class="portal-card" onclick="showPage('settings')">
-        <div class="pc-icon" style="background:rgba(120,120,160,.1);">⚙️</div>
-        <div class="pc-name">Settings</div><div class="pc-desc">School configuration</div>
-      </div>
-    </div>
+    <div class="portal-grid" id="quickPortalGrid"><!-- built by renderDashboard --></div>
 
     <!-- Activity + Announcements -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="card">
-        <div class="card-hdr"><div class="card-hdr-icon">🕐</div><div><div class="card-hdr-title">Recent Activity</div><div class="card-hdr-sub">Latest system actions</div></div></div>
-        <div class="card-body" id="actList"><div class="empty"><div class="empty-ic">📭</div><div class="empty-tx">No activity yet</div></div></div>
+        <div class="card-hdr">
+          <div class="card-hdr-icon"><i data-lucide="activity" class="lucide"></i></div>
+          <div><div class="card-hdr-title">Recent Activity</div><div class="card-hdr-sub">Latest system actions</div></div>
+        </div>
+        <div class="card-body" id="actList">
+          <div class="empty"><div class="empty-ic"><i data-lucide="inbox" class="lucide"></i></div><div class="empty-tx">No activity yet</div></div>
+        </div>
       </div>
       <div class="card">
-        <div class="card-hdr"><div class="card-hdr-icon">📢</div><div><div class="card-hdr-title">Latest Announcements</div></div><button class="btn btn-sm btn-ghost" style="margin-left:auto;" onclick="showPage('announcements')">View all →</button></div>
-        <div class="card-body" id="dashAnn"><div class="empty"><div class="empty-ic">📭</div><div class="empty-tx">No announcements</div></div></div>
+        <div class="card-hdr">
+          <div class="card-hdr-icon"><i data-lucide="megaphone" class="lucide"></i></div>
+          <div><div class="card-hdr-title">Latest Announcements</div></div>
+          <button class="btn btn-sm btn-ghost" style="margin-left:auto;" onclick="showPage('announcements')">View all →</button>
+        </div>
+        <div class="card-body" id="dashAnn">
+          <div class="empty"><div class="empty-ic"><i data-lucide="inbox" class="lucide"></i></div><div class="empty-tx">No announcements</div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -382,9 +423,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;">All Announcements</div>
         <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Visible to students &amp; teachers on their portals</div>
       </div>
-      <button class="btn btn-primary" onclick="openAnnModal()">+ New</button>
+      <button class="btn btn-primary" onclick="openAnnModal()">
+        <i data-lucide="plus" style="width:14px;height:14px;stroke:#fff;"></i> New
+      </button>
     </div>
-    <div id="annList"><div class="empty"><div class="empty-ic">📢</div><div class="empty-tx">No announcements yet</div></div></div>
+    <div id="annList">
+      <div class="empty"><div class="empty-ic"><i data-lucide="megaphone" class="lucide"></i></div><div class="empty-tx">No announcements yet</div></div>
+    </div>
   </div>
 
   <!-- ════ TEAM ════ -->
@@ -396,28 +441,33 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
 
-    <!-- How-to box -->
     <div class="info-box" style="margin-bottom:18px;">
       <strong style="color:var(--text);">🔐 How to add a team member:</strong><br>
       Open <code style="color:var(--accent);background:var(--bg-raised);padding:1px 6px;border-radius:4px;">school_data.js</code> →
       find the <code style="color:var(--accent);background:var(--bg-raised);padding:1px 6px;border-radius:4px;">STAFF_MEMBERS</code> array →
       copy the example block, fill in <strong style="color:var(--text);">id, name, password, permissions</strong> →
       <code style="color:var(--green);background:var(--bg-raised);padding:1px 6px;border-radius:4px;">git push</code>
-      → they can log in anywhere immediately.<br>
+      → they can log in immediately.<br>
       <span style="color:var(--text-dim);">Data sync: Owner exports JSON → shares file → member imports on their device.</span>
     </div>
 
     <!-- Owner card -->
     <div style="background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.18);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;display:flex;align-items:center;gap:14px;">
-      <div style="width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👑</div>
+      <div style="width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--gold),#FF6B35);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i data-lucide="crown" style="width:22px;height:22px;stroke:#fff;stroke-width:2;"></i>
+      </div>
       <div style="flex:1;">
         <div style="font-size:14px;font-weight:700;" id="owner-name-disp">Owner</div>
         <div style="font-size:12px;color:var(--text-muted);">Password set in OWNER_PASSWORD · Full access to everything</div>
       </div>
-      <span class="pill pill-gold">Owner</span>
+      <span class="pill pill-gold">
+        <i data-lucide="crown" style="width:10px;height:10px;stroke:currentColor;"></i> Owner
+      </span>
     </div>
 
-    <div id="teamList"><div class="empty"><div class="empty-ic">🧑‍💻</div><div class="empty-tx">No staff members in STAFF_MEMBERS yet</div></div></div>
+    <div id="teamList">
+      <div class="empty"><div class="empty-ic"><i data-lucide="user-x" class="lucide"></i></div><div class="empty-tx">No staff members in STAFF_MEMBERS yet</div></div>
+    </div>
   </div>
 
   <!-- ════ SETTINGS ════ -->
@@ -425,7 +475,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;">
 
       <div class="card">
-        <div class="card-hdr"><div class="card-hdr-icon">🏫</div><div><div class="card-hdr-title">School Information</div></div></div>
+        <div class="card-hdr">
+          <div class="card-hdr-icon"><i data-lucide="school" class="lucide"></i></div>
+          <div><div class="card-hdr-title">School Information</div></div>
+        </div>
         <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
           <div class="f"><label>School Name</label><input id="cfg-name" placeholder="e.g. Delhi Public School"/></div>
           <div class="f"><label>Tagline</label><input id="cfg-tag" placeholder="Empowering Minds…"/></div>
@@ -439,13 +492,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
             <div class="f"><label>School Code</label><input id="cfg-code" placeholder="00000"/></div>
           </div>
           <div class="f"><label>Principal Name</label><input id="cfg-principal" placeholder="Dr. Ravi Kumar"/></div>
-          <button class="btn btn-primary" onclick="saveSettings()">💾 Save Info</button>
+          <button class="btn btn-primary" onclick="saveSettings()">
+            <i data-lucide="save" style="width:14px;height:14px;stroke:#fff;"></i> Save Info
+          </button>
         </div>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:16px;">
         <div class="card">
-          <div class="card-hdr"><div class="card-hdr-icon">📅</div><div><div class="card-hdr-title">Academic Session</div></div></div>
+          <div class="card-hdr">
+            <div class="card-hdr-icon"><i data-lucide="calendar" class="lucide"></i></div>
+            <div><div class="card-hdr-title">Academic Session</div></div>
+          </div>
           <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
             <div class="f"><label>Current Session</label><input id="cfg-sess" placeholder="2025-26"/></div>
             <div class="fg">
@@ -461,7 +519,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
 
         <div class="card">
-          <div class="card-hdr"><div class="card-hdr-icon">🔐</div><div><div class="card-hdr-title">Owner Password</div></div></div>
+          <div class="card-hdr">
+            <div class="card-hdr-icon"><i data-lucide="key-round" class="lucide"></i></div>
+            <div><div class="card-hdr-title">Owner Password</div></div>
+          </div>
           <div class="card-body">
             <div class="info-box" style="margin-bottom:12px;">
               Owner password is set in <code style="color:var(--accent);">OWNER_PASSWORD</code> inside <code style="color:var(--accent);">school_data.js</code>. Edit it there and git push.
@@ -471,11 +532,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
 
         <div class="card">
-          <div class="card-hdr"><div class="card-hdr-icon">🗄️</div><div><div class="card-hdr-title">Data Management</div></div></div>
+          <div class="card-hdr">
+            <div class="card-hdr-icon"><i data-lucide="database" class="lucide"></i></div>
+            <div><div class="card-hdr-title">Data Management</div></div>
+          </div>
           <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-            <button class="btn btn-green"  onclick="ERP.exportData()">⬇ Export Full Data JSON</button>
-            <button class="btn btn-blue"   onclick="ERP.openImportModal()">⬆ Import &amp; Merge Data</button>
-            <button class="btn btn-red"    onclick="resetData()">🗑 Reset All Data</button>
+            <button class="btn btn-green" onclick="ERP.exportData()">
+              <i data-lucide="download" style="width:13px;height:13px;stroke:currentColor;"></i> Export Full Data JSON
+            </button>
+            <button class="btn btn-blue" onclick="ERP.openImportModal()">
+              <i data-lucide="upload" style="width:13px;height:13px;stroke:currentColor;"></i> Import &amp; Merge Data
+            </button>
+            <button class="btn btn-red" onclick="resetData()">
+              <i data-lucide="trash-2" style="width:13px;height:13px;stroke:currentColor;"></i> Reset All Data
+            </button>
             <p style="font-size:11px;color:var(--text-dim);line-height:1.6;">Export regularly to backup. Import merges without deleting. Reset clears all school data — use with caution.</p>
           </div>
         </div>
@@ -484,14 +554,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
   </div>
 
+  <footer class="main-footer">
+    <span id="footerLeft">Admin Panel v2.0</span>
+    <span id="footerRight"></span>
+  </footer>
 </div><!-- /mainWrap -->
 
 <!-- ══════════ MODAL: ANNOUNCEMENT ══════════ -->
 <div class="modal-ov" id="annModal">
   <div class="modal">
     <div class="modal-hdr">
-      <div class="modal-title" id="annModalTitle">📢 New Announcement</div>
-      <button class="modal-x" onclick="closeAnnModal()">✕</button>
+      <div class="modal-title">
+        <i data-lucide="megaphone" style="width:16px;height:16px;stroke:var(--accent);"></i>
+        <span id="annModalTitle">New Announcement</span>
+      </div>
+      <button class="modal-x" onclick="closeAnnModal()">
+        <i data-lucide="x" style="width:18px;height:18px;stroke:currentColor;"></i>
+      </button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="ann-edit-id"/>
@@ -513,33 +592,44 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
             <option value="Urgent">🚨 Urgent</option>
           </select>
         </div>
-        <div class="f"><label>Target Class (optional, leave blank for all)</label><input id="ann-class" placeholder="e.g. 10"/></div>
+        <div class="f"><label>Target Class (optional)</label><input id="ann-class" placeholder="e.g. 10"/></div>
         <div class="f"><label>Expiry Date (optional)</label><input type="date" id="ann-expiry"/></div>
       </div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeAnnModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveAnn()">📢 Publish</button>
+      <button class="btn btn-primary" onclick="saveAnn()">
+        <i data-lucide="send" style="width:13px;height:13px;stroke:#fff;"></i> Publish
+      </button>
     </div>
   </div>
 </div>
 
 <script>
 /* ═══════════════════════════════════════
-   AUTH
+   AUTH + PERMISSION SYSTEM
 ═══════════════════════════════════════ */
 let _user = null;
+
+// Role hint toggle (cosmetic only — both types use same login)
+function setRoleHint(type){
+  document.getElementById('rt-owner').classList.toggle('active', type==='owner');
+  document.getElementById('rt-staff').classList.toggle('active', type==='staff');
+  document.getElementById('lc-pwd').placeholder = type==='owner' ? 'Enter owner password' : 'Enter your staff password';
+}
 
 function doLogin(){
   const pwd = document.getElementById('lc-pwd').value.trim();
   const err = document.getElementById('lc-err');
   err.style.display = 'none';
-  if(!pwd) return;
+  if(!pwd){ err.style.display='flex'; err.querySelector('span').textContent='Please enter your password.'; return; }
   const u = ERP.authenticateAdmin(pwd);
   if(!u){
-    err.style.display='block';
-    document.getElementById('lc-pwd').classList.add('shake');
-    setTimeout(()=>document.getElementById('lc-pwd').classList.remove('shake'),350);
+    err.style.display='flex';
+    err.querySelector('span').textContent='Incorrect password. Please try again.';
+    const inp = document.getElementById('lc-pwd');
+    inp.classList.add('shake');
+    setTimeout(()=>inp.classList.remove('shake'),350);
     return;
   }
   _user = u;
@@ -548,10 +638,11 @@ function doLogin(){
 }
 
 function unlock(){
-  const s=document.getElementById('loginScreen');
-  s.style.transition='opacity .3s'; s.style.opacity='0';
-  setTimeout(()=>s.style.display='none',300);
-  document.getElementById('mainWrap').style.display='block';
+  const s = document.getElementById('loginScreen');
+  s.style.transition='opacity .3s';
+  s.style.opacity='0';
+  setTimeout(()=>{ s.style.display='none'; },300);
+  document.getElementById('mainWrap').style.display='flex';
   initApp();
 }
 
@@ -560,18 +651,118 @@ function doLogout(){
 }
 
 function toggleEye(){
-  const i=document.getElementById('lc-pwd'),b=document.getElementById('lc-eye');
-  i.type=i.type==='password'?'text':'password';
-  b.textContent=i.type==='password'?'👁':'🙈';
+  const i=document.getElementById('lc-pwd');
+  const b=document.getElementById('lc-eye');
+  const showing = i.type==='text';
+  i.type = showing ? 'password' : 'text';
+  b.innerHTML = showing
+    ? '<i data-lucide="eye" style="width:16px;height:16px;stroke:currentColor;"></i>'
+    : '<i data-lucide="eye-off" style="width:16px;height:16px;stroke:currentColor;"></i>';
+  if(window.lucide) lucide.createIcons();
 }
 
-// Auto-restore session
+// Auto-restore session on page load
 (function(){
-  const d = ERP.loadData();
-  document.getElementById('lc-school').textContent = d.settings.schoolName||'School ERP';
+  // Init Lucide icons after DOM ready
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', initLucide);
+  } else {
+    initLucide();
+  }
+
+  function initLucide(){
+    if(window.lucide) lucide.createIcons();
+    // Set footer
+    const fr = document.getElementById('footerRight');
+    if(fr) fr.textContent = `🔐 INTERNAL TOOLS HUB · NOT FOR CLIENT DISTRIBUTION · © ${new Date().getFullYear()} SPARKEDGE`;
+  }
+
+  // Restore session
+  try {
+    const d = ERP.loadData();
+    const nameEl = document.getElementById('lc-school');
+    if(nameEl) nameEl.textContent = d.settings.schoolName || 'School ERP';
+  } catch(e){}
+
   const u = ERP.getAdminSession();
-  if(u){ _user=u; unlock(); }
+  if(u){
+    _user = u;
+    // Defer unlock slightly to ensure DOM is ready
+    setTimeout(()=>unlock(), 50);
+  }
 })();
+
+/* ═══════════════════════════════════════
+   NAV BUILDING — PERMISSION AWARE
+═══════════════════════════════════════ */
+const ALL_NAV = [
+  { section:'Main', items:[
+    { id:'dashboard', label:'Dashboard', icon:'layout-dashboard', perm:null, internal:true },
+    { id:'announcements', label:'Announcements', icon:'megaphone', perm:'announcements', internal:true },
+  ]},
+  { section:'Academic', items:[
+    { id:'teachers', label:'Teachers', icon:'users', perm:'teachers', href:'teachers.html' },
+    { id:'students', label:'Students', icon:'backpack', perm:'students', href:'students.html' },
+    { id:'timetable', label:'Timetable', icon:'calendar-days', perm:'timetable', href:'timetable.html' },
+  ]},
+  { section:'Finance', items:[
+    { id:'fees', label:'Fee Management', icon:'indian-rupee', perm:'fees', href:'fees.html' },
+  ]},
+  { section:'Results', items:[
+    { id:'marks', label:'Marks & Results', icon:'bar-chart-2', perm:'marks', href:'marks.html' },
+  ]},
+  { section:'Documents', items:[
+    { id:'docs', label:'Certificates', icon:'file-text', perm:'docs', href:'docs.html' },
+    { id:'student-portal', label:'Student Portal', icon:'user-circle', perm:null, href:'student-login.html', blank:true },
+  ]},
+  { section:'System', items:[
+    { id:'team', label:'Team Members', icon:'shield-check', perm:null, ownerOnly:true, internal:true },
+    { id:'settings', label:'Settings', icon:'settings-2', perm:'settings', internal:true },
+  ]},
+];
+
+function buildNav(){
+  const nav = document.getElementById('mainNav');
+  if(!nav) return;
+  nav.innerHTML='';
+  const perms = _user ? (_user.permissions||{}) : {};
+  const isOwner = _user && _user.isOwner;
+
+  ALL_NAV.forEach(group=>{
+    const visibleItems = group.items.filter(item=>{
+      if(item.ownerOnly && !isOwner) return false;
+      if(item.perm===null) return true; // no perm needed (dashboard, student portal)
+      if(isOwner) return true;
+      return !!perms[item.perm];
+    });
+    if(!visibleItems.length) return;
+
+    const lbl = document.createElement('div');
+    lbl.className='nav-lbl';
+    lbl.textContent=group.section;
+    nav.appendChild(lbl);
+
+    visibleItems.forEach(item=>{
+      let el;
+      if(item.href){
+        el = document.createElement('a');
+        el.href = item.href;
+        if(item.blank) el.target='_blank';
+        el.rel='noopener';
+      } else {
+        el = document.createElement('button');
+        el.onclick = ()=>showPage(item.id);
+      }
+      el.className='nav-item';
+      el.id='nav-'+item.id;
+      el.innerHTML=`<span class="nav-icon"><i data-lucide="${item.icon}" class="lucide"></i></span><span>${item.label}</span>${item.href?'<span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide"></i></span>':''}`;
+      nav.appendChild(el);
+    });
+  });
+
+  // Re-run lucide after nav built
+  if(window.lucide) lucide.createIcons();
+}
 
 /* ═══════════════════════════════════════
    NAVIGATION
@@ -579,17 +770,27 @@ function toggleEye(){
 const PAGE_META = {
   dashboard:     { title:'Dashboard',       sub:'School overview & quick access' },
   announcements: { title:'Announcements',   sub:'Post notices to students, teachers & staff' },
-  team:          { title:'Team Members',    sub:'Manage staff who can access this admin panel' },
+  team:          { title:'Team Members',    sub:'Staff who can access this admin panel' },
   settings:      { title:'Settings',        sub:'School configuration & data management' },
 };
 
 function showPage(id){
+  // Permission check for non-owners
+  if(_user && !_user.isOwner){
+    const perms = _user.permissions||{};
+    const permMap = { announcements:'announcements', team:'settings', settings:'settings' };
+    const needed = permMap[id];
+    if(needed && !perms[needed]){
+      ERP.showToast('⛔ You don\'t have permission to access this section.','error');
+      return;
+    }
+  }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const pg=document.getElementById('page-'+id);
-  if(pg)pg.classList.add('active');
+  if(pg) pg.classList.add('active');
   const nv=document.getElementById('nav-'+id);
-  if(nv)nv.classList.add('active');
+  if(nv) nv.classList.add('active');
   const m=PAGE_META[id]||{};
   document.getElementById('tb-title').textContent=m.title||id;
   document.getElementById('tb-sub').textContent  =m.sub||'';
@@ -611,69 +812,176 @@ function toggleSB(){
    INIT
 ═══════════════════════════════════════ */
 function initApp(){
-  const d = ERP.loadData(), s = d.settings;
-  document.getElementById('sb-school').textContent = s.schoolName||'School ERP';
-  document.getElementById('sb-sess').textContent   = s.currentSession||'2025-26';
-  document.getElementById('sb-user').textContent   = _user?_user.name:'Admin';
-  document.getElementById('mob-school').textContent= s.schoolName||'School ERP';
-  ERP.onImportSuccess = () => { showToast('✅ Imported!','success'); setTimeout(()=>location.reload(),600); };
-  if(!s.setupDone && _user && _user.isOwner){
-    setTimeout(()=>{ showToast('👋 Welcome! Set up your school in Settings.','info',5000); showPage('settings'); },800);
+  const d=ERP.loadData(), s=d.settings;
+  const schoolName = s.schoolName||'School ERP';
+  const sessName   = s.currentSession||'2025-26';
+
+  document.getElementById('sb-school').textContent  = schoolName;
+  document.getElementById('sb-sess').textContent    = sessName;
+  document.getElementById('mob-school').textContent = schoolName;
+
+  // User info
+  const userName = _user ? _user.name : 'Admin';
+  const userRole = _user ? _user.role : 'Owner';
+  const isOwner  = _user && _user.isOwner;
+
+  document.getElementById('sb-user').textContent  = userName;
+  document.getElementById('sb-user-av').textContent = ERP.getInitials(userName);
+
+  const badge = document.getElementById('sb-role-badge');
+  if(isOwner){
+    badge.className='sb-role-badge sb-role-owner';
+    badge.innerHTML='<i data-lucide="crown" style="width:9px;height:9px;stroke:currentColor;"></i> Owner';
+  } else {
+    badge.className='sb-role-badge sb-role-staff';
+    badge.innerHTML='<i data-lucide="user-check" style="width:9px;height:9px;stroke:currentColor;"></i> '+userRole;
+  }
+
+  // Export/Import buttons — only for users with permission
+  const perms = _user ? (_user.permissions||{}) : {};
+  const canExport = isOwner || perms.export;
+  if(canExport){
+    document.getElementById('sb-export-btn').style.display='flex';
+    document.getElementById('sb-import-btn').style.display='flex';
+  }
+
+  // Build topbar actions
+  buildTopbarActions();
+
+  // Build nav
+  buildNav();
+
+  // Mark dashboard active
+  const navDash = document.getElementById('nav-dashboard');
+  if(navDash) navDash.classList.add('active');
+
+  ERP.onImportSuccess = ()=>{ ERP.showToast('✅ Imported!','success'); setTimeout(()=>location.reload(),600); };
+
+  if(!s.setupDone && isOwner){
+    setTimeout(()=>{ ERP.showToast('👋 Welcome! Set up your school in Settings.','info',5000); showPage('settings'); },800);
   } else {
     renderDashboard();
   }
+
+  // Re-init lucide after all dynamic content
+  setTimeout(()=>{ if(window.lucide) lucide.createIcons(); }, 100);
+}
+
+function buildTopbarActions(){
+  const isOwner = _user && _user.isOwner;
+  const perms   = _user ? (_user.permissions||{}) : {};
+  const canExport = isOwner || perms.export;
+  const canAnnounce = isOwner || perms.announcements;
+
+  let html='';
+  if(canExport){
+    html+=`<button class="btn btn-green btn-sm" onclick="ERP.exportData()"><i data-lucide="download" style="width:12px;height:12px;stroke:currentColor;"></i> Export</button>`;
+    html+=`<button class="btn btn-blue btn-sm" onclick="ERP.openImportModal()"><i data-lucide="upload" style="width:12px;height:12px;stroke:currentColor;"></i> Import</button>`;
+  }
+  if(canAnnounce){
+    html+=`<button class="btn btn-primary btn-sm" onclick="openAnnModal()"><i data-lucide="megaphone" style="width:12px;height:12px;stroke:#fff;"></i> Announce</button>`;
+  }
+  document.getElementById('topbarActions').innerHTML=html;
+  if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
 }
 
 /* ═══════════════════════════════════════
    DASHBOARD
 ═══════════════════════════════════════ */
-function renderDashboard(){
-  const d = ERP.loadData();
-  const students = d.students.filter(s=>s.active!==false);
-  const teachers = d.teachers.filter(t=>t.active!==false);
-  const paid     = d.feePayments.filter(p=>p.status==='Paid').reduce((a,p)=>a+(p.netAmount||0),0);
-  const due      = d.feePayments.filter(p=>p.status==='Due').reduce((a,p)=>a+(p.netAmount||0),0);
-  const partial  = d.feePayments.filter(p=>p.status==='Partial').reduce((a,p)=>a+(p.balance||0),0);
+const PORTAL_DEFS = [
+  { href:'teachers.html', icon:'users',       color:'#22C55E', bg:'rgba(34,197,94,.12)',   name:'Teachers',      desc:'Profiles & assignments', perm:'teachers' },
+  { href:'students.html', icon:'backpack',    color:'#3B82F6', bg:'rgba(59,130,246,.12)',  name:'Students',      desc:'Enroll & manage records',perm:'students' },
+  { href:'fees.html',     icon:'indian-rupee',color:'#FFB347', bg:'rgba(255,179,71,.12)',  name:'Fee Management',desc:'Collect & track dues',    perm:'fees' },
+  { href:'marks.html',    icon:'bar-chart-2', color:'#9B7FD4', bg:'rgba(155,127,212,.12)', name:'Marks & Results',desc:'Exams & marksheets',     perm:'marks' },
+  { href:'docs.html',     icon:'file-text',   color:'#FF6B35', bg:'rgba(255,107,53,.1)',   name:'Certificates',  desc:'TC, Bonafide, ID card',   perm:'docs' },
+  { href:'timetable.html',icon:'calendar-days',color:'#3B82F6',bg:'rgba(59,130,246,.1)', name:'Timetable',     desc:'Class schedules',         perm:'timetable' },
+  { href:'student-login.html', icon:'user-circle', color:'#FF3CAC', bg:'rgba(255,60,172,.1)', name:'Student Portal', desc:'Self-service login', perm:null, blank:true },
+  { internal:'settings',  icon:'settings-2',  color:'#7A7A9A', bg:'rgba(120,120,160,.1)', name:'Settings',      desc:'School configuration',    perm:'settings' },
+];
 
-  document.getElementById('s-students').textContent = students.length;
-  document.getElementById('s-teachers').textContent = teachers.length;
-  document.getElementById('s-fees').textContent     = ERP.fmtMoney(paid);
-  document.getElementById('s-dues').textContent     = ERP.fmtMoney(due+partial);
-  document.getElementById('s-students-sub').textContent = (d.settings.currentSession||'')+' session';
-  document.getElementById('s-fees-sub').textContent     = (d.settings.currentSession||'')+' session';
+function renderDashboard(){
+  const d=ERP.loadData();
+  const students=d.students.filter(s=>s.active!==false);
+  const teachers=d.teachers.filter(t=>t.active!==false);
+  const paid=d.feePayments.filter(p=>p.status==='Paid').reduce((a,p)=>a+(p.netAmount||0),0);
+  const due=d.feePayments.filter(p=>p.status==='Due').reduce((a,p)=>a+(p.netAmount||0),0);
+  const partial=d.feePayments.filter(p=>p.status==='Partial').reduce((a,p)=>a+(p.balance||0),0);
+
+  document.getElementById('s-students').textContent=students.length;
+  document.getElementById('s-teachers').textContent=teachers.length;
+  document.getElementById('s-fees').textContent=ERP.fmtMoney(paid);
+  document.getElementById('s-dues').textContent=ERP.fmtMoney(due+partial);
+  document.getElementById('s-students-sub').textContent=(d.settings.currentSession||'')+' session';
+  document.getElementById('s-fees-sub').textContent=(d.settings.currentSession||'')+' session';
+
+  // Build quick portal grid based on permissions
+  const isOwner = _user && _user.isOwner;
+  const perms   = _user ? (_user.permissions||{}) : {};
+  const grid    = document.getElementById('quickPortalGrid');
+  if(grid){
+    grid.innerHTML = PORTAL_DEFS.map(p=>{
+      const hasAccess = isOwner || p.perm===null || !!perms[p.perm];
+      const locked = !hasAccess ? 'locked' : '';
+      const attrs  = p.href ? `href="${p.href}" ${p.blank?'target="_blank" rel="noopener"':''}`
+                            : `onclick="showPage('${p.internal}')"`;
+      const tag    = p.href ? 'a' : 'div';
+      return `<${tag} class="portal-card ${locked}" ${attrs}>
+        <div class="pc-icon" style="background:${p.bg};">
+          <i data-lucide="${p.icon}" style="width:22px;height:22px;stroke:${p.color};stroke-width:1.75;"></i>
+        </div>
+        <div class="pc-name">${p.name}</div>
+        <div class="pc-desc">${hasAccess ? p.desc : '🔒 No access'}</div>
+      </${tag}>`;
+    }).join('');
+    if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
+  }
 
   // Activity
   const acts=[];
   d.students.slice(-4).reverse().forEach(s=>acts.push({c:'#3B82F6',txt:`<strong>${s.name}</strong> enrolled — Class ${s.class}-${s.section}`,t:ERP.fmtDate(s.createdAt)}));
-  d.feePayments.slice(-3).reverse().forEach(p=>{ const st=ERP.getStudent(p.studentId); acts.push({c:'#22C55E',txt:`Fee received from <strong>${st?st.name:p.studentId}</strong> — ${ERP.fmtMoney(p.netAmount)}`,t:ERP.fmtDate(p.paymentDate)}); });
+  d.feePayments.slice(-3).reverse().forEach(p=>{const st=ERP.getStudent(p.studentId);acts.push({c:'#22C55E',txt:`Fee received from <strong>${st?st.name:p.studentId}</strong> — ${ERP.fmtMoney(p.netAmount)}`,t:ERP.fmtDate(p.paymentDate)});});
   d.documents.slice(-3).reverse().forEach(doc=>acts.push({c:'#FF6B35',txt:`<strong>${doc.type}</strong> issued to ${doc.issuedTo}`,t:ERP.fmtDate(doc.issuedDate)}));
 
-  const actEl = document.getElementById('actList');
-  actEl.innerHTML = acts.length===0
-    ? `<div class="empty"><div class="empty-ic">📭</div><div class="empty-tx">No activity yet</div></div>`
-    : acts.slice(0,7).map(a=>`<div class="act-item"><div class="act-dot" style="background:${a.c};"></div><div class="act-text">${a.txt}</div><div class="act-time">${a.t}</div></div>`).join('');
+  const actEl=document.getElementById('actList');
+  actEl.innerHTML=acts.length===0
+    ?`<div class="empty"><div class="empty-ic"><i data-lucide="inbox" class="lucide"></i></div><div class="empty-tx">No activity yet</div></div>`
+    :acts.slice(0,7).map(a=>`<div class="act-item"><div class="act-dot" style="background:${a.c};"></div><div class="act-text">${a.txt}</div><div class="act-time">${a.t}</div></div>`).join('');
 
   // Dashboard announcements
-  const anns = (d.announcements||[]).filter(a=>a.active).slice(-3).reverse();
-  const annEl = document.getElementById('dashAnn');
-  annEl.innerHTML = anns.length===0
-    ? `<div class="empty"><div class="empty-ic">📢</div><div class="empty-tx">No announcements</div></div>`
-    : anns.map(a=>`<div style="padding:11px 0;border-bottom:1px solid var(--border);">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-          <span style="font-size:13px;font-weight:600;">${a.title}</span>${priPill(a.priority)}
-        </div>
-        <div style="font-size:12px;color:var(--text-muted);">${(a.body||'').slice(0,90)}${(a.body||'').length>90?'…':''}</div>
-        <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">${a.targetRole} · ${ERP.fmtDate(a.publishDate)}</div>
-      </div>`).join('');
+  const anns=(d.announcements||[]).filter(a=>a.active).slice(-3).reverse();
+  const annEl=document.getElementById('dashAnn');
+  annEl.innerHTML=anns.length===0
+    ?`<div class="empty"><div class="empty-ic"><i data-lucide="megaphone" class="lucide"></i></div><div class="empty-tx">No announcements</div></div>`
+    :anns.map(a=>`<div style="padding:11px 0;border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <span style="font-size:13px;font-weight:600;">${a.title}</span>${priPill(a.priority)}
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);">${(a.body||'').slice(0,90)}${(a.body||'').length>90?'…':''}</div>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">${a.targetRole} · ${ERP.fmtDate(a.publishDate)}</div>
+    </div>`).join('');
+
+  if(window.lucide) setTimeout(()=>lucide.createIcons(),60);
 }
 
 /* ═══════════════════════════════════════
    ANNOUNCEMENTS
 ═══════════════════════════════════════ */
 function renderAnnouncements(){
+  // Check permission
+  const isOwner=_user&&_user.isOwner;
+  const perms=_user?(_user.permissions||{}):{};
+  if(!isOwner && !perms.announcements){
+    document.getElementById('annList').innerHTML=`<div class="restricted-notice"><i data-lucide="lock" class="lucide"></i><div class="restricted-notice-text"><strong>Access Restricted</strong><br>You don't have permission to manage announcements.</div></div>`;
+    if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
+    return;
+  }
   const anns=(ERP.loadData().announcements||[]).slice().reverse();
   const el=document.getElementById('annList');
-  if(!anns.length){ el.innerHTML=`<div class="empty"><div class="empty-ic">📢</div><div class="empty-tx">No announcements yet</div></div>`; return; }
+  if(!anns.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ic"><i data-lucide="megaphone" class="lucide"></i></div><div class="empty-tx">No announcements yet</div></div>`;
+    if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
+    return;
+  }
   el.innerHTML=anns.map(a=>`
     <div class="ann-card" style="${!a.active?'opacity:.5;':''}">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -691,11 +999,19 @@ function renderAnnouncements(){
       </div>
       <div class="ann-body">${a.body}</div>
       <div class="ann-actions">
-        <button class="btn btn-sm btn-ghost" onclick="editAnn('${a.id}')">✏️ Edit</button>
-        <button class="btn btn-sm btn-ghost" onclick="toggleAnn('${a.id}')">${a.active?'⏸ Deactivate':'▶ Activate'}</button>
-        <button class="btn btn-sm btn-red"   onclick="deleteAnn('${a.id}')">🗑 Delete</button>
+        <button class="btn btn-sm btn-ghost" onclick="editAnn('${a.id}')">
+          <i data-lucide="pencil" style="width:11px;height:11px;stroke:currentColor;"></i> Edit
+        </button>
+        <button class="btn btn-sm btn-ghost" onclick="toggleAnn('${a.id}')">
+          <i data-lucide="${a.active?'pause':'play'}" style="width:11px;height:11px;stroke:currentColor;"></i>
+          ${a.active?'Deactivate':'Activate'}
+        </button>
+        <button class="btn btn-sm btn-red" onclick="deleteAnn('${a.id}')">
+          <i data-lucide="trash-2" style="width:11px;height:11px;stroke:currentColor;"></i> Delete
+        </button>
       </div>
     </div>`).join('');
+  if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
 }
 
 function priPill(p){
@@ -714,50 +1030,50 @@ function clearAnnForm(){
   ['ann-edit-id','ann-title','ann-body','ann-class','ann-expiry'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('ann-target').value='All';
   document.getElementById('ann-priority').value='Normal';
-  document.getElementById('annModalTitle').textContent='📢 New Announcement';
+  document.getElementById('annModalTitle').textContent='New Announcement';
 }
 
-function editAnn(id, alreadyOpen){
+function editAnn(id,alreadyOpen){
   const a=(ERP.loadData().announcements||[]).find(x=>x.id===id);
-  if(!a)return;
-  document.getElementById('ann-edit-id').value = a.id;
-  document.getElementById('ann-title').value   = a.title||'';
-  document.getElementById('ann-body').value    = a.body||'';
-  document.getElementById('ann-target').value  = a.targetRole||'All';
-  document.getElementById('ann-priority').value= a.priority||'Normal';
-  document.getElementById('ann-class').value   = a.targetClass||'';
-  document.getElementById('ann-expiry').value  = a.expiryDate||'';
-  document.getElementById('annModalTitle').textContent='✏️ Edit Announcement';
+  if(!a) return;
+  document.getElementById('ann-edit-id').value=a.id;
+  document.getElementById('ann-title').value=a.title||'';
+  document.getElementById('ann-body').value=a.body||'';
+  document.getElementById('ann-target').value=a.targetRole||'All';
+  document.getElementById('ann-priority').value=a.priority||'Normal';
+  document.getElementById('ann-class').value=a.targetClass||'';
+  document.getElementById('ann-expiry').value=a.expiryDate||'';
+  document.getElementById('annModalTitle').textContent='Edit Announcement';
   if(!alreadyOpen) document.getElementById('annModal').classList.add('open');
 }
 
 function saveAnn(){
   const title=document.getElementById('ann-title').value.trim();
-  const body =document.getElementById('ann-body').value.trim();
-  if(!title||!body){ showToast('Title and message required.','error'); return; }
+  const body=document.getElementById('ann-body').value.trim();
+  if(!title||!body){ ERP.showToast('Title and message are required.','error'); return; }
   const data=ERP.loadData();
-  const eid =document.getElementById('ann-edit-id').value;
-  const obj ={
-    title, body,
-    targetRole:  document.getElementById('ann-target').value,
-    priority:    document.getElementById('ann-priority').value,
-    targetClass: document.getElementById('ann-class').value.trim(),
-    expiryDate:  document.getElementById('ann-expiry').value,
+  const eid=document.getElementById('ann-edit-id').value;
+  const obj={
+    title,body,
+    targetRole:document.getElementById('ann-target').value,
+    priority:document.getElementById('ann-priority').value,
+    targetClass:document.getElementById('ann-class').value.trim(),
+    expiryDate:document.getElementById('ann-expiry').value,
   };
   if(eid){
     const i=data.announcements.findIndex(a=>a.id===eid);
     if(i>-1) data.announcements[i]={...data.announcements[i],...obj};
   } else {
     data.announcements.push({
-      id: ERP.generateID('ANN'), ...obj,
-      publishDate: ERP.todayStr(),
-      postedBy:    _user?_user.name:'Admin',
-      active:      true,
-      createdAt:   new Date().toISOString(),
+      id:ERP.generateID('ANN'),...obj,
+      publishDate:ERP.todayStr(),
+      postedBy:_user?_user.name:'Admin',
+      active:true,
+      createdAt:new Date().toISOString(),
     });
   }
   ERP.saveData(data);
-  showToast('📢 Announcement published!','success');
+  ERP.showToast('📢 Announcement published!','success');
   closeAnnModal();
   renderAnnouncements();
   renderDashboard();
@@ -766,31 +1082,39 @@ function saveAnn(){
 function toggleAnn(id){
   const data=ERP.loadData();
   const i=data.announcements.findIndex(a=>a.id===id);
-  if(i>-1)data.announcements[i].active=!data.announcements[i].active;
-  ERP.saveData(data); renderAnnouncements();
+  if(i>-1) data.announcements[i].active=!data.announcements[i].active;
+  ERP.saveData(data);
+  renderAnnouncements();
 }
 
 function deleteAnn(id){
   ERP.confirm('Delete this announcement permanently?',()=>{
     const data=ERP.loadData();
     data.announcements=data.announcements.filter(a=>a.id!==id);
-    ERP.saveData(data); showToast('Deleted.','info'); renderAnnouncements();
+    ERP.saveData(data);
+    ERP.showToast('Deleted.','info');
+    renderAnnouncements();
   },'Delete Announcement?');
 }
 
 /* ═══════════════════════════════════════
-   TEAM  (read from hardcoded STAFF_MEMBERS)
+   TEAM (Owner only)
 ═══════════════════════════════════════ */
 function renderTeam(){
   const d=ERP.loadData();
-  document.getElementById('owner-name-disp').textContent=ERP.OWNER_NAME+' ('+( d.settings.schoolName||'School')+')';
+  document.getElementById('owner-name-disp').textContent=ERP.OWNER_NAME+' ('+(d.settings.schoolName||'School')+')';
   const staff=ERP.getStaffList();
   const el=document.getElementById('teamList');
+  const permLabels={
+    teachers:'👩‍🏫 Teachers',students:'🎒 Students',fees:'💰 Fees',
+    marks:'📊 Marks',docs:'📄 Docs',timetable:'📅 Timetable',
+    announcements:'📢 Announcements',export:'↕ Export',settings:'⚙️ Settings'
+  };
   if(!staff.length){
-    el.innerHTML=`<div class="empty"><div class="empty-ic">🧑‍💻</div><div class="empty-tx">No staff in STAFF_MEMBERS array yet.<br>Edit school_data.js to add members.</div></div>`;
+    el.innerHTML=`<div class="empty"><div class="empty-ic"><i data-lucide="user-x" class="lucide"></i></div><div class="empty-tx">No staff in STAFF_MEMBERS array yet.<br>Edit school_data.js to add members.</div></div>`;
+    if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
     return;
   }
-  const permLabels={teachers:'👩‍🏫 Teachers',students:'🎒 Students',fees:'💰 Fees',marks:'📊 Marks',docs:'📄 Docs',timetable:'📅 Timetable',announcements:'📢 Announcements',export:'↕ Export',settings:'⚙️ Settings'};
   el.innerHTML=staff.map(m=>{
     const perms=Object.entries(m.permissions||{}).filter(([,v])=>v).map(([k])=>permLabels[k]||k);
     return `<div class="member-card">
@@ -800,73 +1124,90 @@ function renderTeam(){
         <div class="member-role">${m.role}</div>
         <div class="perm-tags">${perms.map(p=>`<span class="ptag">${p}</span>`).join('')||'<span class="ptag" style="color:var(--red);">No permissions</span>'}</div>
       </div>
-      <span class="pill pill-blue">Staff</span>
+      <span class="pill pill-blue"><i data-lucide="user-check" style="width:9px;height:9px;stroke:currentColor;"></i> Staff</span>
     </div>`;
   }).join('');
+  if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
 }
 
 /* ═══════════════════════════════════════
    SETTINGS
 ═══════════════════════════════════════ */
 function loadSettings(){
+  const isOwner=_user&&_user.isOwner;
+  const perms=_user?(_user.permissions||{}):{};
+  if(!isOwner && !perms.settings){
+    // Show restricted notice instead
+    const pg=document.getElementById('page-settings');
+    if(pg){
+      pg.innerHTML=`<div class="restricted-notice"><i data-lucide="shield-off" class="lucide"></i><div class="restricted-notice-text"><strong>Access Restricted</strong><br>Only the Owner can access school settings. Contact your administrator.</div></div>`;
+      if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
+    }
+    return;
+  }
   const s=ERP.loadData().settings;
-  document.getElementById('cfg-name').value      = s.schoolName||'';
-  document.getElementById('cfg-tag').value       = s.schoolTagline||'';
-  document.getElementById('cfg-addr').value      = s.schoolAddress||'';
-  document.getElementById('cfg-phone').value     = s.schoolPhone||'';
-  document.getElementById('cfg-email').value     = s.schoolEmail||'';
-  document.getElementById('cfg-aff').value       = s.affiliationNo||'';
-  document.getElementById('cfg-code').value      = s.schoolCode||'';
-  document.getElementById('cfg-principal').value = s.principalName||'';
-  document.getElementById('cfg-sess').value      = s.currentSession||'2025-26';
+  document.getElementById('cfg-name').value      =s.schoolName||'';
+  document.getElementById('cfg-tag').value       =s.schoolTagline||'';
+  document.getElementById('cfg-addr').value      =s.schoolAddress||'';
+  document.getElementById('cfg-phone').value     =s.schoolPhone||'';
+  document.getElementById('cfg-email').value     =s.schoolEmail||'';
+  document.getElementById('cfg-aff').value       =s.affiliationNo||'';
+  document.getElementById('cfg-code').value      =s.schoolCode||'';
+  document.getElementById('cfg-principal').value =s.principalName||'';
+  document.getElementById('cfg-sess').value      =s.currentSession||'2025-26';
   for(let o of document.getElementById('cfg-sessStart').options) o.selected=o.value===(s.sessionStart||'April');
   for(let o of document.getElementById('cfg-sessEnd').options)   o.selected=o.value===(s.sessionEnd||'March');
 }
 
 function saveSettings(){
+  const isOwner=_user&&_user.isOwner;
+  const perms=_user?(_user.permissions||{}):{};
+  if(!isOwner && !perms.settings){ ERP.showToast('⛔ Permission denied.','error'); return; }
   const data=ERP.loadData();
   const s=data.settings;
-  s.schoolName    = document.getElementById('cfg-name').value.trim();
-  s.schoolTagline = document.getElementById('cfg-tag').value.trim();
-  s.schoolAddress = document.getElementById('cfg-addr').value.trim();
-  s.schoolPhone   = document.getElementById('cfg-phone').value.trim();
-  s.schoolEmail   = document.getElementById('cfg-email').value.trim();
-  s.affiliationNo = document.getElementById('cfg-aff').value.trim();
-  s.schoolCode    = document.getElementById('cfg-code').value.trim();
-  s.principalName = document.getElementById('cfg-principal').value.trim();
-  s.currentSession= document.getElementById('cfg-sess').value.trim();
-  s.sessionStart  = document.getElementById('cfg-sessStart').value;
-  s.sessionEnd    = document.getElementById('cfg-sessEnd').value;
-  s.setupDone     = true;
+  s.schoolName    =document.getElementById('cfg-name').value.trim();
+  s.schoolTagline =document.getElementById('cfg-tag').value.trim();
+  s.schoolAddress =document.getElementById('cfg-addr').value.trim();
+  s.schoolPhone   =document.getElementById('cfg-phone').value.trim();
+  s.schoolEmail   =document.getElementById('cfg-email').value.trim();
+  s.affiliationNo =document.getElementById('cfg-aff').value.trim();
+  s.schoolCode    =document.getElementById('cfg-code').value.trim();
+  s.principalName =document.getElementById('cfg-principal').value.trim();
+  s.currentSession=document.getElementById('cfg-sess').value.trim();
+  s.sessionStart  =document.getElementById('cfg-sessStart').value;
+  s.sessionEnd    =document.getElementById('cfg-sessEnd').value;
+  s.setupDone     =true;
   ERP.saveData(data);
-  document.getElementById('sb-school').textContent = s.schoolName||'School ERP';
-  document.getElementById('sb-sess').textContent   = s.currentSession||'';
-  document.getElementById('mob-school').textContent= s.schoolName||'School ERP';
-  showToast('✅ Settings saved!','success');
+  document.getElementById('sb-school').textContent  =s.schoolName||'School ERP';
+  document.getElementById('sb-sess').textContent    =s.currentSession||'';
+  document.getElementById('mob-school').textContent =s.schoolName||'School ERP';
+  ERP.showToast('✅ Settings saved!','success');
 }
 
 function resetData(){
+  const isOwner=_user&&_user.isOwner;
+  if(!isOwner){ ERP.showToast('⛔ Only Owner can reset data.','error'); return; }
   ERP.confirm(
     'This will permanently delete ALL students, teachers, fees, marks and documents. Are you absolutely sure?',
     ()=>{
-      const pwd=prompt('Enter OWNER_PASSWORD to confirm reset:');
-      // We verify against the running constant
-      if(pwd!==document.getElementById('lc-pwd').value && !window._ownerPwdCache){
-        // Can't re-read OWNER_PASSWORD after login but we can ask user
-        showToast('❌ Verification failed. Edit school_data.js directly to reset if needed.','error');
-        return;
-      }
       const fresh=JSON.parse(JSON.stringify(ERP.DEFAULT_SCHEMA));
-      const curr =ERP.loadData();
-      fresh.settings.schoolName    = curr.settings.schoolName;
-      fresh.settings.currentSession= curr.settings.currentSession;
+      const curr=ERP.loadData();
+      fresh.settings.schoolName    =curr.settings.schoolName;
+      fresh.settings.currentSession=curr.settings.currentSession;
       ERP.saveData(fresh);
-      showToast('⚠️ All data reset.','warning');
+      ERP.showToast('⚠️ All data reset.','warning');
       setTimeout(()=>location.reload(),1000);
     },
     '⚠️ Reset All Data?'
   );
 }
+
+// Re-init Lucide on DOMContentLoaded for any remaining icons
+window.addEventListener('DOMContentLoaded', ()=>{
+  if(window.lucide) lucide.createIcons();
+  const fr=document.getElementById('footerRight');
+  if(fr) fr.textContent=`🔐 INTERNAL TOOLS HUB · NOT FOR CLIENT DISTRIBUTION · © ${new Date().getFullYear()} SPARKEDGE`;
+});
 </script>
 </body>
 </html>

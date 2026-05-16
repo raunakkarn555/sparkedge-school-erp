@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Certificates & Documents — School ERP</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#080810;--bg-card:#0E0E1A;--bg-raised:#141422;--bg-hover:#1A1A2A;
+  --border:#1E1E30;--border-hi:#2A2A40;
+  --accent:#FF6B35;--accent2:#FF3CAC;--gold:#FFB347;
+  --green:#22C55E;--blue:#3B82F6;--red:#EF4444;--purple:#9B7FD4;--yellow:#F59E0B;
+  --text:#F0F0FA;--text-muted:#7A7A9A;--text-dim:#3A3A5A;
+  --radius:12px;--radius-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px;}
+.lucide{width:16px;height:16px;stroke-width:2;flex-shrink:0;}
+.lucide-lg{width:20px;height:20px;}
+.lucide-xl{width:24px;height:24px;}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;}
+#loginScreen::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(155,127,212,.09) 0%,transparent 65%);border-radius:50%;pointer-events:none;}
+.lc{position:relative;background:var(--bg-card);border:1px solid rgba(155,127,212,.2);border-radius:20px;padding:42px 38px;width:420px;max-width:94vw;box-shadow:0 40px 80px rgba(0,0,0,.5);}
+.lc-icon{width:64px;height:64px;background:linear-gradient(135deg,var(--purple),var(--blue));border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.lc-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;text-align:center;margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:28px;line-height:1.6;}
+.lc-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 14px;font-size:12px;color:#EF4444;margin-bottom:12px;display:none;align-items:center;gap:6px;}
+.lc-field{position:relative;margin-bottom:14px;}
+.lc-field input{width:100%;background:var(--bg-raised);border:1px solid var(--border);border-radius:10px;padding:12px 46px 12px 16px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+.lc-field input:focus{border-color:rgba(155,127,212,.5);box-shadow:0 0 0 3px rgba(155,127,212,.07);}
+.lc-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;padding:4px;}
+.lc-eye:hover{color:var(--text);}
+.lc-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--purple),var(--blue));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.lc-btn:hover{opacity:.88;}
+.lc-hint{text-align:center;font-size:11px;color:var(--text-dim);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:5px;}
+@keyframes shake{0%,100%{transform:translateX(0);}30%{transform:translateX(-6px);}70%{transform:translateX(6px);}}
+.shake{animation:shake .32s ease;}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform .25s ease;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--blue));border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-sess{font-size:10px;color:var(--purple);font-weight:700;letter-spacing:1px;margin-top:1px;}
+.sb-user{margin:10px 12px 4px;padding:9px 12px;background:rgba(155,127,212,.06);border:1px solid rgba(155,127,212,.14);border-radius:8px;display:flex;align-items:center;gap:8px;}
+.sb-user-av{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
+.sb-user-info{min-width:0;}
+.sb-user-sub{font-size:10px;color:var(--text-muted);}
+.sb-user-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-role-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 7px;border-radius:4px;margin-top:3px;}
+.sb-role-owner{background:rgba(255,179,71,.15);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.sb-role-staff{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:var(--blue);}
+.sb-nav{padding:8px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:1px;}
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:10px 8px 4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .13s;border:none;background:none;width:100%;text-align:left;text-decoration:none;}
+.nav-item:hover{background:var(--bg-raised);color:var(--text);}
+.nav-item.active{background:rgba(155,127,212,.11);color:var(--purple);border:1px solid rgba(155,127,212,.22);}
+.nav-item.active .lucide{stroke:var(--purple);}
+.nav-icon{display:flex;align-items:center;width:18px;flex-shrink:0;}
+.sb-foot{padding:10px 8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:1px;}
+.sb-foot-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;font-size:12px;color:var(--text-muted);background:none;border:none;cursor:pointer;width:100%;text-align:left;transition:all .13s;font-family:'DM Sans',sans-serif;}
+.sb-foot-btn:hover{background:var(--bg-raised);color:var(--text);}
+.sb-foot-btn.red:hover{color:var(--red);}
+.sb-footer-brand{padding:8px 12px 10px;border-top:1px solid var(--border);font-size:9px;color:var(--text-dim);line-height:1.5;text-align:center;letter-spacing:.3px;}
+
+/* ── MAIN ── */
+.main{margin-left:230px;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{padding:13px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,16,.9);backdrop-filter:blur(14px);position:sticky;top:0;z-index:40;}
+.tb-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;}
+.tb-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.tb-right{display:flex;align-items:center;gap:7px;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:var(--radius-sm);border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;}
+.btn-primary{background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;}
+.btn-primary:hover{opacity:.88;}
+.btn-secondary{background:var(--bg-raised);border:1px solid var(--border);color:var(--text-muted);}
+.btn-secondary:hover{border-color:var(--border-hi);color:var(--text);}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text-muted);}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--text);}
+.btn-green{background:rgba(34,197,94,.11);border:1px solid rgba(34,197,94,.28);color:var(--green);}
+.btn-green:hover{background:rgba(34,197,94,.2);}
+.btn-blue{background:rgba(59,130,246,.11);border:1px solid rgba(59,130,246,.28);color:var(--blue);}
+.btn-blue:hover{background:rgba(59,130,246,.2);}
+.btn-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:var(--red);}
+.btn-red:hover{background:rgba(239,68,68,.18);}
+.btn-gold{background:rgba(255,179,71,.11);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.btn-purple{background:rgba(155,127,212,.12);border:1px solid rgba(155,127,212,.28);color:var(--purple);}
+.btn-purple:hover{background:rgba(155,127,212,.22);}
+.btn-sm{padding:5px 11px;font-size:12px;}
+
+/* ── PAGES ── */
+.page{display:none;padding:24px;animation:pgIn .18s ease;flex:1;}
+.page.active{display:block;}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:border-color .15s;}
+.stat-card:hover{border-color:var(--border-hi);}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.stat-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.stat-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;line-height:1;}
+.stat-sub{font-size:11px;color:var(--text-muted);margin-top:5px;}
+
+/* ── CARD ── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:18px;}
+.card-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-hdr-icon{width:28px;height:28px;border-radius:7px;background:rgba(155,127,212,.09);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-hdr-icon .lucide{width:14px;height:14px;stroke:var(--purple);}
+.card-hdr-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.card-hdr-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.card-body{padding:18px;}
+
+/* ── PILLS ── */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.pill-green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);color:var(--green);}
+.pill-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:var(--red);}
+.pill-gold{background:rgba(255,179,71,.12);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.pill-blue{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:var(--blue);}
+.pill-gray{background:rgba(120,120,160,.1);border:1px solid rgba(120,120,160,.2);color:var(--text-muted);}
+.pill-purple{background:rgba(155,127,212,.12);border:1px solid rgba(155,127,212,.28);color:var(--purple);}
+
+/* ── FORM ── */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.f{display:flex;flex-direction:column;gap:5px;}
+.f.full{grid-column:1/-1;}
+.f label{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-muted);}
+.f input,.f select,.f textarea{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;width:100%;}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:rgba(155,127,212,.45);}
+.f textarea{resize:vertical;min-height:72px;line-height:1.5;}
+.f select option{background:var(--bg-card);}
+
+/* ── MODAL ── */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:620px;overflow:hidden;animation:mIn .2s ease;max-height:92vh;overflow-y:auto;}
+@keyframes mIn{from{transform:scale(.95);opacity:0;}to{transform:scale(1);opacity:1;}}
+.modal-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg-card);z-index:10;}
+.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.modal-x{background:none;border:none;color:var(--text-muted);cursor:pointer;line-height:1;padding:4px;border-radius:6px;display:flex;align-items:center;}
+.modal-x:hover{background:var(--bg-raised);color:var(--text);}
+.modal-body{padding:22px;display:flex;flex-direction:column;gap:14px;}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;position:sticky;bottom:0;background:var(--bg-card);}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .12s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--bg-raised);}
+tbody td{padding:11px 14px;vertical-align:middle;}
+
+/* ── FILTERS BAR ── */
+.filters-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.filter-select{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);outline:none;transition:border-color .15s;}
+.filter-select:focus{border-color:rgba(155,127,212,.4);}
+.search-box{display:flex;align-items:center;gap:6px;background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;flex:1;min-width:180px;}
+.search-box input{background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);width:100%;}
+.search-box input::placeholder{color:var(--text-muted);}
+.search-box .lucide{stroke:var(--text-muted);flex-shrink:0;}
+
+/* ── DOC TYPE GRID (issue page) ── */
+.doc-type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:22px;}
+.doc-type-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;cursor:pointer;transition:all .16s;text-align:center;}
+.doc-type-card:hover{border-color:var(--border-hi);background:var(--bg-raised);}
+.doc-type-card.selected{border-color:rgba(155,127,212,.5);background:rgba(155,127,212,.07);}
+.dt-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
+.dt-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px;}
+.dt-desc{font-size:11px;color:var(--text-muted);line-height:1.4;}
+
+/* ── DOCUMENT LOG ROW ── */
+.doc-row{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:8px;transition:border-color .14s;}
+.doc-row:hover{border-color:var(--border-hi);}
+.doc-row-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.doc-row-name{font-size:14px;font-weight:700;margin-bottom:2px;}
+.doc-row-meta{font-size:11px;color:var(--text-muted);}
+.doc-row-actions{display:flex;gap:6px;margin-left:auto;align-items:center;flex-shrink:0;}
+
+/* ── EMPTY / INFO ── */
+.empty{text-align:center;padding:48px 20px;color:var(--text-dim);}
+.empty-ic{display:flex;justify-content:center;margin-bottom:12px;}
+.empty-ic .lucide{width:36px;height:36px;stroke:var(--text-dim);stroke-width:1.25;}
+.empty-tx{font-size:14px;}
+.info-box{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);border-radius:9px;padding:12px 14px;font-size:12px;color:var(--text-muted);line-height:1.7;}
+
+/* ── FOOTER ── */
+.main-footer{padding:14px 24px;border-top:1px solid var(--border);background:var(--bg-card);font-size:10px;color:var(--text-dim);display:flex;align-items:center;justify-content:space-between;letter-spacing:.4px;text-transform:uppercase;}
+
+/* ── MOBILE ── */
+.mob-bar{display:none;position:fixed;top:0;left:0;right:0;height:54px;background:var(--bg-card);border-bottom:1px solid var(--border);z-index:60;align-items:center;padding:0 16px;gap:12px;}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49;}
+.sb-overlay.open{display:block;}
+.sidebar.mob-open{transform:translateX(0)!important;}
+@media(max-width:900px){
+  .mob-bar{display:flex!important;}
+  .sidebar{transform:translateX(-100%);}
+  .main{margin-left:0;padding-top:54px;}
+  .topbar{top:54px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .fg{grid-template-columns:1fr;}
+  .fg-3{grid-template-columns:1fr;}
+  .doc-type-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr;}
+  .page{padding:14px;}
+  .topbar{padding:10px 14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="loginScreen">
+  <div class="lc">
+    <div class="lc-icon">
+      <i data-lucide="file-badge" style="width:30px;height:30px;stroke:#fff;stroke-width:1.75;"></i>
+    </div>
+    <div class="lc-title" id="lc-school">School ERP</div>
+    <div class="lc-sub">Certificates & Documents Portal — Secure Access</div>
+    <div class="lc-err" id="lc-err">
+      <i data-lucide="alert-triangle" style="width:14px;height:14px;flex-shrink:0;"></i>
+      <span id="lc-err-msg">Incorrect password. Please try again.</span>
+    </div>
+    <div class="lc-field">
+      <input type="password" id="lc-pwd" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="lc-eye" id="lc-eye" onclick="toggleEye()">
+        <i data-lucide="eye" style="width:16px;height:16px;stroke:currentColor;"></i>
+      </button>
+    </div>
+    <button class="lc-btn" onclick="doLogin()">
+      <i data-lucide="log-in" style="width:16px;height:16px;stroke:#fff;"></i>
+      Unlock Documents Portal
+    </button>
+    <div class="lc-hint">
+      <i data-lucide="lock" style="width:11px;height:11px;stroke:currentColor;"></i>
+      All data stored locally · GitHub Pages hosted
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MOBILE BAR ══════════ -->
+<div class="mob-bar" id="mobBar">
+  <button onclick="toggleSB()" style="background:none;border:none;color:var(--text);cursor:pointer;display:flex;align-items:center;">
+    <i data-lucide="menu" style="width:22px;height:22px;stroke:currentColor;"></i>
+  </button>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="sb-icon" style="width:28px;height:28px;">
+      <i data-lucide="file-badge" style="width:14px;height:14px;stroke:#fff;stroke-width:2;"></i>
+    </div>
+    <span id="mob-school" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;"></span>
+  </div>
+</div>
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSB()"></div>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-icon">
+      <i data-lucide="file-badge" style="width:18px;height:18px;stroke:#fff;stroke-width:2;"></i>
+    </div>
+    <div style="flex:1;min-width:0;">
+      <div class="sb-name" id="sb-school">School ERP</div>
+      <div class="sb-sess" id="sb-sess">2025-26</div>
+    </div>
+  </div>
+
+  <div class="sb-user">
+    <div class="sb-user-av" id="sb-user-av">A</div>
+    <div class="sb-user-info" style="flex:1;min-width:0;">
+      <div class="sb-user-sub">Logged in as</div>
+      <div class="sb-user-name" id="sb-user">—</div>
+      <div id="sb-role-badge" class="sb-role-badge sb-role-owner"></div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="nav-lbl">Documents</div>
+    <button class="nav-item active" onclick="showTab('overview')" id="nav-overview">
+      <span class="nav-icon"><i data-lucide="layout-dashboard" class="lucide"></i></span> Overview
+    </button>
+    <button class="nav-item" onclick="showTab('issue')" id="nav-issue">
+      <span class="nav-icon"><i data-lucide="file-plus" class="lucide"></i></span> Issue Document
+    </button>
+    <button class="nav-item" onclick="showTab('log')" id="nav-log">
+      <span class="nav-icon"><i data-lucide="scroll-text" class="lucide"></i></span> Document Log
+    </button>
+    <div class="nav-lbl">Navigation</div>
+    <a class="nav-item" href="admin.html"><span class="nav-icon"><i data-lucide="shield" class="lucide"></i></span> Admin Panel</a>
+    <a class="nav-item" href="students.html"><span class="nav-icon"><i data-lucide="users" class="lucide"></i></span> Students</a>
+    <a class="nav-item" href="teachers.html"><span class="nav-icon"><i data-lucide="user-check" class="lucide"></i></span> Teachers</a>
+    <a class="nav-item" href="fees.html"><span class="nav-icon"><i data-lucide="indian-rupee" class="lucide"></i></span> Fees</a>
+    <a class="nav-item" href="marks.html"><span class="nav-icon"><i data-lucide="graduation-cap" class="lucide"></i></span> Marks</a>
+  </nav>
+
+  <div class="sb-foot">
+    <button class="sb-foot-btn" onclick="ERP.exportData()">
+      <i data-lucide="download" style="width:13px;height:13px;stroke:currentColor;"></i> Export Data
+    </button>
+    <button class="sb-foot-btn" onclick="ERP.openImportModal()">
+      <i data-lucide="upload" style="width:13px;height:13px;stroke:currentColor;"></i> Import Data
+    </button>
+    <button class="sb-foot-btn red" onclick="doLogout()">
+      <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
+    </button>
+  </div>
+  <div class="sb-footer-brand">SparkEdge Internal Tools</div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main" id="mainWrap" style="display:none;">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="tb-title">Certificates & Documents</div>
+      <div class="tb-sub" id="tb-sub">Overview</div>
+    </div>
+    <div class="tb-right">
+      <button class="btn btn-primary btn-sm" onclick="showTab('issue')">
+        <i data-lucide="plus" style="width:13px;height:13px;stroke:#fff;"></i> Issue Document
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════ OVERVIEW PAGE ══════ -->
+  <div class="page active" id="page-overview">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(155,127,212,.1);"><i data-lucide="file-badge" style="width:20px;height:20px;stroke:var(--purple);stroke-width:1.75;"></i></div>
+        <div class="stat-lbl">Total Issued</div>
+        <div class="stat-val" id="stat-total">0</div>
+        <div class="stat-sub">all time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(34,197,94,.1);"><i data-lucide="calendar-check" style="width:20px;height:20px;stroke:var(--green);stroke-width:1.75;"></i></div>
+        <div class="stat-lbl">This Month</div>
+        <div class="stat-val" id="stat-month">0</div>
+        <div class="stat-sub" id="stat-month-lbl">documents issued</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(59,130,246,.1);"><i data-lucide="users" style="width:20px;height:20px;stroke:var(--blue);stroke-width:1.75;"></i></div>
+        <div class="stat-lbl">Students Served</div>
+        <div class="stat-val" id="stat-students">0</div>
+        <div class="stat-sub">unique students</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(255,179,71,.1);"><i data-lucide="layers" style="width:20px;height:20px;stroke:var(--gold);stroke-width:1.75;"></i></div>
+        <div class="stat-lbl">Doc Types Used</div>
+        <div class="stat-val" id="stat-types">0</div>
+        <div class="stat-sub">certificate types</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+      <!-- Recent documents -->
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-hdr-icon"><i data-lucide="clock" class="lucide"></i></div>
+          <div>
+            <div class="card-hdr-title">Recently Issued</div>
+            <div class="card-hdr-sub">Latest 6 documents</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="margin-left:auto;" onclick="showTab('log')">View All</button>
+        </div>
+        <div class="card-body" id="recentDocs">
+          <div class="empty"><div class="empty-ic"><i data-lucide="file-text" class="lucide"></i></div><div class="empty-tx">No documents issued yet</div></div>
+        </div>
+      </div>
+
+      <!-- By type breakdown -->
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-hdr-icon"><i data-lucide="pie-chart" class="lucide"></i></div>
+          <div>
+            <div class="card-hdr-title">By Document Type</div>
+            <div class="card-hdr-sub">Count per certificate type</div>
+          </div>
+        </div>
+        <div class="card-body" id="byTypeBreakdown">
+          <div class="empty"><div class="empty-ic"><i data-lucide="layers" class="lucide"></i></div><div class="empty-tx">No data yet</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ ISSUE DOCUMENT PAGE ══════ -->
+  <div class="page" id="page-issue">
+
+    <!-- Step 1: Choose type -->
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon"><i data-lucide="layout-grid" class="lucide"></i></div>
+        <div>
+          <div class="card-hdr-title">Step 1 — Select Document Type</div>
+          <div class="card-hdr-sub">Click a certificate type to begin</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="doc-type-grid" id="docTypeGrid"></div>
+      </div>
+    </div>
+
+    <!-- Step 2: Fill details -->
+    <div class="card" id="issueFormCard" style="display:none;">
+      <div class="card-hdr">
+        <div class="card-hdr-icon"><i data-lucide="edit-3" class="lucide"></i></div>
+        <div>
+          <div class="card-hdr-title" id="issueFormTitle">Fill Details</div>
+          <div class="card-hdr-sub">Enter the required information below</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="fg">
+          <div class="f">
+            <label>Student *</label>
+            <select id="if-student" onchange="onStudentSelect()">
+              <option value="">— Search & Select Student —</option>
+            </select>
+          </div>
+          <div class="f">
+            <label>Issued To (Name on certificate)</label>
+            <input type="text" id="if-issuedto" placeholder="Auto-filled from student"/>
+          </div>
+          <div class="f">
+            <label>Purpose</label>
+            <input type="text" id="if-purpose" placeholder="e.g. Bank account opening, Visa application"/>
+          </div>
+          <div class="f">
+            <label>Date of Issue *</label>
+            <input type="date" id="if-date"/>
+          </div>
+          <div class="f">
+            <label>Issued By</label>
+            <input type="text" id="if-issuedby" placeholder="Principal / Admin name"/>
+          </div>
+          <div class="f">
+            <label>Serial / Certificate No.</label>
+            <input type="text" id="if-serial" placeholder="Auto-generated if blank"/>
+          </div>
+          <div class="f full">
+            <label>Remarks / Additional Notes</label>
+            <textarea id="if-remarks" placeholder="Any special notes for this document…"></textarea>
+          </div>
+        </div>
+        <!-- Student info preview -->
+        <div id="studentPreview" style="display:none;background:var(--bg-raised);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:4px;">
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="saveAndPrint()">
+            <i data-lucide="printer" style="width:13px;height:13px;stroke:#fff;"></i> Save &amp; Print
+          </button>
+          <button class="btn btn-secondary" onclick="saveDocOnly()">
+            <i data-lucide="save" style="width:13px;height:13px;stroke:currentColor;"></i> Save Only
+          </button>
+          <button class="btn btn-ghost" onclick="clearIssueForm()">
+            <i data-lucide="x" style="width:13px;height:13px;stroke:currentColor;"></i> Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ DOCUMENT LOG PAGE ══════ -->
+  <div class="page" id="page-log">
+    <div class="filters-bar">
+      <select class="filter-select" id="lf-type" onchange="renderLog()">
+        <option value="">All Types</option>
+      </select>
+      <select class="filter-select" id="lf-class" onchange="renderLog()">
+        <option value="">All Classes</option>
+      </select>
+      <div class="search-box">
+        <i data-lucide="search" class="lucide"></i>
+        <input type="text" placeholder="Search student or serial no…" id="lf-search" oninput="renderLog()"/>
+      </div>
+    </div>
+    <div id="docLog"></div>
+  </div>
+
+  <div class="main-footer">
+    <span>School ERP · Certificates & Documents</span>
+    <span id="footer-sess">Session 2025-26</span>
+  </div>
+</div>
+
+
+<!-- ══════ EDIT DOC MODAL ══════ -->
+<div class="modal-ov" id="editDocModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">
+        <i data-lucide="edit-3" style="width:18px;height:18px;stroke:var(--purple);"></i>
+        Edit Document Record
+      </div>
+      <button class="modal-x" onclick="closeModal('editDocModal')">
+        <i data-lucide="x" style="width:18px;height:18px;stroke:currentColor;"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="ed-id"/>
+      <input type="hidden" id="ed-type"/>
+      <div class="fg">
+        <div class="f">
+          <label>Issued To</label>
+          <input type="text" id="ed-issuedto"/>
+        </div>
+        <div class="f">
+          <label>Purpose</label>
+          <input type="text" id="ed-purpose"/>
+        </div>
+        <div class="f">
+          <label>Date of Issue</label>
+          <input type="date" id="ed-date"/>
+        </div>
+        <div class="f">
+          <label>Issued By</label>
+          <input type="text" id="ed-issuedby"/>
+        </div>
+        <div class="f">
+          <label>Serial No.</label>
+          <input type="text" id="ed-serial"/>
+        </div>
+        <div class="f full">
+          <label>Remarks</label>
+          <textarea id="ed-remarks"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('editDocModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditDoc()">
+        <i data-lucide="save" style="width:13px;height:13px;stroke:#fff;"></i> Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="school_data.js"></script>
+<script>
+'use strict';
+
+/* ── helpers ── */
+function esc(s){ const d=document.createElement('div');d.textContent=s||'';return d.innerHTML; }
+
+/* ── Document type registry ── */
+const DOC_TYPES = [
+  { id:'bonafide',    name:'Bonafide Certificate',     icon:'badge-check',  color:'var(--blue)',   bg:'rgba(59,130,246,.12)',  desc:'Confirms student enrolment' },
+  { id:'character',   name:'Character Certificate',    icon:'shield-check', color:'var(--green)',  bg:'rgba(34,197,94,.12)',   desc:'Good conduct & behaviour' },
+  { id:'transfer',    name:'Transfer Certificate',     icon:'arrow-right-circle', color:'var(--accent)', bg:'rgba(255,107,53,.12)', desc:'School leaving / TC' },
+  { id:'migration',   name:'Migration Certificate',    icon:'map-pin',      color:'var(--purple)', bg:'rgba(155,127,212,.12)', desc:'For admission to new board' },
+  { id:'marksheet',   name:'Marksheet / Transcript',   icon:'bar-chart-2',  color:'var(--gold)',   bg:'rgba(255,179,71,.12)',  desc:'Academic mark record' },
+  { id:'fee_receipt', name:'Fee Clearance',            icon:'receipt',      color:'var(--green)',  bg:'rgba(34,197,94,.12)',   desc:'No fee dues certificate' },
+  { id:'sports',      name:'Sports Certificate',       icon:'trophy',       color:'var(--yellow)', bg:'rgba(245,158,11,.12)',  desc:'Sports achievement' },
+  { id:'other',       name:'Other Certificate',        icon:'file-text',    color:'var(--text-muted)', bg:'rgba(120,120,160,.1)', desc:'Custom / general certificate' },
+];
+
+function getDocType(id){ return DOC_TYPES.find(d=>d.id===id) || DOC_TYPES[DOC_TYPES.length-1]; }
+
+/* ── Chosen doc type for issue form ── */
+let _selectedType = null;
+
+/* ══ AUTH ══ */
+function doLogin(){
+  const pwd = document.getElementById('lc-pwd').value;
+  const u   = ERP.authenticateAdmin(pwd);
+  if(!u){
+    showErr('Incorrect password. Please try again.');
+    return;
+  }
+  if(!u.permissions.docs){
+    showErr('Access denied — you do not have Documents permission.');
+    return;
+  }
+  ERP.setAdminSession(u);
+  bootPortal(u);
+}
+
+function showErr(msg){
+  const err = document.getElementById('lc-err');
+  document.getElementById('lc-err-msg').textContent = msg;
+  err.style.display = 'flex';
+  document.querySelector('.lc').classList.add('shake');
+  setTimeout(()=>document.querySelector('.lc').classList.remove('shake'), 400);
+}
+
+function bootPortal(u){
+  const data = ERP.loadData();
+  const s    = data.settings;
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainWrap').style.cssText = 'display:flex;flex-direction:column;';
+
+  const name = s.schoolName||'School ERP';
+  document.getElementById('lc-school').textContent  = name;
+  document.getElementById('sb-school').textContent  = name;
+  document.getElementById('mob-school').textContent = name;
+  document.getElementById('sb-sess').textContent    = s.currentSession||'';
+  document.getElementById('footer-sess').textContent= 'Session '+(s.currentSession||'—');
+  document.getElementById('sb-user').textContent    = u.name;
+  document.getElementById('sb-user-av').textContent = ERP.getInitials(u.name);
+
+  const rb = document.getElementById('sb-role-badge');
+  rb.textContent = u.isOwner ? '👑 Owner' : u.role||'Staff';
+  rb.className   = 'sb-role-badge '+(u.isOwner?'sb-role-owner':'sb-role-staff');
+
+  // Pre-fill "Issued By"
+  document.getElementById('if-issuedby').value = s.principalName || u.name || '';
+  document.getElementById('if-date').value     = ERP.todayStr();
+
+  buildDocTypeGrid();
+  populateFilters();
+  showTab('overview');
+  lucide.createIcons();
+}
+
+function toggleEye(){
+  const inp  = document.getElementById('lc-pwd');
+  const show = inp.type==='password';
+  inp.type   = show?'text':'password';
+  document.getElementById('lc-eye').innerHTML =
+    `<i data-lucide="${show?'eye-off':'eye'}" style="width:16px;height:16px;stroke:currentColor;"></i>`;
+  lucide.createIcons();
+}
+function doLogout(){ ERP.logoutAdmin(); }
+function toggleSB(){
+  document.getElementById('sidebar').classList.toggle('mob-open');
+  document.getElementById('sbOverlay').classList.toggle('open');
+}
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+/* ══ TABS ══ */
+const TAB_LABELS = { overview:'Overview', issue:'Issue Document', log:'Document Log' };
+function showTab(t){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item[id^=nav-]').forEach(n=>n.classList.remove('active'));
+  const pg = document.getElementById('page-'+t);
+  if(pg) pg.classList.add('active');
+  const nb = document.getElementById('nav-'+t);
+  if(nb) nb.classList.add('active');
+  document.getElementById('tb-sub').textContent = TAB_LABELS[t]||'';
+
+  if(t==='overview') renderOverview();
+  if(t==='log')      renderLog();
+  if(window.innerWidth<=900) toggleSB();
+}
+
+/* ══ POPULATE FILTERS / SELECTS ══ */
+function populateFilters(){
+  const data    = ERP.loadData();
+  const classes = data.settings.classes||[];
+  const students= (data.students||[]).filter(s=>s.active!==false).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+
+  // Student select on issue form
+  const ifStu = document.getElementById('if-student');
+  ifStu.innerHTML = '<option value="">— Search & Select Student —</option>' +
+    students.map(s=>`<option value="${esc(s.id)}">${esc(s.name)} — Class ${esc(s.class||'?')}${s.section?' / '+s.section:''} (Roll ${esc(s.rollNumber||'—')})</option>`).join('');
+
+  // Log filter — type
+  const lfType = document.getElementById('lf-type');
+  lfType.innerHTML = '<option value="">All Types</option>' +
+    DOC_TYPES.map(d=>`<option value="${esc(d.id)}">${esc(d.name)}</option>`).join('');
+
+  // Log filter — class
+  const lfCls = document.getElementById('lf-class');
+  lfCls.innerHTML = '<option value="">All Classes</option>' +
+    classes.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+}
+
+/* ══ DOC TYPE GRID ══ */
+function buildDocTypeGrid(){
+  const grid = document.getElementById('docTypeGrid');
+  grid.innerHTML = DOC_TYPES.map(dt=>`
+    <div class="doc-type-card" id="dtcard-${dt.id}" onclick="selectDocType('${dt.id}')">
+      <div class="dt-icon" style="background:${dt.bg};">
+        <i data-lucide="${dt.icon}" style="width:22px;height:22px;stroke:${dt.color};stroke-width:1.75;"></i>
+      </div>
+      <div class="dt-name">${esc(dt.name)}</div>
+      <div class="dt-desc">${esc(dt.desc)}</div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+function selectDocType(typeId){
+  _selectedType = typeId;
+  document.querySelectorAll('.doc-type-card').forEach(c=>c.classList.remove('selected'));
+  const card = document.getElementById('dtcard-'+typeId);
+  if(card) card.classList.add('selected');
+
+  const dt = getDocType(typeId);
+  document.getElementById('issueFormTitle').textContent = 'Step 2 — '+dt.name+' Details';
+  document.getElementById('issueFormCard').style.display = 'block';
+  document.getElementById('issueFormCard').scrollIntoView({behavior:'smooth', block:'start'});
+
+  // Auto serial
+  const data = ERP.loadData();
+  const count= (data.documents||[]).filter(d=>d.type===typeId).length + 1;
+  const year = new Date().getFullYear();
+  document.getElementById('if-serial').value = `${typeId.toUpperCase().slice(0,3)}-${year}-${String(count).padStart(3,'0')}`;
+}
+
+/* ══ STUDENT SELECT ══ */
+function onStudentSelect(){
+  const stuId  = document.getElementById('if-student').value;
+  const preview= document.getElementById('studentPreview');
+  if(!stuId){ preview.style.display='none'; document.getElementById('if-issuedto').value=''; return; }
+
+  const data = ERP.loadData();
+  const stu  = (data.students||[]).find(s=>s.id===stuId);
+  if(!stu){ preview.style.display='none'; return; }
+
+  document.getElementById('if-issuedto').value = stu.name;
+
+  preview.style.display='block';
+  preview.innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;">
+        ${esc(ERP.getInitials(stu.name))}
+      </div>
+      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 18px;">
+        <div><div style="font-size:10px;color:var(--text-muted);font-weight:700;letter-spacing:.5px;">NAME</div><div style="font-size:13px;font-weight:700;">${esc(stu.name)}</div></div>
+        <div><div style="font-size:10px;color:var(--text-muted);font-weight:700;letter-spacing:.5px;">CLASS</div><div style="font-size:13px;font-weight:700;">Class ${esc(stu.class||'—')}${stu.section?' / '+stu.section:''}</div></div>
+        <div><div style="font-size:10px;color:var(--text-muted);font-weight:700;letter-spacing:.5px;">ROLL NO</div><div style="font-size:13px;font-weight:700;">${esc(stu.rollNumber||'—')}</div></div>
+        <div><div style="font-size:10px;color:var(--text-muted);font-weight:700;letter-spacing:.5px;">ADMISSION NO</div><div style="font-size:13px;">${esc(stu.admissionNo||'—')}</div></div>
+        <div><div style="font-size:10px;color:var(--text-muted);font-weight:700;letter-spacing:.5px;">GUARDIAN</div><div style="font-size:13px;">${esc(stu.guardianName||'—')}</div></div>
+        <div><div style="font-size:10px;color:var(--text-muted);font-weight:700;letter-spacing:.5px;">SESSION</div><div style="font-size:13px;">${esc(stu.session||ERP.loadData().settings.currentSession||'—')}</div></div>
+      </div>
+    </div>`;
+  lucide.createIcons();
+}
+
+/* ══ SAVE DOCUMENT ══ */
+function collectIssueForm(){
+  const stuId = document.getElementById('if-student').value;
+  if(!_selectedType){ showToast('⚠️ Select a document type first.','warning'); return null; }
+  if(!stuId){ showToast('⚠️ Please select a student.','warning'); return null; }
+
+  const data    = ERP.loadData();
+  const session = data.settings.currentSession||'';
+  const id      = ERP.generateID('DOC');
+
+  return {
+    id,
+    type:      _selectedType,
+    studentId: stuId,
+    issuedTo:  document.getElementById('if-issuedto').value.trim(),
+    purpose:   document.getElementById('if-purpose').value.trim(),
+    issuedBy:  document.getElementById('if-issuedby').value.trim(),
+    issuedDate:document.getElementById('if-date').value || ERP.todayStr(),
+    serialNo:  document.getElementById('if-serial').value.trim() || id,
+    remarks:   document.getElementById('if-remarks').value.trim(),
+    session,
+    createdAt: new Date().toISOString(),
+  };
+}
+
+function saveDocRecord(rec){
+  const data = ERP.loadData();
+  if(!Array.isArray(data.documents)) data.documents=[];
+  data.documents.push(rec);
+  ERP.saveData(data);
+}
+
+function saveAndPrint(){
+  const rec = collectIssueForm();
+  if(!rec) return;
+  saveDocRecord(rec);
+  showToast('✅ Document saved!','success');
+  clearIssueForm();
+  printDocument(rec);
+}
+
+function saveDocOnly(){
+  const rec = collectIssueForm();
+  if(!rec) return;
+  saveDocRecord(rec);
+  showToast('✅ Document saved!','success');
+  clearIssueForm();
+  renderOverview();
+}
+
+function clearIssueForm(){
+  _selectedType = null;
+  document.querySelectorAll('.doc-type-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('issueFormCard').style.display='none';
+  document.getElementById('if-student').value  = '';
+  document.getElementById('if-issuedto').value = '';
+  document.getElementById('if-purpose').value  = '';
+  document.getElementById('if-remarks').value  = '';
+  document.getElementById('if-serial').value   = '';
+  document.getElementById('studentPreview').style.display='none';
+
+  const data=ERP.loadData();
+  document.getElementById('if-issuedby').value = data.settings.principalName||'';
+  document.getElementById('if-date').value = ERP.todayStr();
+}
+
+/* ══ OVERVIEW ══ */
+function renderOverview(){
+  const data = ERP.loadData();
+  const docs = data.documents||[];
+  const now  = new Date();
+  const month= now.getMonth(); const year=now.getFullYear();
+
+  document.getElementById('stat-total').textContent   = docs.length;
+  document.getElementById('stat-month').textContent   = docs.filter(d=>{
+    const dt=new Date(d.createdAt||d.issuedDate||0);
+    return dt.getMonth()===month && dt.getFullYear()===year;
+  }).length;
+  document.getElementById('stat-month-lbl').textContent = now.toLocaleString('en-IN',{month:'long'});
+  document.getElementById('stat-students').textContent = new Set(docs.map(d=>d.studentId)).size;
+  document.getElementById('stat-types').textContent   = new Set(docs.map(d=>d.type)).size;
+
+  // Recent docs
+  const rd = document.getElementById('recentDocs');
+  const recent = [...docs].sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)).slice(0,6);
+  if(!recent.length){
+    rd.innerHTML=`<div class="empty"><div class="empty-ic"><i data-lucide="file-text" class="lucide"></i></div><div class="empty-tx">No documents issued yet</div></div>`;
+  } else {
+    rd.innerHTML = recent.map(doc=>{
+      const stu = (data.students||[]).find(s=>s.id===doc.studentId);
+      const dt  = getDocType(doc.type);
+      return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);">
+        <div style="width:32px;height:32px;border-radius:8px;background:${dt.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i data-lucide="${dt.icon}" style="width:14px;height:14px;stroke:${dt.color};stroke-width:2;"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(stu?stu.name:doc.issuedTo||doc.studentId)}</div>
+          <div style="font-size:11px;color:var(--text-muted);">${esc(dt.name)} · ${esc(ERP.fmtDate(doc.issuedDate))}</div>
+        </div>
+        <button class="btn btn-purple btn-sm" onclick="reprintDoc('${esc(doc.id)}')">
+          <i data-lucide="printer" style="width:11px;height:11px;stroke:currentColor;"></i>
+        </button>
+      </div>`;
+    }).join('') + `<div style="margin-top:8px;"><button class="btn btn-ghost btn-sm" onclick="showTab('log')" style="width:100%;">View Full Log →</button></div>`;
+  }
+
+  // By type
+  const bt = document.getElementById('byTypeBreakdown');
+  const typeCounts = DOC_TYPES.map(dt=>({
+    dt, n: docs.filter(d=>d.type===dt.id).length
+  })).filter(x=>x.n>0).sort((a,b)=>b.n-a.n);
+
+  if(!typeCounts.length){
+    bt.innerHTML=`<div class="empty"><div class="empty-ic"><i data-lucide="layers" class="lucide"></i></div><div class="empty-tx">No data yet</div></div>`;
+  } else {
+    const total = docs.length||1;
+    bt.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px;">
+      ${typeCounts.map(x=>`
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <div style="display:flex;align-items:center;gap:7px;">
+              <div style="width:22px;height:22px;border-radius:6px;background:${x.dt.bg};display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="${x.dt.icon}" style="width:11px;height:11px;stroke:${x.dt.color};stroke-width:2;"></i>
+              </div>
+              <span style="font-size:12px;font-weight:600;">${esc(x.dt.name)}</span>
+            </div>
+            <span style="font-size:12px;font-weight:700;color:${x.dt.color};">${x.n} <span style="font-size:10px;color:var(--text-muted);">(${Math.round(x.n/total*100)}%)</span></span>
+          </div>
+          <div style="background:var(--bg-raised);border-radius:4px;height:5px;overflow:hidden;">
+            <div style="width:${Math.round(x.n/total*100)}%;height:100%;border-radius:4px;background:${x.dt.color};transition:width .3s;"></div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  }
+
+  lucide.createIcons();
+}
+
+/* ══ DOCUMENT LOG ══ */
+function renderLog(){
+  const fType  = (document.getElementById('lf-type')||{}).value||'';
+  const fClass = (document.getElementById('lf-class')||{}).value||'';
+  const fSearch= ((document.getElementById('lf-search')||{}).value||'').toLowerCase();
+  const el     = document.getElementById('docLog');
+  if(!el) return;
+
+  const data = ERP.loadData();
+  let docs   = [...(data.documents||[])].sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+
+  if(fType)  docs = docs.filter(d=>d.type===fType);
+  if(fClass){
+    docs = docs.filter(d=>{
+      const s=(data.students||[]).find(s=>s.id===d.studentId);
+      return s && s.class===fClass;
+    });
+  }
+  if(fSearch){
+    docs = docs.filter(d=>{
+      const s=(data.students||[]).find(s=>s.id===d.studentId);
+      const name=(s?s.name:d.issuedTo||'').toLowerCase();
+      const serial=(d.serialNo||'').toLowerCase();
+      return name.includes(fSearch)||serial.includes(fSearch);
+    });
+  }
+
+  if(!docs.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ic"><i data-lucide="file-text" class="lucide"></i></div><div class="empty-tx">No documents found.</div></div>`;
+    lucide.createIcons(); return;
+  }
+
+  el.innerHTML = docs.map(doc=>{
+    const stu = (data.students||[]).find(s=>s.id===doc.studentId);
+    const dt  = getDocType(doc.type);
+    return `<div class="doc-row">
+      <div class="doc-row-icon" style="background:${dt.bg};">
+        <i data-lucide="${dt.icon}" style="width:18px;height:18px;stroke:${dt.color};stroke-width:1.75;"></i>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div class="doc-row-name">${esc(stu?stu.name:doc.issuedTo||doc.studentId)}</div>
+        <div class="doc-row-meta">
+          <span class="pill pill-${dt.color===('var(--green)')?'green':dt.color===('var(--blue)')?'blue':dt.color===('var(--accent)')?'gold':'purple'}" style="margin-right:6px;">${esc(dt.name)}</span>
+          Class ${esc(stu?`${stu.class||'—'}${stu.section?' / '+stu.section:''}` :'—')}
+          · Issued: ${esc(ERP.fmtDate(doc.issuedDate))}
+          · Serial: ${esc(doc.serialNo||'—')}
+          ${doc.purpose?' · '+doc.purpose:''}
+          ${doc.issuedBy?' · By: '+doc.issuedBy:''}
+        </div>
+        ${doc.remarks?`<div style="font-size:11px;color:var(--text-muted);margin-top:3px;font-style:italic;">${esc(doc.remarks)}</div>`:''}
+      </div>
+      <div class="doc-row-actions">
+        <button class="btn btn-purple btn-sm" onclick="reprintDoc('${esc(doc.id)}')">
+          <i data-lucide="printer" style="width:12px;height:12px;stroke:currentColor;"></i>
+        </button>
+        <button class="btn btn-blue btn-sm" onclick="openEditDoc('${esc(doc.id)}')">
+          <i data-lucide="edit-2" style="width:12px;height:12px;stroke:currentColor;"></i>
+        </button>
+        <button class="btn btn-red btn-sm" onclick="deleteDoc('${esc(doc.id)}')">
+          <i data-lucide="trash-2" style="width:12px;height:12px;stroke:currentColor;"></i>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+  lucide.createIcons();
+}
+
+/* ══ EDIT DOCUMENT ══ */
+function openEditDoc(id){
+  const data = ERP.loadData();
+  const doc  = (data.documents||[]).find(d=>d.id===id);
+  if(!doc){ showToast('❌ Record not found.','error'); return; }
+
+  document.getElementById('ed-id').value       = doc.id;
+  document.getElementById('ed-type').value     = doc.type;
+  document.getElementById('ed-issuedto').value = doc.issuedTo||'';
+  document.getElementById('ed-purpose').value  = doc.purpose||'';
+  document.getElementById('ed-date').value     = doc.issuedDate||'';
+  document.getElementById('ed-issuedby').value = doc.issuedBy||'';
+  document.getElementById('ed-serial').value   = doc.serialNo||'';
+  document.getElementById('ed-remarks').value  = doc.remarks||'';
+
+  document.getElementById('editDocModal').classList.add('open');
+  lucide.createIcons();
+}
+
+function saveEditDoc(){
+  const id   = document.getElementById('ed-id').value;
+  const data = ERP.loadData();
+  const idx  = (data.documents||[]).findIndex(d=>d.id===id);
+  if(idx<0){ showToast('❌ Record not found.','error'); return; }
+
+  data.documents[idx] = {
+    ...data.documents[idx],
+    issuedTo:   document.getElementById('ed-issuedto').value.trim(),
+    purpose:    document.getElementById('ed-purpose').value.trim(),
+    issuedDate: document.getElementById('ed-date').value,
+    issuedBy:   document.getElementById('ed-issuedby').value.trim(),
+    serialNo:   document.getElementById('ed-serial').value.trim(),
+    remarks:    document.getElementById('ed-remarks').value.trim(),
+  };
+  ERP.saveData(data);
+  closeModal('editDocModal');
+  renderLog();
+  renderOverview();
+  showToast('✅ Document updated!','success');
+}
+
+/* ══ DELETE ══ */
+function deleteDoc(id){
+  ERP.confirm('Delete this document record? This cannot be undone.', ()=>{
+    const data = ERP.loadData();
+    data.documents = (data.documents||[]).filter(d=>d.id!==id);
+    ERP.saveData(data);
+    renderLog();
+    renderOverview();
+    showToast('🗑️ Document deleted.','info');
+  }, 'Delete Document?');
+}
+
+/* ══ PRINT / REPRINT ══ */
+function reprintDoc(id){
+  const data = ERP.loadData();
+  const doc  = (data.documents||[]).find(d=>d.id===id);
+  if(!doc){ showToast('❌ Record not found.','error'); return; }
+  printDocument(doc);
+}
+
+function printDocument(doc){
+  const data = ERP.loadData();
+  const stu  = (data.students||[]).find(s=>s.id===doc.studentId);
+  const s    = data.settings||{};
+  const dt   = getDocType(doc.type);
+  const html = buildDocumentHTML(doc, stu, s, dt);
+  ERP.downloadDocHTML(html, `${dt.name.replace(/\s+/g,'_')}_${(stu?stu.name:'Student').replace(/\s+/g,'_')}`);
+}
+
+/* ══ DOCUMENT HTML TEMPLATES ══ */
+function buildDocumentHTML(doc, stu, s, dt){
+  const schoolName = s.schoolName||'School Name';
+  const address    = s.schoolAddress||'';
+  const phone      = s.schoolPhone||'';
+  const email      = s.schoolEmail||'';
+  const affNo      = s.affiliationNo||'';
+  const principal  = s.principalName||doc.issuedBy||'Principal';
+  const session    = doc.session||s.currentSession||'—';
+  const stuName    = stu ? stu.name    : doc.issuedTo||'—';
+  const stuClass   = stu ? `${stu.class||'—'}${stu.section?' – '+stu.section:''}` : '—';
+  const stuRoll    = stu ? (stu.rollNumber||'—') : '—';
+  const stuAdm     = stu ? (stu.admissionNo||'—') : '—';
+  const stuDob     = stu ? ERP.fmtDate(stu.dob) : '—';
+  const stuGender  = stu ? (stu.gender||'—') : '—';
+  const stuGuardian= stu ? (stu.guardianName||'—') : '—';
+  const issuedDate = ERP.fmtDate(doc.issuedDate);
+  const serialNo   = doc.serialNo||doc.id;
+  const purpose    = doc.purpose||'—';
+  const remarks    = doc.remarks||'';
+
+  const header = `
+    <div style="text-align:center;border-bottom:3px double #222;padding-bottom:14px;margin-bottom:18px;">
+      ${s.schoolLogo?`<img src="${s.schoolLogo}" style="height:70px;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"/>`:''}
+      <div style="font-family:'Times New Roman',serif;font-size:22px;font-weight:700;color:#111;">${schoolName}</div>
+      ${address?`<div style="font-size:12px;color:#444;margin-top:3px;">${address}</div>`:''}
+      ${(phone||email)?`<div style="font-size:11px;color:#666;margin-top:2px;">${phone?'📞 '+phone:''}${phone&&email?' &nbsp;·&nbsp; ':''}${email?'✉ '+email:''}</div>`:''}
+      ${affNo?`<div style="font-size:11px;color:#666;margin-top:1px;">Affiliation No: ${affNo}</div>`:''}
+      <div style="margin-top:10px;display:inline-block;border:2px solid #333;padding:4px 20px;border-radius:4px;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">${dt.name}</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:16px;">
+      <span>Serial No: <strong style="color:#111;">${serialNo}</strong></span>
+      <span>Date: <strong style="color:#111;">${issuedDate}</strong></span>
+      <span>Session: <strong style="color:#111;">${session}</strong></span>
+    </div>`;
+
+  const footer = `
+    <div style="margin-top:36px;display:flex;justify-content:space-between;font-size:11px;color:#555;">
+      <div style="text-align:center;min-width:130px;">
+        <div style="border-top:1px solid #999;padding-top:5px;margin-top:28px;">Class Teacher</div>
+      </div>
+      <div style="text-align:center;min-width:130px;">
+        <div style="border-top:1px solid #999;padding-top:5px;margin-top:28px;">Office Seal</div>
+      </div>
+      <div style="text-align:center;min-width:130px;">
+        <div style="border-top:1px solid #999;padding-top:5px;margin-top:28px;">${principal}<br>Principal</div>
+      </div>
+    </div>
+    ${remarks?`<div style="margin-top:14px;padding:9px 12px;background:#f9f9f9;border-left:3px solid #ccc;font-size:12px;color:#555;"><strong>Note:</strong> ${remarks}</div>`:''}
+    <div style="text-align:center;font-size:10px;color:#aaa;margin-top:18px;border-top:1px solid #eee;padding-top:10px;">
+      This is a computer-generated certificate issued by ${schoolName}. · Generated on ${new Date().toLocaleDateString('en-IN')}
+    </div>`;
+
+  const body = buildCertBody(doc.type, {stuName, stuClass, stuRoll, stuAdm, stuDob, stuGender, stuGuardian, purpose, session, schoolName, issuedDate, stu, remarks});
+
+  return `<div style="max-width:720px;margin:0 auto;font-family:'Times New Roman',Times,serif;font-size:13px;color:#111;line-height:1.8;">${header}${body}${footer}</div>`;
+}
+
+function buildCertBody(type, d){
+  const p = `<p style="text-align:justify;margin-bottom:12px;">`;
+  const field = (lbl,val)=>`<tr><td style="padding:5px 12px 5px 0;font-weight:700;color:#333;white-space:nowrap;width:180px;">${lbl}</td><td style="padding:5px 0;border-bottom:1px dotted #ccc;color:#111;">${val}</td></tr>`;
+
+  switch(type){
+
+    case 'bonafide': return `
+      ${p}This is to certify that <strong>${d.stuName}</strong>, S/o D/o <strong>${d.stuGuardian}</strong>, is a <em>bonafide student</em> of this institution.</p>
+      <table style="width:100%;border-collapse:collapse;margin:12px 0;">
+        ${field('Admission No.',   d.stuAdm)}
+        ${field('Class / Section', d.stuClass)}
+        ${field('Roll Number',     d.stuRoll)}
+        ${field('Date of Birth',   d.stuDob)}
+        ${field('Gender',          d.stuGender)}
+        ${field('Academic Session',d.session)}
+      </table>
+      ${p}This certificate is issued on the request of the student for the purpose of <strong>${d.purpose}</strong>.</p>`;
+
+    case 'character': return `
+      ${p}This is to certify that <strong>${d.stuName}</strong>, S/o D/o <strong>${d.stuGuardian}</strong>, studying in <strong>Class ${d.stuClass}</strong> (Admission No. <strong>${d.stuAdm}</strong>) of this school during the session <strong>${d.session}</strong>, bears a <em>good moral character</em>.</p>
+      ${p}During their stay in this institution, the student has maintained excellent conduct and discipline. No adverse remarks of any kind have been recorded against this student.</p>
+      ${p}This certificate is issued on request for <strong>${d.purpose}</strong>.</p>`;
+
+    case 'transfer': return `
+      ${p}This is to certify that <strong>${d.stuName}</strong>, S/o D/o <strong>${d.stuGuardian}</strong>, was a regular student of this school.</p>
+      <table style="width:100%;border-collapse:collapse;margin:12px 0;">
+        ${field('Admission No.',    d.stuAdm)}
+        ${field('Class Last Studied',d.stuClass)}
+        ${field('Roll Number',      d.stuRoll)}
+        ${field('Date of Birth',    d.stuDob)}
+        ${field('Gender',           d.stuGender)}
+        ${field('Academic Session', d.session)}
+        ${field('Reason for Leaving',d.purpose||'—')}
+      </table>
+      ${p}The student's conduct and character have been <strong>Good</strong> throughout their tenure. The student is hereby granted <em>Transfer Certificate</em> (TC) and is free to seek admission to any other institution.</p>
+      ${p}All dues have been cleared. There are no outstanding demands against this student.</p>`;
+
+    case 'migration': return `
+      ${p}This is to certify that <strong>${d.stuName}</strong>, S/o D/o <strong>${d.stuGuardian}</strong>, was a bonafide student of this school.</p>
+      <table style="width:100%;border-collapse:collapse;margin:12px 0;">
+        ${field('Admission No.',  d.stuAdm)}
+        ${field('Class / Section',d.stuClass)}
+        ${field('Roll Number',    d.stuRoll)}
+        ${field('Date of Birth',  d.stuDob)}
+        ${field('Session',        d.session)}
+      </table>
+      ${p}The student has cleared all dues and obligations to the school. This <em>Migration Certificate</em> is issued to enable the student to seek admission in another Board / University for the purpose of <strong>${d.purpose}</strong>.</p>`;
+
+    case 'marksheet': {
+      const data = ERP.loadData();
+      const stuMarks = (data.marks||[]).filter(m=>m.studentId===(d.stu?d.stu.id:null));
+      const examRows = stuMarks.map(m=>{
+        const exam=(data.exams||[]).find(e=>e.id===m.examId);
+        return `<tr>
+          <td style="padding:6px 10px;border:1px solid #ddd;">${esc(exam?exam.name:'—')}</td>
+          <td style="padding:6px 10px;border:1px solid #ddd;text-align:center;">${m.totalObtained}/${m.totalMax}</td>
+          <td style="padding:6px 10px;border:1px solid #ddd;text-align:center;">${m.percentage}%</td>
+          <td style="padding:6px 10px;border:1px solid #ddd;text-align:center;font-weight:700;">${m.overallGrade}</td>
+          <td style="padding:6px 10px;border:1px solid #ddd;text-align:center;font-weight:700;color:${m.result==='Pass'?'#16a34a':'#dc2626'};">${m.result}</td>
+          <td style="padding:6px 10px;border:1px solid #ddd;text-align:center;">#${m.rank||'—'}</td>
+        </tr>`;
+      }).join('');
+      return `
+        ${p}This is to certify the academic performance of <strong>${d.stuName}</strong>, studying in Class <strong>${d.stuClass}</strong>, during the academic session <strong>${d.session}</strong>.</p>
+        <table style="width:100%;border-collapse:collapse;margin:14px 0;font-size:12px;">
+          ${field('Admission No.',   d.stuAdm)}
+          ${field('Class / Section', d.stuClass)}
+          ${field('Roll Number',     d.stuRoll)}
+        </table>
+        ${stuMarks.length?`
+        <table style="width:100%;border-collapse:collapse;font-size:12px;margin:14px 0;">
+          <thead><tr style="background:#f0f0f0;">
+            <th style="padding:7px 10px;border:1px solid #ddd;text-align:left;">Exam</th>
+            <th style="padding:7px 10px;border:1px solid #ddd;text-align:center;">Marks</th>
+            <th style="padding:7px 10px;border:1px solid #ddd;text-align:center;">Percentage</th>
+            <th style="padding:7px 10px;border:1px solid #ddd;text-align:center;">Grade</th>
+            <th style="padding:7px 10px;border:1px solid #ddd;text-align:center;">Result</th>
+            <th style="padding:7px 10px;border:1px solid #ddd;text-align:center;">Rank</th>
+          </tr></thead>
+          <tbody>${examRows}</tbody>
+        </table>` : `${p}No mark records found for this student.</p>`}`;
+    }
+
+    case 'fee_receipt': {
+      const data = ERP.loadData();
+      const payments = (data.feePayments||[]).filter(p=>p.studentId===(d.stu?d.stu.id:null)&&p.status==='Paid');
+      const totalPaid= payments.reduce((s,p)=>s+(p.amountPaid||0),0);
+      return `
+        ${p}This is to certify that <strong>${d.stuName}</strong>, S/o D/o <strong>${d.stuGuardian}</strong>, studying in Class <strong>${d.stuClass}</strong> (Admission No. <strong>${d.stuAdm}</strong>), has <em>cleared all fee dues</em> for the session <strong>${d.session}</strong>.</p>
+        ${payments.length?`<p style="margin-bottom:12px;">Total amount paid: <strong>₹${Number(totalPaid).toLocaleString('en-IN')}</strong> across ${payments.length} payment transaction${payments.length!==1?'s':''}.</p>`:''}
+        ${p}There are no outstanding fee dues against this student as of <strong>${d.issuedDate}</strong>. This certificate is issued for <strong>${d.purpose}</strong>.</p>`;
+    }
+
+    case 'sports': return `
+      ${p}This is to certify that <strong>${d.stuName}</strong>, studying in Class <strong>${d.stuClass}</strong> of this school, has demonstrated outstanding sports achievement.</p>
+      ${p}This certificate is issued in recognition of the student's participation and performance. The student has shown commendable sportsmanship and dedication.</p>
+      ${p}Purpose: <strong>${d.purpose}</strong> &nbsp;·&nbsp; Session: <strong>${d.session}</strong></p>`;
+
+    default: return `
+      ${p}This is to certify that <strong>${d.stuName}</strong>, S/o D/o <strong>${d.stuGuardian}</strong>, is / was a student of this institution in Class <strong>${d.stuClass}</strong> during the session <strong>${d.session}</strong>.</p>
+      ${p}This certificate is issued on request for the purpose of <strong>${d.purpose}</strong>.</p>`;
+  }
+}
+
+/* ══ INIT ══ */
+(function init(){
+  lucide.createIcons();
+  const u = ERP.getAdminSession();
+  if(u && u.permissions && u.permissions.docs){
+    bootPortal(u);
+  } else {
+    const data = ERP.loadData();
+    document.getElementById('lc-school').textContent = data.settings.schoolName||'School ERP';
+    lucide.createIcons();
+  }
+})();
+</script>
+</body>
+</html>

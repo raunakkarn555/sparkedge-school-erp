@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Fee Management — School ERP</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#080810;--bg-card:#0E0E1A;--bg-raised:#141422;--bg-hover:#1A1A2A;
+  --border:#1E1E30;--border-hi:#2A2A40;
+  --accent:#FF6B35;--accent2:#FF3CAC;--gold:#FFB347;
+  --green:#22C55E;--blue:#3B82F6;--red:#EF4444;--purple:#9B7FD4;--yellow:#F59E0B;
+  --text:#F0F0FA;--text-muted:#7A7A9A;--text-dim:#3A3A5A;
+  --radius:12px;--radius-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px;}
+.lucide{width:16px;height:16px;stroke-width:2;flex-shrink:0;}
+.lucide-lg{width:20px;height:20px;}
+.lucide-xl{width:24px;height:24px;}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;}
+#loginScreen::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(255,107,53,.09) 0%,transparent 65%);border-radius:50%;pointer-events:none;}
+.lc{position:relative;background:var(--bg-card);border:1px solid rgba(255,107,53,.2);border-radius:20px;padding:42px 38px;width:420px;max-width:94vw;box-shadow:0 40px 80px rgba(0,0,0,.5);}
+.lc-icon{width:64px;height:64px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.lc-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;text-align:center;margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:28px;line-height:1.6;}
+.lc-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 14px;font-size:12px;color:#EF4444;margin-bottom:12px;display:none;align-items:center;gap:6px;}
+.lc-field{position:relative;margin-bottom:14px;}
+.lc-field input{width:100%;background:var(--bg-raised);border:1px solid var(--border);border-radius:10px;padding:12px 46px 12px 16px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+.lc-field input:focus{border-color:rgba(255,107,53,.5);box-shadow:0 0 0 3px rgba(255,107,53,.07);}
+.lc-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;padding:4px;}
+.lc-eye:hover{color:var(--text);}
+.lc-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.lc-btn:hover{opacity:.88;}
+.lc-hint{text-align:center;font-size:11px;color:var(--text-dim);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:5px;}
+@keyframes shake{0%,100%{transform:translateX(0);}30%{transform:translateX(-6px);}70%{transform:translateX(6px);}}
+.shake{animation:shake .32s ease;}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform .25s ease;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-sess{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-top:1px;}
+.sb-user{margin:10px 12px 4px;padding:9px 12px;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.14);border-radius:8px;display:flex;align-items:center;gap:8px;}
+.sb-user-av{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
+.sb-user-info{min-width:0;}
+.sb-user-sub{font-size:10px;color:var(--text-muted);}
+.sb-user-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-role-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 7px;border-radius:4px;margin-top:3px;}
+.sb-role-owner{background:rgba(255,179,71,.15);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.sb-role-staff{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:var(--blue);}
+.sb-nav{padding:8px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:1px;}
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:10px 8px 4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .13s;border:none;background:none;width:100%;text-align:left;text-decoration:none;}
+.nav-item:hover{background:var(--bg-raised);color:var(--text);}
+.nav-item.active{background:rgba(255,107,53,.11);color:var(--accent);border:1px solid rgba(255,107,53,.18);}
+.nav-item.active .lucide{stroke:var(--accent);}
+.nav-icon{display:flex;align-items:center;width:18px;flex-shrink:0;}
+.nav-ext{margin-left:auto;opacity:.4;}
+.sb-foot{padding:10px 8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:1px;}
+.sb-foot-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;font-size:12px;color:var(--text-muted);background:none;border:none;cursor:pointer;width:100%;text-align:left;transition:all .13s;font-family:'DM Sans',sans-serif;}
+.sb-foot-btn:hover{background:var(--bg-raised);color:var(--text);}
+.sb-foot-btn.red:hover{color:var(--red);}
+.sb-footer-brand{padding:8px 12px 10px;border-top:1px solid var(--border);font-size:9px;color:var(--text-dim);line-height:1.5;text-align:center;letter-spacing:.3px;}
+
+/* ── MAIN ── */
+.main{margin-left:230px;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{padding:13px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,16,.9);backdrop-filter:blur(14px);position:sticky;top:0;z-index:40;}
+.tb-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;}
+.tb-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.tb-right{display:flex;align-items:center;gap:7px;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:var(--radius-sm);border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.btn-primary:hover{opacity:.88;}
+.btn-secondary{background:var(--bg-raised);border:1px solid var(--border);color:var(--text-muted);}
+.btn-secondary:hover{border-color:var(--border-hi);color:var(--text);}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text-muted);}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--text);}
+.btn-green{background:rgba(34,197,94,.11);border:1px solid rgba(34,197,94,.28);color:var(--green);}
+.btn-green:hover{background:rgba(34,197,94,.2);}
+.btn-blue{background:rgba(59,130,246,.11);border:1px solid rgba(59,130,246,.28);color:var(--blue);}
+.btn-blue:hover{background:rgba(59,130,246,.2);}
+.btn-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:var(--red);}
+.btn-red:hover{background:rgba(239,68,68,.18);}
+.btn-gold{background:rgba(255,179,71,.11);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.btn-sm{padding:5px 11px;font-size:12px;}
+
+/* ── PAGE VIEWS ── */
+.page{display:none;padding:24px;animation:pgIn .18s ease;flex:1;}
+.page.active{display:block;}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:border-color .15s;}
+.stat-card:hover{border-color:var(--border-hi);}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.stat-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.stat-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;line-height:1;}
+.stat-sub{font-size:11px;color:var(--text-muted);margin-top:5px;}
+
+/* ── CARD ── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:18px;}
+.card-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-hdr-icon{width:28px;height:28px;border-radius:7px;background:rgba(255,107,53,.09);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-hdr-icon .lucide{width:14px;height:14px;stroke:var(--accent);}
+.card-hdr-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.card-hdr-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.card-body{padding:18px;}
+
+/* ── PILLS ── */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.pill-green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);color:var(--green);}
+.pill-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:var(--red);}
+.pill-gold{background:rgba(255,179,71,.12);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.pill-blue{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:var(--blue);}
+.pill-gray{background:rgba(120,120,160,.1);border:1px solid rgba(120,120,160,.2);color:var(--text-muted);}
+.pill-purple{background:rgba(155,127,212,.12);border:1px solid rgba(155,127,212,.28);color:var(--purple);}
+
+/* ── FORM ── */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.f{display:flex;flex-direction:column;gap:5px;}
+.f.full{grid-column:1/-1;}
+.f label{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-muted);}
+.f input,.f select,.f textarea{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;width:100%;}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:rgba(255,107,53,.45);}
+.f textarea{resize:vertical;min-height:72px;line-height:1.5;}
+.f select option{background:var(--bg-card);}
+
+/* ── MODAL ── */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:580px;overflow:hidden;animation:mIn .2s ease;max-height:92vh;overflow-y:auto;}
+.modal-lg{max-width:700px;}
+@keyframes mIn{from{transform:scale(.95);opacity:0;}to{transform:scale(1);opacity:1;}}
+.modal-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg-card);z-index:10;}
+.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.modal-x{background:none;border:none;color:var(--text-muted);cursor:pointer;line-height:1;padding:4px;border-radius:6px;display:flex;align-items:center;}
+.modal-x:hover{background:var(--bg-raised);color:var(--text);}
+.modal-body{padding:22px;display:flex;flex-direction:column;gap:14px;}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;position:sticky;bottom:0;background:var(--bg-card);}
+
+/* ── TAB NAV ── */
+.tab-nav{display:flex;gap:4px;padding:4px;background:var(--bg-raised);border-radius:10px;margin-bottom:20px;border:1px solid var(--border);}
+.tab-btn{flex:1;padding:8px 14px;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text-muted);border-radius:7px;cursor:pointer;transition:all .14s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.tab-btn.active{background:var(--bg-card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.tab-btn .lucide{width:14px;height:14px;}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .12s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--bg-raised);}
+tbody td{padding:11px 14px;vertical-align:middle;}
+
+/* ── FEE STRUCTURE CARD ── */
+.fs-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:border-color .14s;}
+.fs-card:hover{border-color:var(--border-hi);}
+.fs-icon{width:44px;height:44px;border-radius:11px;background:rgba(255,107,53,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fs-icon .lucide{width:20px;height:20px;stroke:var(--accent);}
+.fs-name{font-size:14px;font-weight:700;margin-bottom:2px;}
+.fs-meta{font-size:12px;color:var(--text-muted);}
+.fs-amt{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--accent);white-space:nowrap;}
+.fs-actions{display:flex;gap:6px;margin-left:auto;align-items:center;}
+
+/* ── FILTERS BAR ── */
+.filters-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.filter-select{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);outline:none;transition:border-color .15s;}
+.filter-select:focus{border-color:rgba(255,107,53,.4);}
+.search-box{display:flex;align-items:center;gap:6px;background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;flex:1;min-width:200px;}
+.search-box input{background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);width:100%;}
+.search-box input::placeholder{color:var(--text-muted);}
+.search-box .lucide{stroke:var(--text-muted);flex-shrink:0;}
+
+/* ── RECEIPT PREVIEW ── */
+.receipt{background:#fff;color:#000;border-radius:10px;padding:28px;font-family:'DM Sans',sans-serif;font-size:13px;}
+.receipt-hdr{text-align:center;border-bottom:2px solid #eee;padding-bottom:14px;margin-bottom:14px;}
+.receipt-school{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#111;}
+.receipt-sub{font-size:11px;color:#666;margin-top:2px;}
+.receipt-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#FF6B35;margin-top:8px;letter-spacing:2px;text-transform:uppercase;}
+.receipt-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:12px;}
+.receipt-row:last-child{border-bottom:none;}
+.receipt-row .lbl{color:#555;}
+.receipt-row .val{font-weight:600;color:#111;}
+.receipt-total{display:flex;justify-content:space-between;padding:10px 14px;background:#FFF3EE;border-radius:8px;margin-top:10px;}
+.receipt-total .lbl{font-weight:700;color:#FF6B35;}
+.receipt-total .val{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#FF6B35;}
+.receipt-footer{text-align:center;font-size:10px;color:#999;margin-top:14px;padding-top:12px;border-top:1px solid #eee;}
+.receipt-sig{margin-top:24px;display:flex;justify-content:space-between;font-size:11px;color:#666;}
+
+/* ── RESTRICTED ── */
+.restricted-notice{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.restricted-notice .lucide{stroke:var(--red);width:18px;height:18px;flex-shrink:0;}
+.restricted-notice-text{font-size:13px;color:var(--text-muted);line-height:1.5;}
+.restricted-notice-text strong{color:var(--text);}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:48px 20px;color:var(--text-dim);}
+.empty-ic{display:flex;justify-content:center;margin-bottom:12px;}
+.empty-ic .lucide{width:36px;height:36px;stroke:var(--text-dim);stroke-width:1.25;}
+.empty-tx{font-size:14px;}
+
+/* ── INFO BOX ── */
+.info-box{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);border-radius:9px;padding:12px 14px;font-size:12px;color:var(--text-muted);line-height:1.7;}
+
+/* ── PROGRESS BAR ── */
+.prog-wrap{background:var(--bg-raised);border-radius:4px;height:6px;overflow:hidden;}
+.prog-bar{height:100%;border-radius:4px;transition:width .3s ease;}
+
+/* ── FOOTER ── */
+.main-footer{padding:14px 24px;border-top:1px solid var(--border);background:var(--bg-card);font-size:10px;color:var(--text-dim);display:flex;align-items:center;justify-content:space-between;letter-spacing:.4px;text-transform:uppercase;}
+
+/* ── MOBILE ── */
+.mob-bar{display:none;position:fixed;top:0;left:0;right:0;height:54px;background:var(--bg-card);border-bottom:1px solid var(--border);z-index:60;align-items:center;padding:0 16px;gap:12px;}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49;}
+.sb-overlay.open{display:block;}
+.sidebar.mob-open{transform:translateX(0)!important;}
+@media(max-width:900px){
+  .mob-bar{display:flex!important;}
+  .sidebar{transform:translateX(-100%);}
+  .main{margin-left:0;padding-top:54px;}
+  .topbar{top:54px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .fg{grid-template-columns:1fr;}
+  .fg-3{grid-template-columns:1fr;}
+  .filters-bar{gap:6px;}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr;}
+  .page{padding:14px;}
+  .topbar{padding:10px 14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="loginScreen">
+  <div class="lc">
+    <div class="lc-icon">
+      <i data-lucide="indian-rupee" style="width:30px;height:30px;stroke:#fff;stroke-width:1.75;"></i>
+    </div>
+    <div class="lc-title" id="lc-school">School ERP</div>
+    <div class="lc-sub">Fee Management Portal — Secure Access</div>
+    <div class="lc-err" id="lc-err">
+      <i data-lucide="alert-triangle" style="width:14px;height:14px;flex-shrink:0;"></i>
+      <span>Incorrect password. Please try again.</span>
+    </div>
+    <div class="lc-field">
+      <input type="password" id="lc-pwd" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="lc-eye" id="lc-eye" onclick="toggleEye()">
+        <i data-lucide="eye" style="width:16px;height:16px;stroke:currentColor;"></i>
+      </button>
+    </div>
+    <button class="lc-btn" onclick="doLogin()">
+      <i data-lucide="log-in" style="width:16px;height:16px;stroke:#fff;"></i>
+      Unlock Fee Portal
+    </button>
+    <div class="lc-hint">
+      <i data-lucide="lock" style="width:11px;height:11px;stroke:currentColor;"></i>
+      All data stored locally · GitHub Pages hosted
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MOBILE BAR ══════════ -->
+<div class="mob-bar" id="mobBar">
+  <button onclick="toggleSB()" style="background:none;border:none;color:var(--text);cursor:pointer;display:flex;align-items:center;">
+    <i data-lucide="menu" style="width:22px;height:22px;stroke:currentColor;"></i>
+  </button>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="sb-icon" style="width:28px;height:28px;">
+      <i data-lucide="indian-rupee" style="width:14px;height:14px;stroke:#fff;stroke-width:2;"></i>
+    </div>
+    <span id="mob-school" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;"></span>
+  </div>
+</div>
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSB()"></div>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-icon">
+      <i data-lucide="indian-rupee" style="width:18px;height:18px;stroke:#fff;stroke-width:2;"></i>
+    </div>
+    <div style="flex:1;min-width:0;">
+      <div class="sb-name" id="sb-school">School ERP</div>
+      <div class="sb-sess" id="sb-sess">2025-26</div>
+    </div>
+  </div>
+
+  <div class="sb-user">
+    <div class="sb-user-av" id="sb-user-av">A</div>
+    <div class="sb-user-info" style="flex:1;min-width:0;">
+      <div class="sb-user-sub">Logged in as</div>
+      <div class="sb-user-name" id="sb-user">—</div>
+      <div id="sb-role-badge" class="sb-role-badge sb-role-owner"></div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="nav-lbl">Fee Management</div>
+    <button class="nav-item active" onclick="showTab('overview')">
+      <span class="nav-icon"><i data-lucide="layout-dashboard" class="lucide"></i></span> Overview
+    </button>
+    <button class="nav-item" onclick="showTab('structures')">
+      <span class="nav-icon"><i data-lucide="layers" class="lucide"></i></span> Fee Structures
+    </button>
+    <button class="nav-item" onclick="showTab('collect')">
+      <span class="nav-icon"><i data-lucide="plus-circle" class="lucide"></i></span> Collect Fee
+    </button>
+    <button class="nav-item" onclick="showTab('ledger')">
+      <span class="nav-icon"><i data-lucide="scroll-text" class="lucide"></i></span> Payment Ledger
+    </button>
+    <button class="nav-item" onclick="showTab('defaulters')">
+      <span class="nav-icon"><i data-lucide="alert-circle" class="lucide"></i></span> Defaulters
+    </button>
+    <div class="nav-lbl">Navigation</div>
+    <a class="nav-item" href="admin.html"><span class="nav-icon"><i data-lucide="shield" class="lucide"></i></span> Admin Panel</a>
+    <a class="nav-item" href="students.html"><span class="nav-icon"><i data-lucide="users" class="lucide"></i></span> Students</a>
+    <a class="nav-item" href="teachers.html"><span class="nav-icon"><i data-lucide="user-check" class="lucide"></i></span> Teachers</a>
+  </nav>
+
+  <div class="sb-foot">
+    <button class="sb-foot-btn" onclick="ERP.exportData()">
+      <i data-lucide="download" style="width:13px;height:13px;stroke:currentColor;"></i> Export Data
+    </button>
+    <button class="sb-foot-btn" onclick="ERP.openImportModal()">
+      <i data-lucide="upload" style="width:13px;height:13px;stroke:currentColor;"></i> Import Data
+    </button>
+    <button class="sb-foot-btn red" onclick="doLogout()">
+      <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
+    </button>
+  </div>
+  <div class="sb-footer-brand">SparkEdge Internal Tools</div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main" id="mainWrap" style="display:none;">
+  <div class="topbar">
+    <div>
+      <div class="tb-title" id="tb-title">Fee Overview</div>
+      <div class="tb-sub" id="tb-sub">Summary of collections &amp; dues</div>
+    </div>
+    <div class="tb-right" id="topbarActions">
+      <button class="btn btn-primary btn-sm" onclick="showTab('collect')">
+        <i data-lucide="plus" style="width:14px;height:14px;stroke:#fff;"></i> Collect Fee
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ PAGE: OVERVIEW ══ -->
+  <div class="page active" id="page-overview">
+    <div class="stats-row" id="statsRow">
+      <!-- built by renderStats() -->
+    </div>
+    <!-- Collection chart & class-wise breakdown -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;" id="overviewGrid">
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-hdr-icon"><i data-lucide="pie-chart" class="lucide"></i></div>
+          <div>
+            <div class="card-hdr-title">Status Breakdown</div>
+            <div class="card-hdr-sub">Current session</div>
+          </div>
+        </div>
+        <div class="card-body" id="statusBreakdown"><!-- built --></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-hdr-icon"><i data-lucide="trending-up" class="lucide"></i></div>
+          <div>
+            <div class="card-hdr-title">Recent Payments</div>
+            <div class="card-hdr-sub">Last 5 transactions</div>
+          </div>
+        </div>
+        <div class="card-body" id="recentPayments"><!-- built --></div>
+      </div>
+    </div>
+    <!-- Class-wise collection -->
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon"><i data-lucide="bar-chart-2" class="lucide"></i></div>
+        <div>
+          <div class="card-hdr-title">Class-wise Collection</div>
+          <div class="card-hdr-sub">Paid vs due per class</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" style="margin-left:auto;" onclick="renderStats();renderOverview();">
+          <i data-lucide="refresh-cw" style="width:13px;height:13px;stroke:currentColor;"></i> Refresh
+        </button>
+      </div>
+      <div class="card-body" id="classWise"><!-- built --></div>
+    </div>
+  </div>
+
+  <!-- ══ PAGE: STRUCTURES ══ -->
+  <div class="page" id="page-structures">
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon"><i data-lucide="layers" class="lucide"></i></div>
+        <div>
+          <div class="card-hdr-title">Fee Structures</div>
+          <div class="card-hdr-sub">Define fee heads &amp; amounts</div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-left:auto;" onclick="openStructureModal()">
+          <i data-lucide="plus" style="width:13px;height:13px;stroke:#fff;"></i> Add Structure
+        </button>
+      </div>
+      <div class="card-body" id="structuresList"><!-- built --></div>
+    </div>
+  </div>
+
+  <!-- ══ PAGE: COLLECT FEE ══ -->
+  <div class="page" id="page-collect">
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon"><i data-lucide="plus-circle" class="lucide"></i></div>
+        <div>
+          <div class="card-hdr-title">Collect Fee</div>
+          <div class="card-hdr-sub">Record a new payment</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="fg" style="margin-bottom:14px;">
+          <div class="f">
+            <label>CLASS</label>
+            <select id="cf-class" onchange="cfUpdateStudents()">
+              <option value="">— Select Class —</option>
+            </select>
+          </div>
+          <div class="f">
+            <label>SECTION</label>
+            <select id="cf-section" onchange="cfUpdateStudents()">
+              <option value="">— All Sections —</option>
+            </select>
+          </div>
+        </div>
+        <div class="f" style="margin-bottom:14px;">
+          <label>STUDENT</label>
+          <select id="cf-student" onchange="cfStudentSelected()">
+            <option value="">— Select Student —</option>
+          </select>
+        </div>
+        <div id="cf-student-info" style="display:none;margin-bottom:14px;"></div>
+        <div id="cf-form-area" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PAGE: LEDGER ══ -->
+  <div class="page" id="page-ledger">
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon"><i data-lucide="scroll-text" class="lucide"></i></div>
+        <div>
+          <div class="card-hdr-title">Payment Ledger</div>
+          <div class="card-hdr-sub">All recorded transactions</div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:8px;">
+          <button class="btn btn-ghost btn-sm" onclick="printLedger()">
+            <i data-lucide="printer" style="width:13px;height:13px;stroke:currentColor;"></i> Print
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="filters-bar">
+          <div class="search-box">
+            <i data-lucide="search" class="lucide"></i>
+            <input type="text" id="ldg-search" placeholder="Search student, receipt…" oninput="renderLedger()"/>
+          </div>
+          <select class="filter-select" id="ldg-class" onchange="renderLedger()">
+            <option value="">All Classes</option>
+          </select>
+          <select class="filter-select" id="ldg-status" onchange="renderLedger()">
+            <option value="">All Status</option>
+            <option value="Paid">Paid</option>
+            <option value="Partial">Partial</option>
+            <option value="Due">Due</option>
+          </select>
+          <select class="filter-select" id="ldg-month" onchange="renderLedger()">
+            <option value="">All Months</option>
+          </select>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Receipt #</th>
+                <th>Student</th>
+                <th>Class</th>
+                <th>Fee Head</th>
+                <th>Month</th>
+                <th>Amount</th>
+                <th>Discount</th>
+                <th>Net</th>
+                <th>Paid</th>
+                <th>Balance</th>
+                <th>Mode</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-tbody"><!-- built --></tbody>
+          </table>
+        </div>
+        <div id="ledger-empty" class="empty" style="display:none;">
+          <div class="empty-ic"><i data-lucide="inbox" class="lucide"></i></div>
+          <div class="empty-tx">No payment records found</div>
+        </div>
+        <div id="ledger-summary" style="margin-top:14px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PAGE: DEFAULTERS ══ -->
+  <div class="page" id="page-defaulters">
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon" style="background:rgba(239,68,68,.09);">
+          <i data-lucide="alert-circle" class="lucide" style="stroke:var(--red);"></i>
+        </div>
+        <div>
+          <div class="card-hdr-title">Fee Defaulters</div>
+          <div class="card-hdr-sub">Students with pending dues</div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:8px;">
+          <select class="filter-select" id="def-class" onchange="renderDefaulters()">
+            <option value="">All Classes</option>
+          </select>
+          <button class="btn btn-ghost btn-sm" onclick="printDefaulters()">
+            <i data-lucide="printer" style="width:13px;height:13px;stroke:currentColor;"></i> Print
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>ID</th>
+                <th>Class</th>
+                <th>Guardian</th>
+                <th>Phone</th>
+                <th>Total Due</th>
+                <th>Partial Due</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="defaulters-tbody"><!-- built --></tbody>
+          </table>
+        </div>
+        <div id="defaulters-empty" class="empty" style="display:none;">
+          <div class="empty-ic"><i data-lucide="check-circle-2" class="lucide" style="stroke:var(--green);"></i></div>
+          <div class="empty-tx" style="color:var(--green);">No defaulters! All students are up to date.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <span>Fee Management Portal</span>
+    <span id="footerRight"></span>
+  </footer>
+</div>
+
+<!-- ══════════ MODAL: ADD/EDIT FEE STRUCTURE ══════════ -->
+<div class="modal-ov" id="structureModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title"><i data-lucide="layers" style="width:18px;height:18px;stroke:var(--accent);"></i> <span id="sm-title">Add Fee Structure</span></div>
+      <button class="modal-x" onclick="closeModal('structureModal')"><i data-lucide="x" class="lucide"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="sm-id"/>
+      <div class="fg">
+        <div class="f full">
+          <label>FEE NAME *</label>
+          <input type="text" id="sm-name" placeholder="e.g. Monthly Tuition Fee"/>
+        </div>
+        <div class="f">
+          <label>AMOUNT (₹) *</label>
+          <input type="number" id="sm-amount" placeholder="0" min="0"/>
+        </div>
+        <div class="f">
+          <label>FREQUENCY</label>
+          <select id="sm-freq">
+            <option value="Monthly">Monthly</option>
+            <option value="Quarterly">Quarterly</option>
+            <option value="Half-Yearly">Half-Yearly</option>
+            <option value="Annually">Annually</option>
+            <option value="One-Time">One-Time</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>LATE FINE (₹/day)</label>
+          <input type="number" id="sm-fine" placeholder="0" min="0"/>
+        </div>
+        <div class="f">
+          <label>DUE DAY OF MONTH</label>
+          <input type="number" id="sm-dueday" placeholder="10" min="1" max="31"/>
+        </div>
+        <div class="f">
+          <label>SESSION</label>
+          <input type="text" id="sm-session" placeholder="2025-26"/>
+        </div>
+      </div>
+      <div class="f">
+        <label>APPLICABLE CLASSES (hold Ctrl/Cmd to select multiple)</label>
+        <select id="sm-classes" multiple style="min-height:110px;"></select>
+      </div>
+      <div class="info-box">Classes left unselected means this fee applies to <strong style="color:var(--text);">all classes</strong>. Select specific classes to restrict.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('structureModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveStructure()">
+        <i data-lucide="save" style="width:14px;height:14px;stroke:#fff;"></i> Save Structure
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: COLLECT PAYMENT ══════════ -->
+<div class="modal-ov" id="payModal">
+  <div class="modal modal-lg">
+    <div class="modal-hdr">
+      <div class="modal-title"><i data-lucide="indian-rupee" style="width:18px;height:18px;stroke:var(--green);"></i> Record Payment</div>
+      <button class="modal-x" onclick="closeModal('payModal')"><i data-lucide="x" class="lucide"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="pm-id"/>
+      <input type="hidden" id="pm-studentId"/>
+      <div class="fg-3">
+        <div class="f">
+          <label>FEE HEAD *</label>
+          <select id="pm-feeStruct" onchange="pmUpdateAmount()">
+            <option value="">— Select —</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>MONTH / PERIOD</label>
+          <select id="pm-month">
+            <option value="April">April</option><option value="May">May</option>
+            <option value="June">June</option><option value="July">July</option>
+            <option value="August">August</option><option value="September">September</option>
+            <option value="October">October</option><option value="November">November</option>
+            <option value="December">December</option><option value="January">January</option>
+            <option value="February">February</option><option value="March">March</option>
+            <option value="Annual">Annual</option><option value="One-Time">One-Time</option>
+            <option value="Q1 (Apr-Jun)">Q1 (Apr-Jun)</option>
+            <option value="Q2 (Jul-Sep)">Q2 (Jul-Sep)</option>
+            <option value="Q3 (Oct-Dec)">Q3 (Oct-Dec)</option>
+            <option value="Q4 (Jan-Mar)">Q4 (Jan-Mar)</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>SESSION</label>
+          <input type="text" id="pm-session" placeholder="2025-26"/>
+        </div>
+        <div class="f">
+          <label>FEE AMOUNT (₹)</label>
+          <input type="number" id="pm-amount" placeholder="0" min="0" oninput="pmCalcNet()"/>
+        </div>
+        <div class="f">
+          <label>DISCOUNT (₹)</label>
+          <input type="number" id="pm-discount" placeholder="0" min="0" oninput="pmCalcNet()"/>
+        </div>
+        <div class="f">
+          <label>LATE FINE (₹)</label>
+          <input type="number" id="pm-fine" placeholder="0" min="0" oninput="pmCalcNet()"/>
+        </div>
+        <div class="f">
+          <label>NET AMOUNT (₹)</label>
+          <input type="number" id="pm-net" placeholder="0" min="0" readonly style="background:var(--bg);color:var(--accent);font-weight:700;"/>
+        </div>
+        <div class="f">
+          <label>AMOUNT PAID (₹) *</label>
+          <input type="number" id="pm-paid" placeholder="0" min="0" oninput="pmCalcBalance()"/>
+        </div>
+        <div class="f">
+          <label>BALANCE (₹)</label>
+          <input type="number" id="pm-balance" placeholder="0" readonly style="background:var(--bg);color:var(--red);font-weight:700;"/>
+        </div>
+        <div class="f">
+          <label>PAYMENT DATE</label>
+          <input type="date" id="pm-date"/>
+        </div>
+        <div class="f">
+          <label>PAYMENT MODE</label>
+          <select id="pm-mode">
+            <option value="Cash">Cash</option>
+            <option value="UPI">UPI</option>
+            <option value="Cheque">Cheque</option>
+            <option value="NEFT/RTGS">NEFT/RTGS</option>
+            <option value="Card">Card</option>
+            <option value="DD">Demand Draft</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>STATUS</label>
+          <select id="pm-status">
+            <option value="Paid">Paid</option>
+            <option value="Partial">Partial</option>
+            <option value="Due">Due</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>TRANSACTION / RECEIPT ID</label>
+          <input type="text" id="pm-txn" placeholder="Optional"/>
+        </div>
+        <div class="f">
+          <label>CHEQUE NO</label>
+          <input type="text" id="pm-cheque" placeholder="If cheque payment"/>
+        </div>
+        <div class="f">
+          <label>BANK NAME</label>
+          <input type="text" id="pm-bank" placeholder="If cheque / NEFT"/>
+        </div>
+        <div class="f full">
+          <label>REMARKS</label>
+          <input type="text" id="pm-remarks" placeholder="Optional note"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('payModal')">Cancel</button>
+      <button class="btn btn-green" onclick="savePayment()">
+        <i data-lucide="check" style="width:14px;height:14px;stroke:currentColor;"></i> Save &amp; Generate Receipt
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: RECEIPT VIEW ══════════ -->
+<div class="modal-ov" id="receiptModal">
+  <div class="modal modal-lg">
+    <div class="modal-hdr">
+      <div class="modal-title"><i data-lucide="receipt" style="width:18px;height:18px;stroke:var(--green);"></i> Fee Receipt</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-green btn-sm" onclick="printReceipt()">
+          <i data-lucide="printer" style="width:13px;height:13px;stroke:currentColor;"></i> Print
+        </button>
+        <button class="modal-x" onclick="closeModal('receiptModal')"><i data-lucide="x" class="lucide"></i></button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="receiptContent"><!-- built --></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   FEES.HTML — Fee Management Portal
+   Depends on: school_data.js (ERP global)
+════════════════════════════════════════════════════════════════ */
+
+let _user = null;
+
+/* ── AUTH ─────────────────────────────────────────────────── */
+function doLogin() {
+  const pwd = document.getElementById('lc-pwd').value;
+  const u   = ERP.authenticateAdmin(pwd);
+  if (!u) {
+    const err = document.getElementById('lc-err');
+    err.style.display = 'flex';
+    document.querySelector('.lc').classList.add('shake');
+    setTimeout(() => document.querySelector('.lc').classList.remove('shake'), 400);
+    return;
+  }
+  ERP.setAdminSession(u);
+  _user = u;
+  unlockApp();
+}
+
+function toggleEye() {
+  const inp = document.getElementById('lc-pwd');
+  const eye = document.querySelector('#lc-eye i');
+  if (inp.type === 'password') { inp.type = 'text'; eye.setAttribute('data-lucide','eye-off'); }
+  else                         { inp.type = 'password'; eye.setAttribute('data-lucide','eye'); }
+  lucide.createIcons();
+}
+
+function doLogout() {
+  ERP.logoutAdmin();
+}
+
+function unlockApp() {
+  if (!_user) return;
+
+  // Check fee permission
+  if (!_user.isOwner && !(_user.permissions && _user.permissions.fees)) {
+    showToast('⛔ You do not have permission to access Fee Management.', 'error');
+    setTimeout(() => { ERP.logoutAdmin(); }, 1500);
+    return;
+  }
+
+  const data = ERP.loadData();
+  document.getElementById('sb-school').textContent  = data.settings.schoolName || 'School ERP';
+  document.getElementById('mob-school').textContent = data.settings.schoolName || 'School ERP';
+  document.getElementById('sb-sess').textContent    = data.settings.currentSession || '';
+  document.getElementById('sb-user').textContent    = _user.name;
+  document.getElementById('sb-user-av').textContent = ERP.getInitials(_user.name);
+
+  const badge = document.getElementById('sb-role-badge');
+  if (_user.isOwner) {
+    badge.textContent = '👑 Owner';
+    badge.className   = 'sb-role-badge sb-role-owner';
+  } else {
+    badge.textContent = _user.role || 'Staff';
+    badge.className   = 'sb-role-badge sb-role-staff';
+  }
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainWrap').style.display    = 'flex';
+  document.getElementById('mainWrap').style.flexDirection = 'column';
+
+  // Populate session default
+  const sess = data.settings.currentSession || '2025-26';
+  ['pm-session','sm-session'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = sess;
+  });
+
+  populateClassDropdowns();
+  populateMonthFilters();
+  renderStats();
+  renderOverview();
+  renderStructures();
+  renderLedger();
+  renderDefaulters();
+  renderCollectPage();
+
+  lucide.createIcons();
+  document.getElementById('footerRight').textContent =
+    `🔐 INTERNAL TOOLS HUB · NOT FOR CLIENT DISTRIBUTION · © ${new Date().getFullYear()} SPARKEDGE`;
+}
+
+/* ── NAVIGATION ───────────────────────────────────────────── */
+const PAGE_META = {
+  overview:   { title:'Fee Overview',       sub:'Summary of collections & dues' },
+  structures: { title:'Fee Structures',     sub:'Manage fee heads & amounts' },
+  collect:    { title:'Collect Fee',        sub:'Record a new payment' },
+  ledger:     { title:'Payment Ledger',     sub:'All recorded transactions' },
+  defaulters: { title:'Fee Defaulters',     sub:'Students with pending dues' },
+};
+
+function showTab(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const pg = document.getElementById('page-' + name);
+  if (pg) pg.classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    if (btn.textContent.trim().toLowerCase().includes(name.replace('-',' ').split(' ')[0])) {
+      btn.classList.add('active');
+    }
+  });
+
+  const meta = PAGE_META[name] || {};
+  document.getElementById('tb-title').textContent = meta.title || name;
+  document.getElementById('tb-sub').textContent   = meta.sub || '';
+
+  if (name === 'overview')   { renderStats(); renderOverview(); }
+  if (name === 'structures') { renderStructures(); }
+  if (name === 'ledger')     { renderLedger(); }
+  if (name === 'defaulters') { renderDefaulters(); }
+
+  lucide.createIcons();
+  if (window.innerWidth <= 900) {
+    document.getElementById('sidebar').classList.remove('mob-open');
+    document.getElementById('sbOverlay').classList.remove('open');
+  }
+}
+
+function toggleSB() {
+  document.getElementById('sidebar').classList.toggle('mob-open');
+  document.getElementById('sbOverlay').classList.toggle('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+/* ── HELPERS ──────────────────────────────────────────────── */
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(d){ if(!d)return'—'; try{return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});}catch(e){return d;} }
+function fmtMoney(n){ return '₹'+Number(n||0).toLocaleString('en-IN'); }
+function getInitials(s){ return (s||'').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?'; }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+function populateClassDropdowns() {
+  const data    = ERP.loadData();
+  const classes = data.settings.classes || [];
+  const sections= data.settings.sections || [];
+  const selects = ['cf-class','ldg-class','def-class'];
+
+  selects.forEach(sid => {
+    const el = document.getElementById(sid);
+    if (!el) return;
+    while (el.options.length > 1) el.remove(1);
+    classes.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Class ' + c; el.appendChild(o); });
+  });
+
+  // cf-section
+  const secEl = document.getElementById('cf-section');
+  if (secEl) {
+    while (secEl.options.length > 1) secEl.remove(1);
+    sections.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = 'Section ' + s; secEl.appendChild(o); });
+  }
+
+  // sm-classes multiple
+  const smCls = document.getElementById('sm-classes');
+  if (smCls) {
+    smCls.innerHTML = '';
+    classes.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Class ' + c; smCls.appendChild(o); });
+  }
+}
+
+function populateMonthFilters() {
+  const months = ['April','May','June','July','August','September','October','November','December','January','February','March','Annual','One-Time','Q1 (Apr-Jun)','Q2 (Jul-Sep)','Q3 (Oct-Dec)','Q4 (Jan-Mar)'];
+  const el = document.getElementById('ldg-month');
+  if (!el) return;
+  while (el.options.length > 1) el.remove(1);
+  months.forEach(m => { const o = document.createElement('option'); o.value = m; o.textContent = m; el.appendChild(o); });
+}
+
+/* ── STATS ────────────────────────────────────────────────── */
+function renderStats() {
+  const data = ERP.loadData();
+  const payments = data.feePayments || [];
+  const students = (data.students||[]).filter(s => s.active !== false);
+
+  const totalCollected = payments.filter(p=>p.status==='Paid').reduce((s,p)=>s+(p.amountPaid||0),0);
+  const totalDue       = payments.filter(p=>p.status==='Due').reduce((s,p)=>s+(p.netAmount||0),0);
+  const totalPartial   = payments.filter(p=>p.status==='Partial').reduce((s,p)=>s+(p.balance||0),0);
+  const totalTxns      = payments.length;
+
+  const row = document.getElementById('statsRow');
+  if (!row) return;
+  row.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(34,197,94,.1);">
+        <i data-lucide="indian-rupee" style="width:20px;height:20px;stroke:var(--green);stroke-width:2;"></i>
+      </div>
+      <div class="stat-lbl">Total Collected</div>
+      <div class="stat-val" style="color:var(--green);">${fmtMoney(totalCollected)}</div>
+      <div class="stat-sub">${payments.filter(p=>p.status==='Paid').length} paid receipts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(239,68,68,.1);">
+        <i data-lucide="alert-circle" style="width:20px;height:20px;stroke:var(--red);stroke-width:2;"></i>
+      </div>
+      <div class="stat-lbl">Total Due</div>
+      <div class="stat-val" style="color:var(--red);">${fmtMoney(totalDue)}</div>
+      <div class="stat-sub">${payments.filter(p=>p.status==='Due').length} due records</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(255,179,71,.1);">
+        <i data-lucide="clock" style="width:20px;height:20px;stroke:var(--gold);stroke-width:2;"></i>
+      </div>
+      <div class="stat-lbl">Partial Pending</div>
+      <div class="stat-val" style="color:var(--gold);">${fmtMoney(totalPartial)}</div>
+      <div class="stat-sub">${payments.filter(p=>p.status==='Partial').length} partial records</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(59,130,246,.1);">
+        <i data-lucide="receipt" style="width:20px;height:20px;stroke:var(--blue);stroke-width:2;"></i>
+      </div>
+      <div class="stat-lbl">Transactions</div>
+      <div class="stat-val" style="color:var(--blue);">${totalTxns}</div>
+      <div class="stat-sub">${students.length} enrolled students</div>
+    </div>`;
+  lucide.createIcons();
+}
+
+/* ── OVERVIEW ─────────────────────────────────────────────── */
+function renderOverview() {
+  const data     = ERP.loadData();
+  const payments = data.feePayments || [];
+  const students = (data.students||[]).filter(s=>s.active!==false);
+  const classes  = data.settings.classes || [];
+
+  // Status breakdown
+  const paid    = payments.filter(p=>p.status==='Paid').reduce((s,p)=>s+(p.amountPaid||0),0);
+  const due     = payments.filter(p=>p.status==='Due').reduce((s,p)=>s+(p.netAmount||0),0);
+  const partial = payments.filter(p=>p.status==='Partial').reduce((s,p)=>s+(p.balance||0),0);
+  const total   = paid + due + partial || 1;
+
+  const sb = document.getElementById('statusBreakdown');
+  if (sb) {
+    sb.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        ${[
+          {lbl:'Collected', val:paid, color:'var(--green)', pct: Math.round(paid/total*100)},
+          {lbl:'Pending Due', val:due, color:'var(--red)',  pct: Math.round(due/total*100)},
+          {lbl:'Partial Balance', val:partial, color:'var(--gold)', pct: Math.round(partial/total*100)},
+        ].map(it => `
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:12px;font-weight:600;color:var(--text-muted);">${it.lbl}</span>
+              <span style="font-size:13px;font-weight:700;color:${it.color};">${fmtMoney(it.val)} <span style="font-size:11px;color:var(--text-dim);">(${it.pct}%)</span></span>
+            </div>
+            <div class="prog-wrap">
+              <div class="prog-bar" style="width:${it.pct}%;background:${it.color};"></div>
+            </div>
+          </div>`).join('')}
+      </div>`;
+  }
+
+  // Recent payments
+  const rp = document.getElementById('recentPayments');
+  if (rp) {
+    const recent = [...payments].sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)).slice(0,5);
+    if (!recent.length) {
+      rp.innerHTML = `<div class="empty"><div class="empty-ic"><i data-lucide="receipt" class="lucide"></i></div><div class="empty-tx">No payments yet</div></div>`;
+    } else {
+      rp.innerHTML = recent.map(p => {
+        const stu = students.find(s=>s.id===p.studentId);
+        const statusColor = p.status==='Paid'?'var(--green)':p.status==='Partial'?'var(--gold)':'var(--red)';
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <div>
+            <div style="font-size:13px;font-weight:600;">${esc(stu?stu.name:p.studentId)}</div>
+            <div style="font-size:11px;color:var(--text-muted);">${esc(p.feeName||'—')} · ${esc(p.month||'—')}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:13px;font-weight:700;color:var(--green);">${fmtMoney(p.amountPaid||0)}</div>
+            <span style="font-size:10px;font-weight:700;color:${statusColor};">${p.status}</span>
+          </div>
+        </div>`;
+      }).join('') + `<div style="margin-top:8px;"><button class="btn btn-ghost btn-sm" onclick="showTab('ledger')" style="width:100%;">View All Transactions →</button></div>`;
+    }
+  }
+
+  // Class-wise
+  const cw = document.getElementById('classWise');
+  if (cw) {
+    const rows = classes.map(cls => {
+      const clsPayments = payments.filter(p => {
+        const s = students.find(st=>st.id===p.studentId);
+        return s && s.class === cls;
+      });
+      const clsPaid = clsPayments.filter(p=>p.status==='Paid').reduce((s,p)=>s+(p.amountPaid||0),0);
+      const clsDue  = clsPayments.filter(p=>p.status==='Due').reduce((s,p)=>s+(p.netAmount||0),0) +
+                      clsPayments.filter(p=>p.status==='Partial').reduce((s,p)=>s+(p.balance||0),0);
+      const clsStus = students.filter(s=>s.class===cls).length;
+      if (!clsStus) return null;
+      const total   = clsPaid + clsDue || 1;
+      const pct     = Math.round(clsPaid/total*100);
+      return {cls, clsPaid, clsDue, clsStus, pct, txns: clsPayments.length};
+    }).filter(Boolean);
+
+    if (!rows.length) {
+      cw.innerHTML = `<div class="empty"><div class="empty-ic"><i data-lucide="users" class="lucide"></i></div><div class="empty-tx">No student or payment data yet</div></div>`;
+    } else {
+      cw.innerHTML = `<div class="tbl-wrap"><table>
+        <thead><tr><th>Class</th><th>Students</th><th>Transactions</th><th>Collected</th><th>Pending</th><th>Collection %</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr>
+          <td><span style="font-family:'Syne',sans-serif;font-weight:700;">Class ${esc(r.cls)}</span></td>
+          <td>${r.clsStus}</td>
+          <td>${r.txns}</td>
+          <td style="color:var(--green);font-weight:700;">${fmtMoney(r.clsPaid)}</td>
+          <td style="color:var(--red);font-weight:700;">${fmtMoney(r.clsDue)}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;min-width:120px;">
+              <div class="prog-wrap" style="flex:1;"><div class="prog-bar" style="width:${r.pct}%;background:var(--green);"></div></div>
+              <span style="font-size:11px;font-weight:700;color:var(--text-muted);">${r.pct}%</span>
+            </div>
+          </td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+    }
+  }
+
+  lucide.createIcons();
+}
+
+/* ── FEE STRUCTURES ────────────────────────────────────────── */
+function renderStructures() {
+  const data   = ERP.loadData();
+  const structs = data.feeStructures || [];
+  const el     = document.getElementById('structuresList');
+  if (!el) return;
+
+  if (!structs.length) {
+    el.innerHTML = `<div class="empty">
+      <div class="empty-ic"><i data-lucide="layers" class="lucide"></i></div>
+      <div class="empty-tx">No fee structures yet. Click <strong>Add Structure</strong> to create one.</div>
+    </div>`;
+  } else {
+    el.innerHTML = structs.map((fs,i) => {
+      const classTxt = fs.classes && fs.classes.length ? fs.classes.map(c=>'Cl.'+c).join(', ') : 'All Classes';
+      const statusPill = fs.active === false
+        ? `<span class="pill pill-gray">Inactive</span>`
+        : `<span class="pill pill-green">Active</span>`;
+      return `<div class="fs-card">
+        <div class="fs-icon"><i data-lucide="tag" class="lucide"></i></div>
+        <div style="flex:1;min-width:0;">
+          <div class="fs-name">${esc(fs.name)}</div>
+          <div class="fs-meta">${esc(fs.frequency||'—')} · ${esc(classTxt)} · Due day: ${fs.dueDay||'—'} · Fine: ${fmtMoney(fs.lateFine||0)}/day · ${esc(fs.session||'—')}</div>
+        </div>
+        ${statusPill}
+        <div class="fs-amt">${fmtMoney(fs.amount)}</div>
+        <div class="fs-actions">
+          <button class="btn btn-blue btn-sm" onclick="openStructureModal('${esc(fs.id)}')">
+            <i data-lucide="edit-2" style="width:12px;height:12px;stroke:currentColor;"></i>
+          </button>
+          <button class="btn btn-red btn-sm" onclick="deleteStructure('${esc(fs.id)}')">
+            <i data-lucide="trash-2" style="width:12px;height:12px;stroke:currentColor;"></i>
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  lucide.createIcons();
+}
+
+function openStructureModal(id) {
+  const data   = ERP.loadData();
+  const sess   = data.settings.currentSession || '2025-26';
+  document.getElementById('sm-id').value      = '';
+  document.getElementById('sm-name').value    = '';
+  document.getElementById('sm-amount').value  = '';
+  document.getElementById('sm-freq').value    = 'Monthly';
+  document.getElementById('sm-fine').value    = '';
+  document.getElementById('sm-dueday').value  = '10';
+  document.getElementById('sm-session').value = sess;
+  document.getElementById('sm-title').textContent = 'Add Fee Structure';
+  // Deselect all
+  Array.from(document.getElementById('sm-classes').options).forEach(o=>o.selected=false);
+
+  if (id) {
+    const fs = (data.feeStructures||[]).find(f=>f.id===id);
+    if (fs) {
+      document.getElementById('sm-id').value      = fs.id;
+      document.getElementById('sm-name').value    = fs.name||'';
+      document.getElementById('sm-amount').value  = fs.amount||'';
+      document.getElementById('sm-freq').value    = fs.frequency||'Monthly';
+      document.getElementById('sm-fine').value    = fs.lateFine||'';
+      document.getElementById('sm-dueday').value  = fs.dueDay||'';
+      document.getElementById('sm-session').value = fs.session||sess;
+      document.getElementById('sm-title').textContent = 'Edit Fee Structure';
+      if (fs.classes && fs.classes.length) {
+        Array.from(document.getElementById('sm-classes').options).forEach(o=>{
+          o.selected = fs.classes.includes(o.value);
+        });
+      }
+    }
+  }
+
+  document.getElementById('structureModal').classList.add('open');
+  lucide.createIcons();
+}
+
+function saveStructure() {
+  const name   = document.getElementById('sm-name').value.trim();
+  const amount = parseFloat(document.getElementById('sm-amount').value)||0;
+  if (!name) { showToast('⚠️ Fee name is required.', 'warning'); return; }
+  if (!amount) { showToast('⚠️ Amount must be greater than 0.', 'warning'); return; }
+
+  const data   = ERP.loadData();
+  const id     = document.getElementById('sm-id').value;
+  const cls    = Array.from(document.getElementById('sm-classes').selectedOptions).map(o=>o.value);
+
+  const record = {
+    id:        id || ERP.generateID('FST'),
+    name,
+    amount,
+    frequency: document.getElementById('sm-freq').value,
+    lateFine:  parseFloat(document.getElementById('sm-fine').value)||0,
+    dueDay:    parseInt(document.getElementById('sm-dueday').value)||10,
+    session:   document.getElementById('sm-session').value.trim(),
+    classes:   cls,
+    active:    true,
+    createdAt: id ? (data.feeStructures||[]).find(f=>f.id===id)?.createdAt || new Date().toISOString() : new Date().toISOString(),
+  };
+
+  if (!Array.isArray(data.feeStructures)) data.feeStructures = [];
+  const idx = data.feeStructures.findIndex(f=>f.id===record.id);
+  if (idx > -1) data.feeStructures[idx] = record;
+  else data.feeStructures.push(record);
+
+  ERP.saveData(data);
+  closeModal('structureModal');
+  renderStructures();
+  showToast('✅ Fee structure saved!', 'success');
+}
+
+function deleteStructure(id) {
+  erp_confirm('Delete this fee structure? This does not affect recorded payments.', () => {
+    const data = ERP.loadData();
+    data.feeStructures = (data.feeStructures||[]).filter(f=>f.id!==id);
+    ERP.saveData(data);
+    renderStructures();
+    showToast('Deleted.', 'info');
+  }, 'Delete Fee Structure?');
+}
+
+/* ── COLLECT FEE ─────────────────────────────────────────── */
+function renderCollectPage() {
+  cfUpdateStudents();
+}
+
+function cfUpdateStudents() {
+  const cls  = document.getElementById('cf-class').value;
+  const sec  = document.getElementById('cf-section').value;
+  const data = ERP.loadData();
+  const stus = (data.students||[]).filter(s =>
+    s.active !== false &&
+    (!cls || s.class === cls) &&
+    (!sec || s.section === sec)
+  );
+
+  const el = document.getElementById('cf-student');
+  while (el.options.length > 1) el.remove(1);
+  stus.sort((a,b)=>a.name.localeCompare(b.name)).forEach(s => {
+    const o = document.createElement('option');
+    o.value = s.id;
+    o.textContent = `${s.name} (${s.rollNumber||s.id}) — Cl.${s.class} ${s.section||''}`;
+    el.appendChild(o);
+  });
+
+  document.getElementById('cf-student-info').style.display = 'none';
+  document.getElementById('cf-form-area').style.display    = 'none';
+}
+
+function cfStudentSelected() {
+  const sid  = document.getElementById('cf-student').value;
+  if (!sid) {
+    document.getElementById('cf-student-info').style.display = 'none';
+    document.getElementById('cf-form-area').style.display    = 'none';
+    return;
+  }
+  const data = ERP.loadData();
+  const stu  = (data.students||[]).find(s=>s.id===sid);
+  if (!stu) return;
+
+  const feeStatus   = ERP.getStudentFeeStatus(sid);
+  const payments    = ERP.getStudentPayments(sid);
+  const infoEl      = document.getElementById('cf-student-info');
+  const formEl      = document.getElementById('cf-form-area');
+
+  infoEl.innerHTML = `
+    <div style="background:var(--bg-raised);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:6px;">
+      <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;flex-shrink:0;">${getInitials(stu.name)}</div>
+      <div style="flex:1;">
+        <div style="font-size:15px;font-weight:700;">${esc(stu.name)}</div>
+        <div style="font-size:12px;color:var(--text-muted);">Roll: ${esc(stu.rollNumber||'—')} · Class ${esc(stu.class)} ${esc(stu.section||'')} · ${esc(stu.guardianName||'')} · ${esc(stu.guardianPhone||'')}</div>
+      </div>
+      <div style="display:flex;gap:16px;text-align:center;">
+        <div><div style="font-size:10px;color:var(--text-dim);font-weight:700;letter-spacing:1px;text-transform:uppercase;">Paid</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--green);">${fmtMoney(feeStatus.paid)}</div></div>
+        <div><div style="font-size:10px;color:var(--text-dim);font-weight:700;letter-spacing:1px;text-transform:uppercase;">Due</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--red);">${fmtMoney(feeStatus.due)}</div></div>
+        <div><div style="font-size:10px;color:var(--text-dim);font-weight:700;letter-spacing:1px;text-transform:uppercase;">Partial</div><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--gold);">${fmtMoney(feeStatus.partial)}</div></div>
+      </div>
+    </div>`;
+
+  // Past payments mini table
+  if (payments.length) {
+    infoEl.innerHTML += `<div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin:10px 0 6px;">PAYMENT HISTORY</div>
+    <div class="tbl-wrap" style="max-height:160px;overflow-y:auto;">
+      <table>
+        <thead><tr><th>Receipt</th><th>Fee</th><th>Month</th><th>Net</th><th>Paid</th><th>Balance</th><th>Status</th><th></th></tr></thead>
+        <tbody>${payments.map(p=>{
+          const statusColor = p.status==='Paid'?'var(--green)':p.status==='Partial'?'var(--gold)':'var(--red)';
+          return `<tr>
+            <td style="font-size:11px;color:var(--text-muted);">${esc(p.id)}</td>
+            <td>${esc(p.feeName||'—')}</td>
+            <td>${esc(p.month||'—')}</td>
+            <td>${fmtMoney(p.netAmount||0)}</td>
+            <td style="color:var(--green);font-weight:700;">${fmtMoney(p.amountPaid||0)}</td>
+            <td style="color:var(--red);">${fmtMoney(p.balance||0)}</td>
+            <td><span style="font-size:11px;font-weight:700;color:${statusColor};">${p.status}</span></td>
+            <td><button class="btn btn-ghost btn-sm" onclick="viewReceipt('${esc(p.id)}')" title="View Receipt"><i data-lucide="eye" style="width:12px;height:12px;stroke:currentColor;"></i></button></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>`;
+  }
+
+  infoEl.style.display = 'block';
+
+  // Build form area
+  formEl.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div style="font-size:13px;font-weight:700;">Record New Payment</div>
+      <button class="btn btn-primary btn-sm" onclick="openPayModal('${esc(sid)}')">
+        <i data-lucide="plus" style="width:13px;height:13px;stroke:#fff;"></i> Add Payment
+      </button>
+    </div>`;
+  formEl.style.display = 'block';
+  lucide.createIcons();
+}
+
+/* ── PAYMENT MODAL ────────────────────────────────────────── */
+function openPayModal(studentId, existingId) {
+  const data = ERP.loadData();
+  const sess = data.settings.currentSession || '2025-26';
+
+  document.getElementById('pm-id').value        = '';
+  document.getElementById('pm-studentId').value = studentId;
+  document.getElementById('pm-amount').value    = '';
+  document.getElementById('pm-discount').value  = '0';
+  document.getElementById('pm-fine').value      = '0';
+  document.getElementById('pm-net').value       = '';
+  document.getElementById('pm-paid').value      = '';
+  document.getElementById('pm-balance').value   = '0';
+  document.getElementById('pm-date').value      = todayISO();
+  document.getElementById('pm-mode').value      = 'Cash';
+  document.getElementById('pm-status').value    = 'Paid';
+  document.getElementById('pm-txn').value       = '';
+  document.getElementById('pm-cheque').value    = '';
+  document.getElementById('pm-bank').value      = '';
+  document.getElementById('pm-remarks').value   = '';
+  document.getElementById('pm-session').value   = sess;
+
+  // Populate fee structures dropdown
+  const structs = (data.feeStructures||[]).filter(f=>f.active!==false);
+  const pmFs = document.getElementById('pm-feeStruct');
+  pmFs.innerHTML = '<option value="">— Select Fee Head —</option>';
+  structs.forEach(f => {
+    const o = document.createElement('option');
+    o.value = f.id;
+    o.textContent = `${f.name} — ${fmtMoney(f.amount)} (${f.frequency})`;
+    o.dataset.amount = f.amount;
+    o.dataset.fine   = f.lateFine || 0;
+    pmFs.appendChild(o);
+  });
+
+  // Set current month default
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const curMonth = months[new Date().getMonth()];
+  document.getElementById('pm-month').value = curMonth;
+
+  if (existingId) {
+    const p = (data.feePayments||[]).find(x=>x.id===existingId);
+    if (p) {
+      document.getElementById('pm-id').value        = p.id;
+      document.getElementById('pm-studentId').value = p.studentId;
+      document.getElementById('pm-feeStruct').value = p.feeStructureId||'';
+      document.getElementById('pm-month').value     = p.month||curMonth;
+      document.getElementById('pm-session').value   = p.session||sess;
+      document.getElementById('pm-amount').value    = p.amount||0;
+      document.getElementById('pm-discount').value  = p.discount||0;
+      document.getElementById('pm-fine').value      = p.lateFine||0;
+      document.getElementById('pm-net').value       = p.netAmount||0;
+      document.getElementById('pm-paid').value      = p.amountPaid||0;
+      document.getElementById('pm-balance').value   = p.balance||0;
+      document.getElementById('pm-date').value      = p.paymentDate||todayISO();
+      document.getElementById('pm-mode').value      = p.paymentMode||'Cash';
+      document.getElementById('pm-status').value    = p.status||'Paid';
+      document.getElementById('pm-txn').value       = p.transactionId||'';
+      document.getElementById('pm-cheque').value    = p.chequeNo||'';
+      document.getElementById('pm-bank').value      = p.bankName||'';
+      document.getElementById('pm-remarks').value   = p.remarks||'';
+    }
+  }
+
+  document.getElementById('payModal').classList.add('open');
+  lucide.createIcons();
+}
+
+function pmUpdateAmount() {
+  const sel = document.getElementById('pm-feeStruct');
+  const opt = sel.options[sel.selectedIndex];
+  if (opt && opt.dataset.amount) {
+    document.getElementById('pm-amount').value = opt.dataset.amount;
+    document.getElementById('pm-fine').value   = opt.dataset.fine || 0;
+  }
+  pmCalcNet();
+}
+
+function pmCalcNet() {
+  const amt  = parseFloat(document.getElementById('pm-amount').value)||0;
+  const disc = parseFloat(document.getElementById('pm-discount').value)||0;
+  const fine = parseFloat(document.getElementById('pm-fine').value)||0;
+  const net  = Math.max(0, amt - disc + fine);
+  document.getElementById('pm-net').value = net;
+  pmCalcBalance();
+}
+
+function pmCalcBalance() {
+  const net  = parseFloat(document.getElementById('pm-net').value)||0;
+  const paid = parseFloat(document.getElementById('pm-paid').value)||0;
+  const bal  = Math.max(0, net - paid);
+  document.getElementById('pm-balance').value = bal;
+
+  // Auto-set status
+  const statusEl = document.getElementById('pm-status');
+  if (paid >= net && net > 0)      statusEl.value = 'Paid';
+  else if (paid > 0 && bal > 0)    statusEl.value = 'Partial';
+  else if (paid === 0 && net > 0)  statusEl.value = 'Due';
+}
+
+function savePayment() {
+  const studentId = document.getElementById('pm-studentId').value;
+  const fsId      = document.getElementById('pm-feeStruct').value;
+  const amount    = parseFloat(document.getElementById('pm-amount').value)||0;
+  const paid      = parseFloat(document.getElementById('pm-paid').value)||0;
+
+  if (!studentId) { showToast('⚠️ No student selected.', 'warning'); return; }
+  if (!amount)    { showToast('⚠️ Fee amount is required.', 'warning'); return; }
+
+  const data = ERP.loadData();
+  const stu  = (data.students||[]).find(s=>s.id===studentId);
+  const fs   = (data.feeStructures||[]).find(f=>f.id===fsId);
+  const existId = document.getElementById('pm-id').value;
+
+  const record = {
+    id:             existId || ERP.generateID('RCP'),
+    studentId,
+    feeStructureId: fsId,
+    feeName:        fs ? fs.name : document.getElementById('pm-feeStruct').options[document.getElementById('pm-feeStruct').selectedIndex]?.text || '—',
+    amount,
+    discount:       parseFloat(document.getElementById('pm-discount').value)||0,
+    lateFine:       parseFloat(document.getElementById('pm-fine').value)||0,
+    netAmount:      parseFloat(document.getElementById('pm-net').value)||0,
+    amountPaid:     paid,
+    balance:        parseFloat(document.getElementById('pm-balance').value)||0,
+    month:          document.getElementById('pm-month').value,
+    session:        document.getElementById('pm-session').value.trim(),
+    paymentDate:    document.getElementById('pm-date').value,
+    paymentMode:    document.getElementById('pm-mode').value,
+    transactionId:  document.getElementById('pm-txn').value.trim(),
+    chequeNo:       document.getElementById('pm-cheque').value.trim(),
+    bankName:       document.getElementById('pm-bank').value.trim(),
+    remarks:        document.getElementById('pm-remarks').value.trim(),
+    receivedBy:     _user ? _user.name : 'Admin',
+    status:         document.getElementById('pm-status').value,
+    createdAt:      existId ? ((data.feePayments||[]).find(p=>p.id===existId)?.createdAt || new Date().toISOString()) : new Date().toISOString(),
+  };
+
+  if (!Array.isArray(data.feePayments)) data.feePayments = [];
+  const idx = data.feePayments.findIndex(p=>p.id===record.id);
+  if (idx > -1) data.feePayments[idx] = record;
+  else data.feePayments.push(record);
+
+  ERP.saveData(data);
+  closeModal('payModal');
+  renderStats();
+  renderLedger();
+  renderDefaulters();
+  cfStudentSelected(); // refresh student panel
+  showToast('✅ Payment saved!', 'success');
+
+  // Auto-open receipt
+  setTimeout(() => viewReceipt(record.id), 400);
+}
+
+/* ── LEDGER ───────────────────────────────────────────────── */
+function renderLedger() {
+  const data     = ERP.loadData();
+  const payments = data.feePayments || [];
+  const students = data.students || [];
+
+  const q      = (document.getElementById('ldg-search')?.value||'').toLowerCase();
+  const cls    = document.getElementById('ldg-class')?.value||'';
+  const status = document.getElementById('ldg-status')?.value||'';
+  const month  = document.getElementById('ldg-month')?.value||'';
+
+  let filtered = payments.filter(p => {
+    const stu = students.find(s=>s.id===p.studentId);
+    const stuName  = (stu?.name||p.studentId||'').toLowerCase();
+    const stuClass = stu?.class||'';
+    if (q && !stuName.includes(q) && !(p.id||'').toLowerCase().includes(q) && !(p.feeName||'').toLowerCase().includes(q)) return false;
+    if (cls && stuClass !== cls) return false;
+    if (status && p.status !== status) return false;
+    if (month && p.month !== month) return false;
+    return true;
+  }).sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+
+  const tbody   = document.getElementById('ledger-tbody');
+  const emptyEl = document.getElementById('ledger-empty');
+  const summEl  = document.getElementById('ledger-summary');
+
+  if (!filtered.length) {
+    tbody.innerHTML = '';
+    emptyEl.style.display = 'block';
+    summEl.innerHTML = '';
+    return;
+  }
+  emptyEl.style.display = 'none';
+
+  tbody.innerHTML = filtered.map(p => {
+    const stu   = students.find(s=>s.id===p.studentId);
+    const statusColor = p.status==='Paid'?'pill-green':p.status==='Partial'?'pill-gold':'pill-red';
+    return `<tr>
+      <td style="font-size:11px;color:var(--text-muted);white-space:nowrap;">${esc(p.id)}</td>
+      <td>
+        <div style="font-weight:600;">${esc(stu?stu.name:p.studentId)}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${esc(stu?.rollNumber||'')}</div>
+      </td>
+      <td style="white-space:nowrap;">${esc(stu?`Cl.${stu.class} ${stu.section||''}`:'-')}</td>
+      <td>${esc(p.feeName||'—')}</td>
+      <td>${esc(p.month||'—')}</td>
+      <td>${fmtMoney(p.amount||0)}</td>
+      <td style="color:var(--purple);">${p.discount?fmtMoney(p.discount):'-'}</td>
+      <td style="font-weight:700;">${fmtMoney(p.netAmount||0)}</td>
+      <td style="color:var(--green);font-weight:700;">${fmtMoney(p.amountPaid||0)}</td>
+      <td style="color:${p.balance?'var(--red)':'var(--text-muted)'};">${fmtMoney(p.balance||0)}</td>
+      <td style="white-space:nowrap;font-size:12px;">${esc(p.paymentMode||'—')}</td>
+      <td style="white-space:nowrap;font-size:12px;">${fmtDate(p.paymentDate)}</td>
+      <td><span class="pill ${statusColor}">${p.status}</span></td>
+      <td>
+        <div style="display:flex;gap:4px;">
+          <button class="btn btn-ghost btn-sm" onclick="viewReceipt('${esc(p.id)}')" title="Receipt">
+            <i data-lucide="receipt" style="width:12px;height:12px;stroke:currentColor;"></i>
+          </button>
+          <button class="btn btn-blue btn-sm" onclick="editPayment('${esc(p.id)}')" title="Edit">
+            <i data-lucide="edit-2" style="width:12px;height:12px;stroke:currentColor;"></i>
+          </button>
+          <button class="btn btn-red btn-sm" onclick="deletePayment('${esc(p.id)}')" title="Delete">
+            <i data-lucide="trash-2" style="width:12px;height:12px;stroke:currentColor;"></i>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const totalNet   = filtered.reduce((s,p)=>s+(p.netAmount||0),0);
+  const totalPaid  = filtered.reduce((s,p)=>s+(p.amountPaid||0),0);
+  const totalBal   = filtered.reduce((s,p)=>s+(p.balance||0),0);
+  summEl.innerHTML = `<div style="display:flex;gap:18px;padding:10px 14px;background:var(--bg-raised);border-radius:8px;border:1px solid var(--border);font-size:13px;">
+    <span style="color:var(--text-muted);">Showing <strong style="color:var(--text);">${filtered.length}</strong> records</span>
+    <span>Net: <strong style="color:var(--text);">${fmtMoney(totalNet)}</strong></span>
+    <span>Collected: <strong style="color:var(--green);">${fmtMoney(totalPaid)}</strong></span>
+    <span>Balance: <strong style="color:var(--red);">${fmtMoney(totalBal)}</strong></span>
+  </div>`;
+
+  lucide.createIcons();
+}
+
+function editPayment(id) {
+  const data = ERP.loadData();
+  const p    = (data.feePayments||[]).find(x=>x.id===id);
+  if (!p) return;
+  // Navigate to collect tab for that student's class/section
+  const stu = (data.students||[]).find(s=>s.id===p.studentId);
+  if (stu) {
+    document.getElementById('cf-class').value   = stu.class||'';
+    document.getElementById('cf-section').value = stu.section||'';
+    cfUpdateStudents();
+    document.getElementById('cf-student').value = p.studentId;
+    cfStudentSelected();
+    showTab('collect');
+  }
+  setTimeout(() => openPayModal(p.studentId, id), 300);
+}
+
+function deletePayment(id) {
+  erp_confirm('Delete this payment record? This action cannot be undone.', () => {
+    const data = ERP.loadData();
+    data.feePayments = (data.feePayments||[]).filter(p=>p.id!==id);
+    ERP.saveData(data);
+    renderLedger();
+    renderStats();
+    renderDefaulters();
+    showToast('Deleted.', 'info');
+  }, 'Delete Payment?');
+}
+
+/* ── DEFAULTERS ────────────────────────────────────────────── */
+function renderDefaulters() {
+  const data    = ERP.loadData();
+  const payments= data.feePayments || [];
+  const students= (data.students||[]).filter(s=>s.active!==false);
+  const clsFilter = document.getElementById('def-class')?.value||'';
+
+  const tbody   = document.getElementById('defaulters-tbody');
+  const emptyEl = document.getElementById('defaulters-empty');
+
+  // Build map: studentId -> {due, partial}
+  const dueMap = {};
+  payments.forEach(p => {
+    if (!dueMap[p.studentId]) dueMap[p.studentId] = { due:0, partial:0 };
+    if (p.status==='Due')     dueMap[p.studentId].due     += (p.netAmount||0);
+    if (p.status==='Partial') dueMap[p.studentId].partial += (p.balance||0);
+  });
+
+  const defaulters = students.filter(s => {
+    const d = dueMap[s.id];
+    if (!d) return false;
+    if (clsFilter && s.class !== clsFilter) return false;
+    return d.due > 0 || d.partial > 0;
+  }).sort((a,b) => {
+    const da = (dueMap[a.id]?.due||0) + (dueMap[a.id]?.partial||0);
+    const db = (dueMap[b.id]?.due||0) + (dueMap[b.id]?.partial||0);
+    return db - da;
+  });
+
+  if (!defaulters.length) {
+    tbody.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+  emptyEl.style.display = 'none';
+
+  tbody.innerHTML = defaulters.map(s => {
+    const d = dueMap[s.id] || {};
+    return `<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--red),#B91C1C);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;">${getInitials(s.name)}</div>
+          <div>
+            <div style="font-weight:600;">${esc(s.name)}</div>
+            <div style="font-size:11px;color:var(--text-muted);">${esc(s.admissionNo||'')}</div>
+          </div>
+        </div>
+      </td>
+      <td style="font-size:11px;color:var(--text-muted);">${esc(s.id)}</td>
+      <td>Cl.${esc(s.class)} ${esc(s.section||'')}</td>
+      <td>${esc(s.guardianName||'—')}</td>
+      <td><a href="tel:${esc(s.guardianPhone||'')}" style="color:var(--blue);text-decoration:none;">${esc(s.guardianPhone||'—')}</a></td>
+      <td style="color:var(--red);font-weight:700;">${fmtMoney(d.due||0)}</td>
+      <td style="color:var(--gold);font-weight:700;">${fmtMoney(d.partial||0)}</td>
+      <td>
+        <button class="btn btn-primary btn-sm" onclick="quickCollect('${esc(s.id)}')">
+          <i data-lucide="plus-circle" style="width:12px;height:12px;stroke:#fff;"></i> Collect
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  lucide.createIcons();
+}
+
+function quickCollect(studentId) {
+  const data = ERP.loadData();
+  const stu  = (data.students||[]).find(s=>s.id===studentId);
+  if (!stu) return;
+  document.getElementById('cf-class').value   = stu.class||'';
+  document.getElementById('cf-section').value = stu.section||'';
+  cfUpdateStudents();
+  document.getElementById('cf-student').value = studentId;
+  cfStudentSelected();
+  showTab('collect');
+  setTimeout(() => openPayModal(studentId), 300);
+}
+
+/* ── RECEIPT ──────────────────────────────────────────────── */
+function viewReceipt(id) {
+  const data = ERP.loadData();
+  const p    = (data.feePayments||[]).find(x=>x.id===id);
+  if (!p) { showToast('Receipt not found.', 'error'); return; }
+
+  const stu    = (data.students||[]).find(s=>s.id===p.studentId);
+  const school = data.settings;
+
+  const html = `
+    <div class="receipt" id="printableReceipt">
+      <div class="receipt-hdr">
+        <div class="receipt-school">${esc(school.schoolName||'School ERP')}</div>
+        <div class="receipt-sub">${esc(school.schoolAddress||'')} ${school.schoolPhone?'· '+school.schoolPhone:''}</div>
+        <div class="receipt-sub">${esc(school.affiliationNo?'Affiliation No: '+school.affiliationNo:'')} ${school.schoolCode?'· Code: '+school.schoolCode:''}</div>
+        <div class="receipt-title">Fee Receipt</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:12px;color:#555;">
+        <div>Receipt No: <strong style="color:#111;">${esc(p.id)}</strong></div>
+        <div>Date: <strong style="color:#111;">${fmtDate(p.paymentDate)}</strong></div>
+      </div>
+      <div style="background:#F8F8FF;border-radius:8px;padding:12px;margin-bottom:10px;">
+        <div class="receipt-row"><span class="lbl">Student Name</span><span class="val">${esc(stu?stu.name:p.studentId)}</span></div>
+        <div class="receipt-row"><span class="lbl">Roll Number</span><span class="val">${esc(stu?.rollNumber||'—')}</span></div>
+        <div class="receipt-row"><span class="lbl">Class & Section</span><span class="val">${stu?`Class ${esc(stu.class)} ${esc(stu.section||'')}`:'-'}</span></div>
+        <div class="receipt-row"><span class="lbl">Guardian</span><span class="val">${esc(stu?.guardianName||'—')}</span></div>
+      </div>
+      <div style="background:#FFF8F0;border-radius:8px;padding:12px;margin-bottom:10px;">
+        <div class="receipt-row"><span class="lbl">Fee Head</span><span class="val">${esc(p.feeName||'—')}</span></div>
+        <div class="receipt-row"><span class="lbl">Period / Month</span><span class="val">${esc(p.month||'—')}</span></div>
+        <div class="receipt-row"><span class="lbl">Session</span><span class="val">${esc(p.session||'—')}</span></div>
+        <div class="receipt-row"><span class="lbl">Fee Amount</span><span class="val">₹${Number(p.amount||0).toLocaleString('en-IN')}</span></div>
+        ${p.discount?`<div class="receipt-row"><span class="lbl">Discount</span><span class="val" style="color:green;">− ₹${Number(p.discount).toLocaleString('en-IN')}</span></div>`:''}
+        ${p.lateFine?`<div class="receipt-row"><span class="lbl">Late Fine</span><span class="val" style="color:red;">+ ₹${Number(p.lateFine).toLocaleString('en-IN')}</span></div>`:''}
+      </div>
+      <div class="receipt-total">
+        <span class="lbl">Net Payable</span>
+        <span class="val">₹${Number(p.netAmount||0).toLocaleString('en-IN')}</span>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:10px;">
+        <div style="flex:1;background:#F0FFF4;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:10px;color:#555;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Amount Paid</div>
+          <div style="font-size:18px;font-weight:800;color:#166534;font-family:'Syne',sans-serif;">₹${Number(p.amountPaid||0).toLocaleString('en-IN')}</div>
+        </div>
+        <div style="flex:1;background:${p.balance?'#FFF1F1':'#F0FFF4'};border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:10px;color:#555;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Balance Due</div>
+          <div style="font-size:18px;font-weight:800;color:${p.balance?'#991B1B':'#166534'};font-family:'Syne',sans-serif;">₹${Number(p.balance||0).toLocaleString('en-IN')}</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:#555;">
+        <div class="receipt-row"><span class="lbl">Payment Mode</span><span class="val">${esc(p.paymentMode||'—')}</span></div>
+        ${p.transactionId?`<div class="receipt-row"><span class="lbl">Transaction ID</span><span class="val">${esc(p.transactionId)}</span></div>`:''}
+        ${p.chequeNo?`<div class="receipt-row"><span class="lbl">Cheque No</span><span class="val">${esc(p.chequeNo)}</span></div>`:''}
+        ${p.bankName?`<div class="receipt-row"><span class="lbl">Bank</span><span class="val">${esc(p.bankName)}</span></div>`:''}
+        ${p.remarks?`<div class="receipt-row"><span class="lbl">Remarks</span><span class="val">${esc(p.remarks)}</span></div>`:''}
+        <div class="receipt-row"><span class="lbl">Received By</span><span class="val">${esc(p.receivedBy||'Admin')}</span></div>
+        <div class="receipt-row"><span class="lbl">Status</span><span class="val" style="color:${p.status==='Paid'?'green':p.status==='Partial'?'orange':'red'};font-weight:700;">${p.status}</span></div>
+      </div>
+      <div class="receipt-sig">
+        <div>Student / Guardian Signature<br>_________________________</div>
+        <div style="text-align:right;">Authorised Signatory<br>_________________________<br><span style="font-size:10px;">${esc(school.principalName||'Principal')}</span></div>
+      </div>
+      <div class="receipt-footer">
+        ${esc(school.schoolName||'School ERP')} · This is a computer-generated receipt · ${esc(school.currentSession||'')}
+      </div>
+    </div>`;
+
+  document.getElementById('receiptContent').innerHTML = html;
+  document.getElementById('receiptModal').classList.add('open');
+}
+
+function printReceipt() {
+  const content = document.getElementById('printableReceipt');
+  if (!content) return;
+  const data    = ERP.loadData();
+  const school  = data.settings;
+  ERP.downloadDocHTML(content.outerHTML, `Fee-Receipt-${new Date().toISOString().slice(0,10)}`);
+}
+
+function printLedger() {
+  const tbody = document.getElementById('ledger-tbody');
+  if (!tbody) return;
+  const data   = ERP.loadData();
+  const school = data.settings;
+  const html = `
+    <h2 style="text-align:center;font-family:sans-serif;">${school.schoolName||'School ERP'} — Fee Ledger</h2>
+    <p style="text-align:center;font-size:12px;color:#555;">Session: ${school.currentSession||''} · Printed: ${fmtDate(todayISO())}</p>
+    <table border="1" cellpadding="6" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead style="background:#f0f0f0;">
+        <tr><th>Receipt</th><th>Student</th><th>Class</th><th>Fee Head</th><th>Month</th><th>Net (₹)</th><th>Paid (₹)</th><th>Balance (₹)</th><th>Mode</th><th>Date</th><th>Status</th></tr>
+      </thead>
+      ${tbody.innerHTML.replace(/<button[^>]*>[\s\S]*?<\/button>/gi,'').replace(/<div[^>]*>[\s\S]*?<\/div>/gi, m=> m.replace(/<[^>]+>/g,''))}
+    </table>`;
+  ERP.downloadDocHTML(html, `Fee-Ledger-${todayISO()}`);
+}
+
+function printDefaulters() {
+  const tbody  = document.getElementById('defaulters-tbody');
+  const data   = ERP.loadData();
+  const school = data.settings;
+  const html   = `
+    <h2 style="text-align:center;font-family:sans-serif;color:red;">${school.schoolName||'School ERP'} — Fee Defaulters List</h2>
+    <p style="text-align:center;font-size:12px;color:#555;">Session: ${school.currentSession||''} · Printed: ${fmtDate(todayISO())}</p>
+    <table border="1" cellpadding="6" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead style="background:#ffe0e0;">
+        <tr><th>Student</th><th>ID</th><th>Class</th><th>Guardian</th><th>Phone</th><th>Total Due (₹)</th><th>Partial Pending (₹)</th></tr>
+      </thead>
+      ${tbody.innerHTML.replace(/<button[^>]*>[\s\S]*?<\/button>/gi,'').replace(/<a [^>]*>/gi,'<span>').replace(/<\/a>/gi,'</span>')}
+    </table>`;
+  ERP.downloadDocHTML(html, `Fee-Defaulters-${todayISO()}`);
+}
+
+/* ── TOAST (local fallback in case school_data not loaded) ── */
+(function(){
+  if(document.getElementById('_erp_ts'))return;
+  const s=document.createElement('style');s.id='_erp_ts';
+  s.textContent=`#_erp_tw{position:fixed;bottom:22px;right:22px;z-index:99999;display:flex;flex-direction:column;gap:9px;align-items:flex-end;pointer-events:none;}
+  .erpt{display:flex;align-items:center;gap:9px;padding:11px 15px;border-radius:10px;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.4);transform:translateX(110px);opacity:0;transition:transform .28s cubic-bezier(.34,1.56,.64,1),opacity .28s ease;pointer-events:all;max-width:340px;line-height:1.4;}
+  .erpt.in{transform:none;opacity:1;}.erpt.out{transform:translateX(110px);opacity:0;}
+  .erpt.success{background:#0A1A10;border:1px solid rgba(34,197,94,.4);color:#22C55E;}
+  .erpt.error{background:#1A0A0A;border:1px solid rgba(239,68,68,.4);color:#EF4444;}
+  .erpt.info{background:#0A0E1A;border:1px solid rgba(59,130,246,.4);color:#3B82F6;}
+  .erpt.warning{background:#1A140A;border:1px solid rgba(245,158,11,.4);color:#F59E0B;}
+  .erpt-x{background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:15px;line-height:1;padding:0 2px;}
+  .erpt-x:hover{opacity:1;}`;
+  document.head.appendChild(s);
+})();
+
+function _tw(){ let w=document.getElementById('_erp_tw');if(!w){w=document.createElement('div');w.id='_erp_tw';document.body.appendChild(w);}return w; }
+function showToast(msg,type,dur){
+  // Use ERP.showToast if available
+  if(window.ERP && ERP.showToast){ ERP.showToast(msg,type,dur); return; }
+  type=type||'success';dur=dur||3500;
+  const icons={success:'✅',error:'❌',info:'ℹ️',warning:'⚠️'};
+  const t=document.createElement('div');t.className='erpt '+type;
+  t.innerHTML=`<span>${icons[type]||'ℹ️'}</span><span style="flex:1">${msg}</span><button class="erpt-x" onclick="this.parentElement._bye()">✕</button>`;
+  t._bye=()=>{t.classList.add('out');setTimeout(()=>t.remove(),300);};
+  _tw().appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('in')));
+  setTimeout(()=>{if(t.parentElement)t._bye();},dur);
+}
+
+function erp_confirm(msg,onOk,title){
+  if(window.ERP && ERP.confirm){ ERP.confirm(msg,onOk,title); return; }
+  if(window.confirm(msg)) onOk();
+}
+
+/* ── BOOT ─────────────────────────────────────────────────── */
+function _boot(){
+  // school_data.js is guaranteed loaded by now (script below this one)
+  try {
+    const el=document.getElementById('lc-school');
+    if(el){ const d=ERP.loadData(); el.textContent=d.settings.schoolName||'School ERP'; }
+  } catch(e){}
+
+  if(window.lucide) lucide.createIcons();
+
+  // Restore session
+  try {
+    const saved=JSON.parse(sessionStorage.getItem('erp_admin'));
+    if(saved){ _user=saved; unlockApp(); }
+  } catch(e){}
+}
+</script>
+<!-- Scripts at end of body so DOM is ready when school_data.js IIFEs run -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="school_data.js"></script>
+<script>
+  // school_data.js and lucide are now fully loaded — safe to boot
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',_boot);
+  else _boot();
+</script>
+</body>
+</html>

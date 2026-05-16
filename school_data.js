@@ -31,7 +31,7 @@
 
 // ── OWNER ──────────────────────────────────────────────────────
 // Full access: Settings, Team, every portal
-const OWNER_PASSWORD = 'School@Owner1';    // ← CHANGE THIS
+const OWNER_PASSWORD = 'Raunak@123';    // ← CHANGE THIS
 const OWNER_NAME     = 'School Admin';     // ← displayed after login
 
 // ── STAFF / TEAM MEMBERS ──────────────────────────────────────

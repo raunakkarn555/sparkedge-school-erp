@@ -434,39 +434,97 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
   <!-- ════ TEAM ════ -->
   <div class="page" id="page-team">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
       <div>
         <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;">Team Members</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Passwords are stored in school_data.js · push to update</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Create members here → download config → paste into <code style="color:var(--accent);">school_data.js</code> → git push</div>
+      </div>
+      <button class="btn btn-primary" onclick="openAddMemberModal()">
+        <i data-lucide="user-plus" style="width:14px;height:14px;stroke:#fff;"></i> Add Member
+      </button>
+    </div>
+
+    <!-- How-to guide -->
+    <div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.18);border-radius:var(--radius);padding:18px;margin-bottom:18px;">
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:7px;">
+        <i data-lucide="book-open" style="width:15px;height:15px;stroke:var(--blue);"></i> Complete Guide — How to Add a Team Member
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;margin-top:1px;">1</div>
+          <div style="font-size:13px;color:var(--text-muted);line-height:1.6;">Click <strong style="color:var(--text);">Add Member</strong> above → fill in their name, role, password and permissions → click <strong style="color:var(--text);">Generate Config</strong>.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;margin-top:1px;">2</div>
+          <div style="font-size:13px;color:var(--text-muted);line-height:1.6;">Click <strong style="color:var(--text);">⬇ Download Config</strong> on the member card — it downloads a <code style="color:var(--accent);background:var(--bg-raised);padding:1px 5px;border-radius:4px;">.txt</code> file with the exact code block to paste.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;margin-top:1px;">3</div>
+          <div style="font-size:13px;color:var(--text-muted);line-height:1.6;">Open <code style="color:var(--accent);background:var(--bg-raised);padding:1px 5px;border-radius:4px;">school_data.js</code> in your code editor (VS Code, Notepad++, etc.).</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;margin-top:1px;">4</div>
+          <div style="font-size:13px;color:var(--text-muted);line-height:1.6;">Find the <code style="color:var(--accent);background:var(--bg-raised);padding:1px 5px;border-radius:4px;">STAFF_MEMBERS = [</code> array — it starts around <strong style="color:var(--text);">line 43</strong>. Paste your downloaded code block <strong style="color:var(--text);">inside the [ ] brackets</strong>, before the closing <code style="color:var(--accent);background:var(--bg-raised);padding:1px 5px;border-radius:4px;">];</code></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;margin-top:1px;">5</div>
+          <div style="font-size:13px;color:var(--text-muted);line-height:1.6;">Save the file → run <code style="color:var(--green);background:var(--bg-raised);padding:1px 5px;border-radius:4px;">git add . → git commit -m "add member" → git push</code> → GitHub Pages updates in ~60 seconds → member can log in immediately.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--green);flex-shrink:0;margin-top:1px;">✓</div>
+          <div style="font-size:13px;color:var(--text-muted);line-height:1.6;"><strong style="color:var(--text);">Data sync:</strong> Owner clicks Export → downloads JSON → sends via WhatsApp/Drive → member opens admin panel → clicks Import → all data appears instantly.</div>
+        </div>
       </div>
     </div>
 
-    <div class="info-box" style="margin-bottom:18px;">
-      <strong style="color:var(--text);">🔐 How to add a team member:</strong><br>
-      Open <code style="color:var(--accent);background:var(--bg-raised);padding:1px 6px;border-radius:4px;">school_data.js</code> →
-      find the <code style="color:var(--accent);background:var(--bg-raised);padding:1px 6px;border-radius:4px;">STAFF_MEMBERS</code> array →
-      copy the example block, fill in <strong style="color:var(--text);">id, name, password, permissions</strong> →
-      <code style="color:var(--green);background:var(--bg-raised);padding:1px 6px;border-radius:4px;">git push</code>
-      → they can log in immediately.<br>
-      <span style="color:var(--text-dim);">Data sync: Owner exports JSON → shares file → member imports on their device.</span>
-    </div>
-
     <!-- Owner card -->
-    <div style="background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.18);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;display:flex;align-items:center;gap:14px;">
+    <div style="background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.2);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">
       <div style="width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--gold),#FF6B35);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
         <i data-lucide="crown" style="width:22px;height:22px;stroke:#fff;stroke-width:2;"></i>
       </div>
       <div style="flex:1;">
         <div style="font-size:14px;font-weight:700;" id="owner-name-disp">Owner</div>
-        <div style="font-size:12px;color:var(--text-muted);">Password set in OWNER_PASSWORD · Full access to everything</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Password set in <code style="color:var(--accent);">OWNER_PASSWORD</code> (line 44 of school_data.js) · Full access to everything</div>
       </div>
-      <span class="pill pill-gold">
-        <i data-lucide="crown" style="width:10px;height:10px;stroke:currentColor;"></i> Owner
-      </span>
+      <span class="pill pill-gold"><i data-lucide="crown" style="width:10px;height:10px;stroke:currentColor;"></i> Owner</span>
     </div>
 
-    <div id="teamList">
-      <div class="empty"><div class="empty-ic"><i data-lucide="user-x" class="lucide"></i></div><div class="empty-tx">No staff members in STAFF_MEMBERS yet</div></div>
+    <!-- Staff list -->
+    <div id="teamList"></div>
+  </div>
+
+  <!-- ════ ADD MEMBER MODAL ════ -->
+  <div class="modal-ov" id="addMemberModal">
+    <div class="modal" style="max-width:620px;">
+      <div class="modal-hdr">
+        <div class="modal-title"><i data-lucide="user-plus" style="width:18px;height:18px;stroke:var(--accent);"></i> Add Team Member</div>
+        <button class="modal-x" onclick="closeAddMemberModal()"><i data-lucide="x" style="width:18px;height:18px;stroke:currentColor;"></i></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="fg">
+          <div class="f"><label>Full Name *</label><input id="nm-name" placeholder="e.g. Priya Sharma"/></div>
+          <div class="f"><label>Role / Designation *</label><input id="nm-role" placeholder="e.g. Accountant, Class Teacher"/></div>
+        </div>
+        <div class="fg">
+          <div class="f"><label>Password *</label><input id="nm-pwd" placeholder="e.g. Priya@2025" type="text"/></div>
+          <div class="f"><label>Member ID (auto)</label><input id="nm-id" placeholder="STF-2025-001" style="color:var(--text-muted);"/></div>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;margin-top:2px;">PERMISSIONS</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="permGrid">
+          <!-- built by JS -->
+        </div>
+
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-secondary" onclick="closeAddMemberModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="generateMemberConfig()">
+          <i data-lucide="code-2" style="width:14px;height:14px;stroke:#fff;"></i> Generate Config
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1628,34 +1686,245 @@ function deleteAnn(id){
 /* ═══════════════════════════════════════
    TEAM (Owner only)
 ═══════════════════════════════════════ */
+
+// In-memory list of members generated this session (shown as pending cards)
+let _pendingMembers = [];
+
+const PERM_DEFS = [
+  {key:'teachers',    label:'Teachers',      icon:'👩‍🏫'},
+  {key:'students',    label:'Students',      icon:'🎒'},
+  {key:'fees',        label:'Fees',          icon:'💰'},
+  {key:'marks',       label:'Marks',         icon:'📊'},
+  {key:'docs',        label:'Docs',          icon:'📄'},
+  {key:'timetable',   label:'Timetable',     icon:'📅'},
+  {key:'announcements',label:'Announcements',icon:'📢'},
+  {key:'export',      label:'Export/Import', icon:'↕'},
+  {key:'settings',    label:'Settings',      icon:'⚙️'},
+];
+
 function renderTeam(){
   const d=ERP.loadData();
   document.getElementById('owner-name-disp').textContent=ERP.OWNER_NAME+' ('+(d.settings.schoolName||'School')+')';
   const staff=ERP.getStaffList();
   const el=document.getElementById('teamList');
-  const permLabels={
-    teachers:'👩‍🏫 Teachers',students:'🎒 Students',fees:'💰 Fees',
-    marks:'📊 Marks',docs:'📄 Docs',timetable:'📅 Timetable',
-    announcements:'📢 Announcements',export:'↕ Export',settings:'⚙️ Settings'
-  };
-  if(!staff.length){
-    el.innerHTML=`<div class="empty"><div class="empty-ic"><i data-lucide="user-x" class="lucide"></i></div><div class="empty-tx">No staff in STAFF_MEMBERS array yet.<br>Edit school_data.js to add members.</div></div>`;
-    if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
-    return;
-  }
-  el.innerHTML=staff.map(m=>{
+
+  const permLabels={};
+  PERM_DEFS.forEach(p=>permLabels[p.key]=p.icon+' '+p.label);
+
+  // Build cards: existing staff + pending (generated this session)
+  let html='';
+
+  // Existing from STAFF_MEMBERS
+  staff.forEach(m=>{
     const perms=Object.entries(m.permissions||{}).filter(([,v])=>v).map(([k])=>permLabels[k]||k);
-    return `<div class="member-card">
+    html+=`<div class="member-card">
       <div class="member-av">${ERP.getInitials(m.name)}</div>
       <div style="flex:1;min-width:0;">
         <div class="member-name">${m.name}</div>
-        <div class="member-role">${m.role}</div>
+        <div class="member-role">${m.role} <span style="font-size:10px;color:var(--text-dim);margin-left:4px;">ID: ${m.id}</span></div>
         <div class="perm-tags">${perms.map(p=>`<span class="ptag">${p}</span>`).join('')||'<span class="ptag" style="color:var(--red);">No permissions</span>'}</div>
       </div>
-      <span class="pill pill-blue"><i data-lucide="user-check" style="width:9px;height:9px;stroke:currentColor;"></i> Staff</span>
+      <span class="pill pill-blue"><i data-lucide="user-check" style="width:9px;height:9px;stroke:currentColor;"></i> Active</span>
     </div>`;
-  }).join('');
+  });
+
+  // Pending (generated this session, not yet in JS file)
+  _pendingMembers.forEach((m,i)=>{
+    const perms=Object.entries(m.permissions||{}).filter(([,v])=>v).map(([k])=>permLabels[k]||k);
+    html+=`<div class="member-card" style="border-color:rgba(255,179,71,.35);background:rgba(255,179,71,.04);">
+      <div class="member-av" style="background:linear-gradient(135deg,var(--gold),#FF9900);">${ERP.getInitials(m.name)}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px;">
+          <div class="member-name">${m.name}</div>
+          <span class="pill pill-gold" style="font-size:9px;padding:1px 7px;">⏳ Pending Push</span>
+        </div>
+        <div class="member-role">${m.role} <span style="font-size:10px;color:var(--text-dim);margin-left:4px;">ID: ${m.id}</span></div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Password: <code style="color:var(--accent);background:var(--bg-raised);padding:1px 6px;border-radius:4px;">${m.password}</code></div>
+        <div class="perm-tags" style="margin-top:6px;">${perms.map(p=>`<span class="ptag">${p}</span>`).join('')||'<span class="ptag" style="color:var(--red);">No permissions</span>'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+        <button class="btn btn-gold btn-sm" onclick="downloadMemberConfig(${i})">
+          <i data-lucide="download" style="width:12px;height:12px;stroke:currentColor;"></i> Download Config
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="showConfigCode(${i})">
+          <i data-lucide="code-2" style="width:12px;height:12px;stroke:currentColor;"></i> View Code
+        </button>
+        <button class="btn btn-red btn-sm" onclick="removePendingMember(${i})">
+          <i data-lucide="trash-2" style="width:12px;height:12px;stroke:currentColor;"></i>
+        </button>
+      </div>
+    </div>`;
+  });
+
+  if(!staff.length && !_pendingMembers.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ic"><i data-lucide="user-plus" class="lucide"></i></div><div class="empty-tx">No team members yet.<br>Click <strong>Add Member</strong> to create one.</div></div>`;
+  } else {
+    el.innerHTML=html;
+  }
   if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
+}
+
+function openAddMemberModal(){
+  // Auto-generate ID
+  const nextNum = String(STAFF_MEMBERS.length + _pendingMembers.length + 1).padStart(3,'0');
+  const yr = new Date().getFullYear();
+  document.getElementById('nm-id').value = `STF-${yr}-${nextNum}`;
+  document.getElementById('nm-name').value = '';
+  document.getElementById('nm-role').value = '';
+  document.getElementById('nm-pwd').value  = '';
+
+  // Build permission checkboxes
+  const grid = document.getElementById('permGrid');
+  grid.innerHTML = PERM_DEFS.map(p=>`
+    <label style="display:flex;align-items:center;gap:7px;padding:8px 10px;background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-muted);transition:all .13s;"
+      onmouseover="this.style.borderColor='rgba(255,107,53,.4)'" onmouseout="this.style.borderColor='var(--border)'">
+      <input type="checkbox" id="perm-${p.key}" style="accent-color:var(--accent);width:14px;height:14px;cursor:pointer;"/>
+      ${p.icon} ${p.label}
+    </label>`).join('');
+
+  document.getElementById('addMemberModal').classList.add('open');
+  if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
+}
+
+function closeAddMemberModal(){
+  document.getElementById('addMemberModal').classList.remove('open');
+}
+
+function generateMemberConfig(){
+  const name = document.getElementById('nm-name').value.trim();
+  const role = document.getElementById('nm-role').value.trim();
+  const pwd  = document.getElementById('nm-pwd').value.trim();
+  const id   = document.getElementById('nm-id').value.trim();
+
+  if(!name||!role||!pwd){
+    ERP.showToast('⚠️ Name, Role and Password are required.','warning'); return;
+  }
+
+  const permissions = {};
+  PERM_DEFS.forEach(p=>{
+    permissions[p.key] = document.getElementById('perm-'+p.key).checked;
+  });
+
+  const member = { id, name, role, password: pwd, active: true, permissions };
+  _pendingMembers.push(member);
+
+  closeAddMemberModal();
+  renderTeam();
+  ERP.showToast('✅ Member config generated! Download it and paste into school_data.js','success',5000);
+}
+
+function _buildConfigCode(m){
+  return `  {
+    id:       '${m.id}',
+    name:     '${m.name}',
+    role:     '${m.role}',
+    password: '${m.password}',
+    active:   true,
+    permissions: {
+      teachers:      ${m.permissions.teachers?'true ':'false'},   // Teachers portal
+      students:      ${m.permissions.students?'true ':'false'},   // Students portal
+      fees:          ${m.permissions.fees?'true ':'false'},   // Fee Management
+      marks:         ${m.permissions.marks?'true ':'false'},   // Marks & Results
+      docs:          ${m.permissions.docs?'true ':'false'},   // Certificates
+      timetable:     ${m.permissions.timetable?'true ':'false'},   // Timetable
+      announcements: ${m.permissions.announcements?'true ':'false'},   // Announcements
+      export:        ${m.permissions.export?'true ':'false'},   // Export / Import data
+      settings:      ${m.permissions.settings?'true ':'false'},   // School Settings
+    }
+  },`;
+}
+
+function downloadMemberConfig(i){
+  const m = _pendingMembers[i];
+  const code = _buildConfigCode(m);
+  const instructions = `SCHOOL ERP — Team Member Config
+================================
+Member: ${m.name}  |  Role: ${m.role}  |  ID: ${m.id}
+Password: ${m.password}
+
+HOW TO ACTIVATE THIS MEMBER
+=============================
+1. Open school_data.js in your code editor (VS Code, Notepad++, etc.)
+
+2. Find the STAFF_MEMBERS array — it starts around LINE 43:
+      const STAFF_MEMBERS = [
+
+3. Paste the code block below INSIDE the [ ] brackets,
+   just before the closing ];
+   It should look like:
+      const STAFF_MEMBERS = [
+        {        <-- paste here
+          id: ...
+        },
+      ];
+
+4. Save the file.
+
+5. Run in terminal:
+      git add .
+      git commit -m "add team member ${m.name}"
+      git push
+
+6. GitHub Pages updates in ~60 seconds.
+   ${m.name} can now log in with password: ${m.password}
+
+═══════════════════════════════
+PASTE THIS CODE INTO STAFF_MEMBERS [ ] :
+═══════════════════════════════
+
+${code}
+
+═══════════════════════════════
+DONE! Share login details with ${m.name}:
+  URL: your-github-pages-url/admin.html
+  Password: ${m.password}
+`;
+  const blob = new Blob([instructions], {type:'text/plain'});
+  const a = Object.assign(document.createElement('a'),{
+    href: URL.createObjectURL(blob),
+    download: `member-config-${m.id}.txt`
+  });
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(a.href);
+  ERP.showToast('✅ Config downloaded!','success');
+}
+
+function showConfigCode(i){
+  const m = _pendingMembers[i];
+  const code = _buildConfigCode(m);
+  // Build a modal-style overlay with the code
+  let ov = document.getElementById('_code_view_ov');
+  if(!ov){
+    ov = document.createElement('div');
+    ov.id = '_code_view_ov';
+    ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;';
+    document.body.appendChild(ov);
+  }
+  ov.innerHTML=`<div style="background:#0E0E1A;border:1px solid #2A2A40;border-radius:16px;width:100%;max-width:600px;overflow:hidden;">
+    <div style="padding:16px 20px;border-bottom:1px solid #1E1E30;display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#F0F0FA;">📋 Config Code — ${m.name}</div>
+      <button onclick="document.getElementById('_code_view_ov').style.display='none'" style="background:none;border:none;color:#7A7A9A;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <div style="padding:16px 20px;">
+      <div style="font-size:12px;color:#7A7A9A;margin-bottom:10px;line-height:1.6;">
+        Copy this block and paste it <strong style="color:#F0F0FA;">inside</strong> the <code style="color:#FF6B35;background:#141422;padding:1px 6px;border-radius:4px;">STAFF_MEMBERS = [ ]</code> array in <code style="color:#FF6B35;background:#141422;padding:1px 5px;border-radius:4px;">school_data.js</code> around <strong style="color:#F0F0FA;">line 43</strong>.
+      </div>
+      <pre id="_code_pre" style="background:#080810;border:1px solid #1E1E30;border-radius:8px;padding:14px;font-family:monospace;font-size:12px;color:#F0F0FA;overflow-x:auto;line-height:1.6;white-space:pre;">${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end;">
+        <button onclick="navigator.clipboard.writeText(document.getElementById('_code_pre').innerText).then(()=>ERP.showToast('✅ Copied!','success'))" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.28);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#22C55E;cursor:pointer;">📋 Copy Code</button>
+        <button onclick="downloadMemberConfig(${i})" style="background:linear-gradient(135deg,#FF6B35,#FF3CAC);border:none;border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">⬇ Download .txt</button>
+      </div>
+    </div>
+  </div>`;
+  ov.style.display='flex';
+}
+
+function removePendingMember(i){
+  ERP.confirm(`Remove "${_pendingMembers[i].name}" from the list?`, ()=>{
+    _pendingMembers.splice(i,1);
+    renderTeam();
+    ERP.showToast('Removed.','info');
+  },'Remove Member?');
 }
 
 /* ═══════════════════════════════════════

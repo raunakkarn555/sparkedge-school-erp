@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Timetable — School ERP</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#080810;--bg-card:#0E0E1A;--bg-raised:#141422;--bg-hover:#1A1A2A;
+  --border:#1E1E30;--border-hi:#2A2A40;
+  --accent:#FF6B35;--accent2:#FF3CAC;--gold:#FFB347;
+  --green:#22C55E;--blue:#3B82F6;--red:#EF4444;--purple:#9B7FD4;--yellow:#F59E0B;
+  --text:#F0F0FA;--text-muted:#7A7A9A;--text-dim:#3A3A5A;
+  --radius:12px;--radius-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px;}
+.lucide{width:16px;height:16px;stroke-width:2;flex-shrink:0;}
+.lucide-lg{width:20px;height:20px;stroke-width:1.75;}
+.lucide-xl{width:24px;height:24px;stroke-width:1.5;}
+.nav-icon .lucide{width:15px;height:15px;}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;}
+#loginScreen::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(255,107,53,.09) 0%,transparent 65%);border-radius:50%;pointer-events:none;}
+.lc{position:relative;background:var(--bg-card);border:1px solid rgba(255,107,53,.2);border-radius:20px;padding:42px 38px;width:420px;max-width:94vw;box-shadow:0 40px 80px rgba(0,0,0,.5);}
+.lc-icon{width:64px;height:64px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.lc-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;text-align:center;margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:28px;line-height:1.6;}
+.lc-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 14px;font-size:12px;color:#EF4444;margin-bottom:12px;display:none;align-items:center;gap:6px;}
+.lc-field{position:relative;margin-bottom:14px;}
+.lc-field input{width:100%;background:var(--bg-raised);border:1px solid var(--border);border-radius:10px;padding:12px 46px 12px 16px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+.lc-field input:focus{border-color:rgba(255,107,53,.5);box-shadow:0 0 0 3px rgba(255,107,53,.07);}
+.lc-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;padding:4px;}
+.lc-eye:hover{color:var(--text);}
+.lc-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.lc-btn:hover{opacity:.88;}
+.lc-hint{text-align:center;font-size:11px;color:var(--text-dim);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:5px;}
+@keyframes shake{0%,100%{transform:translateX(0);}30%{transform:translateX(-6px);}70%{transform:translateX(6px);}}
+.shake{animation:shake .32s ease;}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform .25s ease;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-sess{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-top:1px;}
+.sb-user{margin:10px 12px 4px;padding:9px 12px;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.14);border-radius:8px;display:flex;align-items:center;gap:8px;}
+.sb-user-av{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
+.sb-user-info{min-width:0;}
+.sb-user-sub{font-size:10px;color:var(--text-muted);}
+.sb-user-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-role-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 7px;border-radius:4px;margin-top:3px;}
+.sb-role-owner{background:rgba(255,179,71,.15);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.sb-role-staff{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:var(--blue);}
+.sb-nav{padding:8px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:1px;}
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:10px 8px 4px;display:flex;align-items:center;gap:5px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .13s;border:none;background:none;width:100%;text-align:left;text-decoration:none;position:relative;}
+.nav-item:hover{background:var(--bg-raised);color:var(--text);}
+.nav-item.active{background:rgba(255,107,53,.11);color:var(--accent);border:1px solid rgba(255,107,53,.18);}
+.nav-item.active .lucide{stroke:var(--accent);}
+.nav-icon{display:flex;align-items:center;justify-content:center;width:18px;flex-shrink:0;}
+.nav-ext{margin-left:auto;opacity:.4;display:flex;align-items:center;}
+.nav-ext .lucide{width:11px;height:11px;}
+.sb-foot{padding:10px 8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:1px;}
+.sb-foot-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;font-size:12px;color:var(--text-muted);background:none;border:none;cursor:pointer;width:100%;text-align:left;transition:all .13s;font-family:'DM Sans',sans-serif;}
+.sb-foot-btn:hover{background:var(--bg-raised);color:var(--text);}
+.sb-foot-btn.red:hover{color:var(--red);}
+.sb-footer-brand{padding:8px 12px 10px;border-top:1px solid var(--border);font-size:9px;color:var(--text-dim);line-height:1.5;text-align:center;letter-spacing:.3px;}
+
+/* ── MAIN ── */
+.main{margin-left:230px;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{padding:13px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,16,.9);backdrop-filter:blur(14px);position:sticky;top:0;z-index:40;}
+.tb-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;}
+.tb-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.tb-right{display:flex;align-items:center;gap:7px;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:var(--radius-sm);border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.btn-primary:hover{opacity:.88;}
+.btn-secondary{background:var(--bg-raised);border:1px solid var(--border);color:var(--text-muted);}
+.btn-secondary:hover{border-color:var(--border-hi);color:var(--text);}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text-muted);}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--text);}
+.btn-green{background:rgba(34,197,94,.11);border:1px solid rgba(34,197,94,.28);color:var(--green);}
+.btn-green:hover{background:rgba(34,197,94,.2);}
+.btn-blue{background:rgba(59,130,246,.11);border:1px solid rgba(59,130,246,.28);color:var(--blue);}
+.btn-blue:hover{background:rgba(59,130,246,.2);}
+.btn-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:var(--red);}
+.btn-red:hover{background:rgba(239,68,68,.18);}
+.btn-gold{background:rgba(255,179,71,.11);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.btn-gold:hover{background:rgba(255,179,71,.2);}
+.btn-sm{padding:5px 11px;font-size:12px;}
+
+/* ── CONTENT ── */
+.content{padding:24px;flex:1;}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+.filter-bar select,.filter-bar input{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;transition:border-color .15s;}
+.filter-bar select:focus,.filter-bar input:focus{border-color:rgba(255,107,53,.4);}
+.filter-bar select option{background:var(--bg-card);}
+.filter-sep{flex:1;}
+
+/* ── TIMETABLE GRID ── */
+.tt-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;animation:pgIn .18s ease;}
+.tt-header{display:grid;border-bottom:1px solid var(--border);}
+.tt-day-head{padding:12px 10px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text-muted);text-align:center;text-transform:uppercase;letter-spacing:1px;border-right:1px solid var(--border);}
+.tt-day-head:last-child{border-right:none;}
+.tt-day-head.today-col{color:var(--accent);background:rgba(255,107,53,.06);}
+.tt-body{}
+.tt-row{display:grid;border-bottom:1px solid var(--border);}
+.tt-row:last-child{border-bottom:none;}
+.tt-period-label{padding:14px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid var(--border);background:var(--bg-raised);}
+.tt-period-num{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--text-muted);}
+.tt-period-time{font-size:10px;color:var(--text-dim);margin-top:2px;white-space:nowrap;}
+.tt-cell{padding:8px 7px;border-right:1px solid var(--border);min-height:72px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .13s;position:relative;}
+.tt-cell:last-child{border-right:none;}
+.tt-cell:hover{background:var(--bg-hover);}
+.tt-cell.today-col{background:rgba(255,107,53,.03);}
+.tt-cell.today-col:hover{background:rgba(255,107,53,.07);}
+.tt-card{width:100%;border-radius:8px;padding:8px 10px;text-align:left;border:1px solid transparent;}
+.tt-card .sub{font-size:12px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:3px;}
+.tt-card .tch{font-size:10px;color:var(--text-muted);line-height:1.3;}
+.tt-card .tch span{display:inline-block;}
+.tt-cell-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;opacity:0;}
+.tt-cell:hover .tt-cell-empty{opacity:1;}
+.tt-add-icon{color:var(--text-dim);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;}
+
+/* Subject color palette */
+.sub-english   {background:rgba(59,130,246,.12); border-color:rgba(59,130,246,.3);}
+.sub-hindi     {background:rgba(239,68,68,.1);  border-color:rgba(239,68,68,.25);}
+.sub-math      {background:rgba(34,197,94,.1);  border-color:rgba(34,197,94,.25);}
+.sub-science   {background:rgba(255,107,53,.1); border-color:rgba(255,107,53,.25);}
+.sub-social    {background:rgba(255,179,71,.1); border-color:rgba(255,179,71,.25);}
+.sub-computer  {background:rgba(155,127,212,.1);border-color:rgba(155,127,212,.3);}
+.sub-pe        {background:rgba(34,197,94,.08); border-color:rgba(34,197,94,.2);}
+.sub-art       {background:rgba(255,60,172,.1); border-color:rgba(255,60,172,.25);}
+.sub-music     {background:rgba(245,158,11,.1); border-color:rgba(245,158,11,.25);}
+.sub-default   {background:rgba(122,122,154,.1);border-color:rgba(122,122,154,.25);}
+.sub-break     {background:rgba(30,30,48,.6);   border-color:rgba(42,42,64,.8); cursor:default;}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:60px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.empty-state .es-icon{width:56px;height:56px;background:var(--bg-raised);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;}
+.empty-state h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;}
+.empty-state p{font-size:13px;color:var(--text-muted);max-width:340px;line-height:1.6;}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:900;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg-card);border:1px solid var(--border-hi);border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;animation:_min .2s ease;}
+@keyframes _min{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg-card);z-index:1;}
+.modal-head h2{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;}
+.modal-close{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;transition:all .13s;}
+.modal-close:hover{background:var(--bg-raised);color:var(--text);}
+.modal-body{padding:20px 22px;display:flex;flex-direction:column;gap:14px;}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
+
+/* ── FORM ── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-row.single{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-label{font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.4px;text-transform:uppercase;}
+.form-control{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;width:100%;}
+.form-control:focus{border-color:rgba(255,107,53,.45);box-shadow:0 0 0 3px rgba(255,107,53,.06);}
+.form-control option{background:var(--bg-card);}
+
+/* ── PILLS ── */
+.pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.3px;}
+.pill-blue{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.28);color:var(--blue);}
+.pill-green{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--green);}
+.pill-accent{background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.25);color:var(--accent);}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;gap:12px;}
+.stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
+.stat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1;}
+.stat-lbl{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+/* ── PRINT ── */
+@media print{
+  .sidebar,.topbar,.filter-bar .btn,.tt-cell-empty{display:none!important;}
+  .main{margin-left:0;}
+  .tt-cell{cursor:default;}
+  body{background:#fff;color:#000;}
+  .tt-wrap{border:1px solid #ddd;}
+  .tt-day-head,.tt-period-num{color:#333;}
+  .tt-period-time,.tt-card .tch{color:#666;}
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);} .sidebar.open{transform:none;}
+  .main{margin-left:0;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .topbar{padding:11px 16px;}
+  .content{padding:14px;}
+  .filter-bar{gap:7px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="lc">
+    <div class="lc-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div class="lc-title">Timetable</div>
+    <div class="lc-sub">Sign in to manage class schedules</div>
+    <div class="lc-err" id="loginErr"><span>⚠</span><span id="loginErrMsg">Invalid password</span></div>
+    <div class="lc-field">
+      <input type="password" id="loginPwd" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="lc-eye" onclick="togglePwd()" id="eyeBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="eyeIcon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <button class="lc-btn" onclick="doLogin()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><path d="M10 14L21 3"/><path d="M21 16v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+      Sign In
+    </button>
+    <div class="lc-hint">🔒 Session secured — closes on tab exit</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════ -->
+<div class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+    <div>
+      <div class="sb-name" id="sbSchoolName">My School</div>
+      <div class="sb-sess" id="sbSession">2025-26</div>
+    </div>
+  </div>
+
+  <div class="sb-user" id="sbUser">
+    <div class="sb-user-av" id="sbAv">AD</div>
+    <div class="sb-user-info">
+      <div class="sb-user-sub">Signed in as</div>
+      <div class="sb-user-name" id="sbName">—</div>
+      <div id="sbBadge"></div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="nav-lbl">Portals</div>
+    <a href="admin.html" class="nav-item">
+      <span class="nav-icon"><i data-lucide="layout-dashboard" class="lucide"></i></span>Dashboard
+    </a>
+    <a href="teachers.html" class="nav-item">
+      <span class="nav-icon"><i data-lucide="user-check" class="lucide"></i></span>Teachers
+    </a>
+    <a href="students.html" class="nav-item">
+      <span class="nav-icon"><i data-lucide="users" class="lucide"></i></span>Students
+    </a>
+    <a href="fees.html" class="nav-item">
+      <span class="nav-icon"><i data-lucide="indian-rupee" class="lucide"></i></span>Fees
+    </a>
+    <a href="marks.html" class="nav-item">
+      <span class="nav-icon"><i data-lucide="bar-chart-2" class="lucide"></i></span>Marks &amp; Results
+    </a>
+    <a href="docs.html" class="nav-item">
+      <span class="nav-icon"><i data-lucide="file-text" class="lucide"></i></span>Certificates
+    </a>
+    <a href="timetable.html" class="nav-item active">
+      <span class="nav-icon"><i data-lucide="calendar" class="lucide"></i></span>Timetable
+    </a>
+  </nav>
+
+  <div class="sb-foot">
+    <button class="sb-foot-btn" onclick="ERP.logoutAdmin()">
+      <i data-lucide="log-out" class="lucide"></i>Sign Out
+    </button>
+  </div>
+  <div class="sb-footer-brand">School ERP v2.0 · Timetable</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN
+══════════════════════════════════════ -->
+<div class="main" id="mainApp" style="display:none">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="tb-title">📅 Timetable</div>
+      <div class="tb-sub" id="tbSub">Manage weekly class schedules</div>
+    </div>
+    <div class="tb-right">
+      <button class="btn btn-ghost btn-sm" onclick="window.print()">
+        <i data-lucide="printer" class="lucide"></i>Print
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="openAddModal()" id="btnAddEntry">
+        <i data-lucide="plus" class="lucide"></i>Add Period
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- STATS -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(255,107,53,.1)">📅</div>
+        <div><div class="stat-val" id="statTT">0</div><div class="stat-lbl">Timetables</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(59,130,246,.1)">📚</div>
+        <div><div class="stat-val" id="statPeriods">0</div><div class="stat-lbl">Total Periods</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(34,197,94,.1)">👩‍🏫</div>
+        <div><div class="stat-val" id="statTeachers">0</div><div class="stat-lbl">Teachers Assigned</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(155,127,212,.1)">🏫</div>
+        <div><div class="stat-val" id="statClasses">0</div><div class="stat-lbl">Classes Covered</div></div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <select id="filterClass" onchange="renderTimetable()">
+        <option value="">Select Class</option>
+      </select>
+      <select id="filterSection" onchange="renderTimetable()">
+        <option value="">Section</option>
+      </select>
+      <select id="filterSession" onchange="renderTimetable()">
+        <option value="">Session</option>
+      </select>
+      <div class="filter-sep"></div>
+      <button class="btn btn-ghost btn-sm" onclick="clearFilters()">
+        <i data-lucide="x" class="lucide"></i>Clear
+      </button>
+    </div>
+
+    <!-- TIMETABLE GRID -->
+    <div id="ttContainer"></div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ══════════════════════════════════════
+     ADD / EDIT PERIOD MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="periodModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">Add Period</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId"/>
+      <input type="hidden" id="editDay"/>
+      <input type="hidden" id="editPeriodIdx"/>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Class *</label>
+          <select class="form-control" id="mClass" onchange="onClassChange()">
+            <option value="">Select Class</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Section *</label>
+          <select class="form-control" id="mSection">
+            <option value="">Select Section</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Day *</label>
+          <select class="form-control" id="mDay">
+            <option value="Mon">Monday</option>
+            <option value="Tue">Tuesday</option>
+            <option value="Wed">Wednesday</option>
+            <option value="Thu">Thursday</option>
+            <option value="Fri">Friday</option>
+            <option value="Sat">Saturday</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Period # *</label>
+          <select class="form-control" id="mPeriod">
+            <option value="1">Period 1</option>
+            <option value="2">Period 2</option>
+            <option value="3">Period 3</option>
+            <option value="4">Period 4</option>
+            <option value="BREAK">— Break —</option>
+            <option value="5">Period 5</option>
+            <option value="6">Period 6</option>
+            <option value="7">Period 7</option>
+            <option value="8">Period 8</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Start Time</label>
+          <input type="time" class="form-control" id="mStart" value="08:00"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Time</label>
+          <input type="time" class="form-control" id="mEnd" value="08:45"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Subject *</label>
+          <select class="form-control" id="mSubject">
+            <option value="">Select Subject</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teacher</label>
+          <select class="form-control" id="mTeacher">
+            <option value="">Unassigned</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row single">
+        <div class="form-group">
+          <label class="form-label">Session</label>
+          <select class="form-control" id="mSession">
+            <option value="">Current Session</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-red btn-sm" id="btnDeletePeriod" onclick="deletePeriod()" style="display:none">
+        <i data-lucide="trash-2" class="lucide"></i>Delete
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="savePeriod()">
+        <i data-lucide="save" class="lucide"></i><span id="saveLabel">Save Period</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="school_data.js"></script>
+
+<script>
+'use strict';
+/* ═══════════════════════════════════════════════════════
+   TIMETABLE PORTAL — timetable.html
+   Follows the same auth + data patterns as marks.html / fees.html
+═══════════════════════════════════════════════════════ */
+
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat'];
+const DAY_FULL = {Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday'};
+const PERIOD_TIMES = {
+  1:'08:00–08:45', 2:'08:45–09:30', 3:'09:30–10:15',
+  4:'10:15–11:00', BREAK:'11:00–11:20',
+  5:'11:20–12:05', 6:'12:05–12:50', 7:'12:50–13:35', 8:'13:35–14:20'
+};
+const ALL_PERIODS = ['1','2','3','4','BREAK','5','6','7','8'];
+
+// Subject → colour class mapping
+const SUB_COLOR = {
+  'English':'sub-english','Hindi':'sub-hindi','Mathematics':'sub-math',
+  'Science':'sub-science','Social Studies':'sub-social','Computer':'sub-computer',
+  'Physical Education':'sub-pe','Art':'sub-art','Music':'sub-music'
+};
+
+let _user = null;
+let _data = {};
+
+/* ── Auth ── */
+function togglePwd(){
+  const i=document.getElementById('loginPwd');
+  i.type = i.type==='password'?'text':'password';
+}
+
+function doLogin(){
+  const pwd = document.getElementById('loginPwd').value.trim();
+  const u   = ERP.authenticateAdmin(pwd);
+  const err = document.getElementById('loginErr');
+  if(!u){
+    err.style.display='flex';
+    document.getElementById('loginErrMsg').textContent='Wrong password. Try again.';
+    document.querySelector('.lc').classList.add('shake');
+    setTimeout(()=>document.querySelector('.lc').classList.remove('shake'),400);
+    return;
+  }
+  if(!u.permissions.timetable && !u.isOwner){
+    err.style.display='flex';
+    document.getElementById('loginErrMsg').textContent='You don\'t have access to Timetable.';
+    return;
+  }
+  ERP.setAdminSession(u);
+  boot(u);
+}
+
+function boot(u){
+  _user = u;
+  _data = ERP.loadData();
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('mainApp').style.display='flex';
+  document.getElementById('mainApp').style.flexDirection='column';
+
+  // Sidebar
+  document.getElementById('sbSchoolName').textContent = _data.settings.schoolName||'My School';
+  document.getElementById('sbSession').textContent     = _data.settings.currentSession||'—';
+  document.getElementById('sbName').textContent        = u.name;
+  document.getElementById('sbAv').textContent          = ERP.getInitials(u.name);
+  document.getElementById('sbBadge').innerHTML         = u.isOwner
+    ? '<span class="sb-role-badge sb-role-owner">👑 OWNER</span>'
+    : `<span class="sb-role-badge sb-role-staff">🔵 STAFF</span>`;
+
+  // Restrict Add for read-only staff (if you want: keep open for anyone with timetable perm)
+  if(!u.isOwner && !u.permissions.timetable){
+    document.getElementById('btnAddEntry').style.display='none';
+  }
+
+  populateFilters();
+  populateModalDropdowns();
+  renderStats();
+  renderTimetable();
+  lucide.createIcons();
+}
+
+/* ── Populate filter selects ── */
+function populateFilters(){
+  const s = _data.settings;
+  const cls = document.getElementById('filterClass');
+  cls.innerHTML = '<option value="">— All Classes —</option>';
+  (s.classes||[]).forEach(c=>{ const o=document.createElement('option');o.value=c;o.textContent='Class '+c;cls.appendChild(o); });
+
+  const sec = document.getElementById('filterSection');
+  sec.innerHTML = '<option value="">— All Sections —</option>';
+  (s.sections||[]).forEach(x=>{ const o=document.createElement('option');o.value=x;o.textContent='Section '+x;sec.appendChild(o); });
+
+  // Sessions: gather from timetable + current
+  const sessions = new Set([s.currentSession||'2025-26']);
+  (_data.timetable||[]).forEach(t=>{ if(t.session)sessions.add(t.session); });
+  const sel = document.getElementById('filterSession');
+  sel.innerHTML = '<option value="">— All Sessions —</option>';
+  [...sessions].forEach(sv=>{ const o=document.createElement('option');o.value=sv;o.textContent=sv;sel.appendChild(o); });
+}
+
+/* ── Populate modal dropdowns ── */
+function populateModalDropdowns(){
+  const s = _data.settings;
+
+  const mCls = document.getElementById('mClass');
+  mCls.innerHTML = '<option value="">Select Class</option>';
+  (s.classes||[]).forEach(c=>{ const o=document.createElement('option');o.value=c;o.textContent='Class '+c;mCls.appendChild(o); });
+
+  const mSub = document.getElementById('mSubject');
+  mSub.innerHTML = '<option value="">Select Subject</option>';
+  mSub.innerHTML += '<option value="BREAK">— Break / Free —</option>';
+  (s.subjects||[]).forEach(sub=>{ const o=document.createElement('option');o.value=sub;o.textContent=sub;mSub.appendChild(o); });
+
+  const mTch = document.getElementById('mTeacher');
+  mTch.innerHTML = '<option value="">Unassigned</option>';
+  (_data.teachers||[]).filter(t=>t.active!==false).forEach(t=>{
+    const o=document.createElement('option');o.value=t.id;o.textContent=t.name+(t.designation?' ('+t.designation+')':'');mTch.appendChild(o);
+  });
+
+  const mSes = document.getElementById('mSession');
+  mSes.innerHTML = '';
+  const sessions = new Set([s.currentSession||'2025-26']);
+  (_data.timetable||[]).forEach(t=>{ if(t.session)sessions.add(t.session); });
+  [...sessions].forEach(sv=>{ const o=document.createElement('option');o.value=sv;o.textContent=sv;mSes.appendChild(o); });
+  mSes.value = s.currentSession||'2025-26';
+}
+
+function onClassChange(){
+  const s = _data.settings;
+  const sec = document.getElementById('mSection');
+  sec.innerHTML = '<option value="">Select Section</option>';
+  (s.sections||[]).forEach(x=>{ const o=document.createElement('option');o.value=x;o.textContent='Section '+x;sec.appendChild(o); });
+}
+
+/* ── Stats ── */
+function renderStats(){
+  _data = ERP.loadData();
+  const tt = _data.timetable||[];
+  let totalPeriods=0, teacherSet=new Set(), classSet=new Set();
+  tt.forEach(t=>{
+    classSet.add(t.class+'-'+(t.section||''));
+    DAYS.forEach(d=>{
+      const periods=(t.schedule||{})[d]||[];
+      periods.forEach(p=>{
+        if(p.subject&&p.subject!=='BREAK')totalPeriods++;
+        if(p.teacherId)teacherSet.add(p.teacherId);
+      });
+    });
+  });
+  document.getElementById('statTT').textContent      = tt.length;
+  document.getElementById('statPeriods').textContent  = totalPeriods;
+  document.getElementById('statTeachers').textContent = teacherSet.size;
+  document.getElementById('statClasses').textContent  = classSet.size;
+}
+
+/* ── Get or create timetable entry ── */
+function getTimetable(cls, sec, session){
+  return (_data.timetable||[]).find(t=>t.class===cls&&t.section===sec&&t.session===session)||null;
+}
+
+/* ── Render grid ── */
+function renderTimetable(){
+  _data = ERP.loadData();
+  const filterCls = document.getElementById('filterClass').value;
+  const filterSec = document.getElementById('filterSection').value;
+  const filterSes = document.getElementById('filterSession').value;
+  const container = document.getElementById('ttContainer');
+
+  if(!filterCls){
+    // Show all timetables as summary cards
+    const tts = (_data.timetable||[]).filter(t=>
+      (!filterSec || t.section===filterSec) &&
+      (!filterSes || t.session===filterSes)
+    );
+    if(tts.length===0){
+      container.innerHTML=`<div class="tt-wrap"><div class="empty-state">
+        <div class="es-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <h3>No Timetable Found</h3>
+        <p>Select a class &amp; section then click <strong>Add Period</strong> to build your first schedule.</p>
+        <button class="btn btn-primary btn-sm" onclick="openAddModal()"><i data-lucide="plus" class="lucide"></i>Add Period</button>
+      </div></div>`;
+      lucide.createIcons();
+      return;
+    }
+    // Summary list
+    let html=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">`;
+    tts.forEach(t=>{
+      let cnt=0;
+      DAYS.forEach(d=>{ cnt+=((t.schedule||{})[d]||[]).filter(p=>p.subject&&p.subject!=='BREAK').length; });
+      html+=`<div class="tt-wrap" style="cursor:pointer;transition:border-color .15s;" onclick="quickLoad('${t.class}','${t.section||''}','${t.session||''}')">
+        <div style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;">Class ${t.class}${t.section?' — Sec '+t.section:''}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">${t.session||'—'} · ${cnt} period${cnt!==1?'s':''} scheduled</div>
+          </div>
+          <span class="pill pill-accent">View →</span>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+    container.innerHTML=html;
+    lucide.createIcons();
+    return;
+  }
+
+  const session = filterSes || (_data.settings.currentSession||'2025-26');
+  const tt = getTimetable(filterCls, filterSec, session);
+  const schedule = (tt&&tt.schedule)||{};
+
+  // Determine which days have any content
+  const activeDays = DAYS.filter(d=> {
+    if(!filterSec) return true;
+    return true; // always show all days
+  });
+
+  // Build grid — cols: period label + one per day
+  const colCount = activeDays.length + 1;
+  const gridStyle = `grid-template-columns: 90px repeat(${activeDays.length}, 1fr);`;
+  const today = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date().getDay()];
+
+  let html=`<div class="tt-wrap"><div class="tt-header" style="${gridStyle}">
+    <div class="tt-day-head" style="background:var(--bg-raised);">Period</div>`;
+  activeDays.forEach(d=>{
+    html+=`<div class="tt-day-head${d===today?' today-col':''}">${DAY_FULL[d]}</div>`;
+  });
+  html+=`</div><div class="tt-body">`;
+
+  ALL_PERIODS.forEach(pKey=>{
+    const isBreak = pKey==='BREAK';
+    html+=`<div class="tt-row" style="${gridStyle}${isBreak?'background:rgba(14,14,26,.6);':''}">`;
+    // Period label
+    html+=`<div class="tt-period-label">
+      <div class="tt-period-num">${isBreak?'☕':'P'+pKey}</div>
+      <div class="tt-period-time">${PERIOD_TIMES[pKey]||''}</div>
+    </div>`;
+    // Day cells
+    activeDays.forEach(d=>{
+      const periods = (schedule[d]||[]);
+      const entry   = periods.find(p=>String(p.period)===pKey);
+      const todayCls= d===today?' today-col':'';
+      if(isBreak){
+        const breakEntry = periods.find(p=>p.period==='BREAK');
+        html+=`<div class="tt-cell${todayCls}" style="cursor:default;justify-content:center;">`;
+        if(breakEntry){
+          html+=`<div class="tt-card sub-break" style="text-align:center;border-radius:6px;padding:6px 10px;">
+            <div class="sub" style="font-size:11px;color:var(--text-muted);">☕ ${breakEntry.subject==='BREAK'?'Break':breakEntry.subject}</div>
+          </div>`;
+        } else {
+          html+=`<div style="font-size:10px;color:var(--text-dim);letter-spacing:.5px;text-transform:uppercase;">Break</div>`;
+        }
+        html+=`</div>`;
+        return;
+      }
+      html+=`<div class="tt-cell${todayCls}" onclick="openCellModal('${filterCls}','${filterSec||''}','${session}','${d}','${pKey}')">`;
+      if(entry && entry.subject){
+        const colorCls = SUB_COLOR[entry.subject]||'sub-default';
+        const tch = entry.teacherId ? (_data.teachers||[]).find(t=>t.id===entry.teacherId) : null;
+        const timeStr = entry.startTime&&entry.endTime ? `${entry.startTime}–${entry.endTime}` : '';
+        html+=`<div class="tt-card ${colorCls}">
+          <div class="sub">${entry.subject}</div>
+          <div class="tch">${tch?'👩‍🏫 '+tch.name:'<span style="color:var(--text-dim)">Unassigned</span>'}</div>
+          ${timeStr?`<div class="tch" style="margin-top:2px;color:var(--text-dim);">🕐 ${timeStr}</div>`:''}
+        </div>`;
+      } else {
+        html+=`<div class="tt-cell-empty"><div class="tt-add-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Add</span>
+        </div></div>`;
+      }
+      html+=`</div>`;
+    });
+    html+=`</div>`;
+  });
+
+  html+=`</div></div>`;
+
+  // Info bar
+  html+=`<div style="display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;">
+    <span style="font-size:11px;color:var(--text-muted);">Class ${filterCls}${filterSec?' — Sec '+filterSec:''} · ${session}</span>
+    <div style="flex:1;"></div>`;
+  if(tt){
+    html+=`<span style="font-size:11px;color:var(--text-dim);">Last updated: ${tt.updatedAt?ERP.fmtDate(tt.updatedAt):'—'}</span>
+    <button class="btn btn-red btn-sm" onclick="deleteTimetable('${tt.id}')"><i data-lucide="trash-2" class="lucide"></i>Delete Schedule</button>`;
+  }
+  html+=`</div>`;
+
+  container.innerHTML=html;
+  lucide.createIcons();
+}
+
+function quickLoad(cls, sec, session){
+  document.getElementById('filterClass').value   = cls;
+  document.getElementById('filterSection').value = sec;
+  document.getElementById('filterSession').value = session;
+  renderTimetable();
+}
+
+function clearFilters(){
+  document.getElementById('filterClass').value='';
+  document.getElementById('filterSection').value='';
+  document.getElementById('filterSession').value='';
+  renderTimetable();
+}
+
+/* ── Modal ── */
+function openAddModal(){
+  clearModal();
+  document.getElementById('modalTitle').textContent='Add Period';
+  document.getElementById('saveLabel').textContent='Save Period';
+  document.getElementById('btnDeletePeriod').style.display='none';
+  // Pre-fill from filters
+  const fc=document.getElementById('filterClass').value;
+  const fs=document.getElementById('filterSection').value;
+  if(fc){ document.getElementById('mClass').value=fc; onClassChange(); }
+  if(fs){ setTimeout(()=>{ document.getElementById('mSection').value=fs; },50); }
+  document.getElementById('mSession').value=document.getElementById('filterSession').value||(_data.settings.currentSession||'2025-26');
+  document.getElementById('periodModal').classList.add('open');
+  lucide.createIcons();
+}
+
+function openCellModal(cls, sec, session, day, period){
+  clearModal();
+  const tt=getTimetable(cls, sec, session);
+  const entry = tt&&tt.schedule&&tt.schedule[day]
+    ? tt.schedule[day].find(p=>String(p.period)===String(period))
+    : null;
+
+  document.getElementById('mClass').value=cls; onClassChange();
+  setTimeout(()=>{
+    document.getElementById('mSection').value=sec;
+    document.getElementById('mDay').value=day;
+    document.getElementById('mPeriod').value=period;
+    document.getElementById('mSession').value=session;
+    if(entry){
+      document.getElementById('mSubject').value=entry.subject||'';
+      document.getElementById('mTeacher').value=entry.teacherId||'';
+      document.getElementById('mStart').value=entry.startTime||'';
+      document.getElementById('mEnd').value=entry.endTime||'';
+      document.getElementById('editId').value=tt.id||'';
+      document.getElementById('modalTitle').textContent='Edit Period';
+      document.getElementById('saveLabel').textContent='Update Period';
+      document.getElementById('btnDeletePeriod').style.display='inline-flex';
+    } else {
+      document.getElementById('modalTitle').textContent='Add Period';
+      document.getElementById('saveLabel').textContent='Save Period';
+      document.getElementById('btnDeletePeriod').style.display='none';
+    }
+  },30);
+  document.getElementById('editDay').value=day;
+  document.getElementById('editPeriodIdx').value=period;
+  document.getElementById('periodModal').classList.add('open');
+  lucide.createIcons();
+}
+
+function clearModal(){
+  ['editId','editDay','editPeriodIdx','mStart','mEnd'].forEach(id=>{ const el=document.getElementById(id); if(el)el.value=''; });
+  document.getElementById('mClass').value='';
+  document.getElementById('mSection').innerHTML='<option value="">Select Section</option>';
+  document.getElementById('mDay').value='Mon';
+  document.getElementById('mPeriod').value='1';
+  document.getElementById('mSubject').value='';
+  document.getElementById('mTeacher').value='';
+  document.getElementById('mStart').value='08:00';
+  document.getElementById('mEnd').value='08:45';
+  document.getElementById('mSession').value=_data.settings.currentSession||'2025-26';
+}
+
+function closeModal(){
+  document.getElementById('periodModal').classList.remove('open');
+}
+
+/* ── Save period ── */
+function savePeriod(){
+  const cls     = document.getElementById('mClass').value.trim();
+  const sec     = document.getElementById('mSection').value.trim();
+  const day     = document.getElementById('mDay').value;
+  const period  = document.getElementById('mPeriod').value;
+  const subject = document.getElementById('mSubject').value;
+  const teacher = document.getElementById('mTeacher').value;
+  const start   = document.getElementById('mStart').value;
+  const end     = document.getElementById('mEnd').value;
+  const session = document.getElementById('mSession').value||(_data.settings.currentSession||'2025-26');
+
+  if(!cls)      { ERP.showToast('Please select a Class.','error'); return; }
+  if(!subject)  { ERP.showToast('Please select a Subject.','error'); return; }
+
+  _data = ERP.loadData();
+  let tt = getTimetable(cls, sec, session);
+
+  if(!tt){
+    tt = {
+      id: ERP.generateID('TTB'),
+      class: cls, section: sec, session,
+      schedule: { Mon:[], Tue:[], Wed:[], Thu:[], Fri:[], Sat:[] },
+      updatedAt: new Date().toISOString()
+    };
+    _data.timetable.push(tt);
+  }
+
+  if(!tt.schedule) tt.schedule={Mon:[],Tue:[],Wed:[],Thu:[],Fri:[],Sat:[]};
+  if(!tt.schedule[day]) tt.schedule[day]=[];
+
+  // Remove existing entry for same period on same day
+  tt.schedule[day] = tt.schedule[day].filter(p=>String(p.period)!==String(period));
+
+  // Add new entry
+  tt.schedule[day].push({
+    period, subject,
+    teacherId: teacher||'',
+    startTime: start||'',
+    endTime: end||'',
+  });
+
+  // Sort periods in order
+  tt.schedule[day].sort((a,b)=>ALL_PERIODS.indexOf(String(a.period))-ALL_PERIODS.indexOf(String(b.period)));
+  tt.updatedAt = new Date().toISOString();
+
+  // Sync back
+  const idx = _data.timetable.findIndex(t=>t.id===tt.id);
+  if(idx>-1) _data.timetable[idx]=tt; else _data.timetable.push(tt);
+
+  ERP.saveData(_data);
+  ERP.showToast('✅ Period saved!','success');
+  closeModal();
+  renderStats();
+  renderTimetable();
+  populateFilters();
+  // Auto-select the class/section
+  document.getElementById('filterClass').value=cls;
+  document.getElementById('filterSection').value=sec;
+  document.getElementById('filterSession').value=session;
+  renderTimetable();
+}
+
+/* ── Delete single period ── */
+function deletePeriod(){
+  const day    = document.getElementById('editDay').value;
+  const period = document.getElementById('editPeriodIdx').value;
+  const cls    = document.getElementById('mClass').value;
+  const sec    = document.getElementById('mSection').value;
+  const session= document.getElementById('mSession').value||(_data.settings.currentSession||'2025-26');
+
+  ERP.confirm(`Remove this period from ${DAY_FULL[day]||day}?`, ()=>{
+    _data = ERP.loadData();
+    const tt = getTimetable(cls,sec,session);
+    if(tt&&tt.schedule&&tt.schedule[day]){
+      tt.schedule[day]=tt.schedule[day].filter(p=>String(p.period)!==String(period));
+      tt.updatedAt=new Date().toISOString();
+      const idx=_data.timetable.findIndex(t=>t.id===tt.id);
+      if(idx>-1) _data.timetable[idx]=tt;
+      ERP.saveData(_data);
+      ERP.showToast('Period removed.','info');
+      closeModal();
+      renderStats();
+      renderTimetable();
+    }
+  },'Delete Period?');
+}
+
+/* ── Delete entire timetable ── */
+function deleteTimetable(id){
+  ERP.confirm('Delete the entire schedule for this class? This cannot be undone.', ()=>{
+    _data=ERP.loadData();
+    _data.timetable=_data.timetable.filter(t=>t.id!==id);
+    ERP.saveData(_data);
+    ERP.showToast('Schedule deleted.','info');
+    renderStats();
+    renderTimetable();
+  },'Delete Schedule?');
+}
+
+/* ── Auto-login from existing session (IIFE — school_data.js already loaded) ── */
+(function init(){
+  lucide.createIcons();
+  const u = ERP.getAdminSession();
+  if(u && (u.isOwner || (u.permissions && u.permissions.timetable))){
+    boot(u);
+  } else {
+    const data = ERP.loadData();
+    const nameEl = document.querySelector('.lc-title');
+    if(nameEl && data.settings.schoolName) nameEl.textContent = data.settings.schoolName;
+    lucide.createIcons();
+  }
+})();
+</script>
+</body>
+</html>

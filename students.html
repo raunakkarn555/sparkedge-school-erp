@@ -1150,8 +1150,18 @@ function saveStudent() {
   } else {
     obj.id        = genStuID();
     obj.createdAt = new Date().toISOString();
+    // Auto-generate password: FirstName@RollOrID
+    const firstName = name.split(' ')[0];
+    const rollPart  = obj.rollNumber || String(obj.id).split('-').pop();
+    obj.autoPassword = firstName + '@' + rollPart;
     data.students.push(obj);
-    showToast(`✅ Student enrolled! ID: ${obj.id}`,'success', 5000);
+    saveData(data);
+    closeStuModal();
+    renderStats();
+    renderList();
+    _photoData = null;
+    showCredentialsModal(obj.id, obj.autoPassword, 'student');
+    return;
   }
 
   saveData(data);
@@ -1393,5 +1403,107 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
   } catch(e){}
 })();
 </script>
+
+/* ── CREDENTIALS MODAL ── */
+function showCredentialsModal(id, password, type) {
+  const isTeacher = type === 'teacher';
+  const loginUrl  = isTeacher ? 'teacher-login.html' : 'student-login.html';
+  const emoji     = isTeacher ? '👨‍🏫' : '🎓';
+  const label     = isTeacher ? 'Teacher' : 'Student';
+  const color     = isTeacher ? '#14B8A6' : '#FF6B35';
+
+  // Remove existing modal
+  const old = document.getElementById('_cred_modal');
+  if (old) old.remove();
+
+  const modal = document.createElement('div');
+  modal.id = '_cred_modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;animation:_cfade .2s ease;';
+  modal.innerHTML = `
+    <style>@keyframes _cfade{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}</style>
+    <div style="background:#0E0E1A;border:1px solid #2A2A40;border-radius:18px;width:100%;max-width:440px;overflow:hidden;">
+      <div style="background:linear-gradient(135deg,${color}22,#0E0E1A);padding:22px 24px 16px;border-bottom:1px solid #1E1E30;">
+        <div style="font-size:28px;margin-bottom:8px;">${emoji}</div>
+        <div style="font-family:'Syne',system-ui,sans-serif;font-size:17px;font-weight:800;color:#F0F0FA;">${label} Added Successfully!</div>
+        <div style="font-size:13px;color:#7A7A9A;margin-top:4px;">Share these credentials with the ${label.toLowerCase()} / guardian</div>
+      </div>
+      <div style="padding:20px 24px;display:flex;flex-direction:column;gap:12px;">
+        <div style="background:#141422;border:1px solid #1E1E30;border-radius:10px;padding:14px 16px;">
+          <div style="font-size:11px;font-weight:700;color:#7A7A9A;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Login Credentials</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:12px;color:#7A7A9A;">${label} ID</span>
+            <span style="font-family:monospace;font-size:14px;font-weight:700;color:#F0F0FA;">${id}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:12px;color:#7A7A9A;">Password</span>
+            <span style="font-family:monospace;font-size:14px;font-weight:700;color:${color};">${password}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:#7A7A9A;">Login Page</span>
+            <span style="font-family:monospace;font-size:12px;color:#3B82F6;">${loginUrl}</span>
+          </div>
+        </div>
+        <div style="background:#141422;border:1px solid rgba(245,158,11,.22);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:12px;color:#F59E0B;line-height:1.6;">
+            ⚠️ <strong>Important:</strong> Add this to <code style="background:#1E1E30;padding:1px 5px;border-radius:3px;">school_data.js</code> to activate login:
+          </div>
+          <div style="margin-top:8px;background:#0A0A14;border:1px solid #1E1E30;border-radius:6px;padding:10px;font-family:monospace;font-size:12px;color:#F0F0FA;line-height:1.8;">
+            ${isTeacher
+              ? `{ id: '${id}', password: '${password}' },<br><span style="color:#7A7A9A;">// → TEACHER_ACCOUNTS array</span>`
+              : `{ id: '${id}', password: '${password}' },<br><span style="color:#7A7A9A;">// → STUDENT_ACCOUNTS array</span>`
+            }
+          </div>
+        </div>
+        <div id="_cred_copy_msg" style="display:none;text-align:center;font-size:12px;color:#22C55E;font-weight:600;">✅ Copied to clipboard!</div>
+      </div>
+      <div style="padding:14px 24px;border-top:1px solid #1E1E30;display:flex;gap:10px;">
+        <button onclick="copyCredentials('${id}','${password}','${loginUrl}')" style="flex:1;background:#141422;border:1px solid #1E1E30;border-radius:10px;padding:10px;font-size:13px;font-weight:600;color:#F0F0FA;cursor:pointer;">📋 Copy</button>
+        <button onclick="shareWhatsApp('${id}','${password}','${loginUrl}','${label}')" style="flex:1;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);border-radius:10px;padding:10px;font-size:13px;font-weight:600;color:#25D166;cursor:pointer;">💬 WhatsApp</button>
+        <button onclick="document.getElementById('_cred_modal').remove()" style="flex:1;background:linear-gradient(135deg,${color},${color}CC);border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">Done ✓</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function copyCredentials(id, pwd, url) {
+  const txt = `Login ID: ${id}\nPassword: ${pwd}\nLogin Page: ${window.location.origin}/${url}`;
+  navigator.clipboard.writeText(txt).then(() => {
+    const msg = document.getElementById('_cred_copy_msg');
+    if (msg) { msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 2000); }
+  });
+}
+
+function shareWhatsApp(id, pwd, url, label) {
+  const data = loadData();
+  const schoolName = data.settings.schoolName || 'School ERP';
+  const text = encodeURIComponent(
+    `*${schoolName} — ${label} Login*\n\n` +
+    `*${label} ID:* ${id}\n` +
+    `*Password:* ${pwd}\n` +
+    `*Login URL:* ${window.location.origin}/${url}\n\n` +
+    `_Please keep your credentials safe._`
+  );
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+
+<!-- SparkEdge Copyright Footer -->
+<div id="_sparkedge_footer" style="position:fixed;bottom:0;left:0;right:0;z-index:9990;background:rgba(8,8,16,.92);backdrop-filter:blur(8px);border-top:1px solid #1E1E30;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:'DM Sans',system-ui,sans-serif;">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="sparkedge.html" target="_blank" style="display:flex;align-items:center;gap:7px;text-decoration:none;">
+      <div style="width:22px;height:22px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;font-family:'Syne',system-ui,sans-serif;">S</div>
+      <span style="font-size:12px;font-weight:800;font-family:'Syne',system-ui,sans-serif;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">SparkEdge</span>
+    </a>
+    <span style="font-size:11px;color:#3A3A52;">|</span>
+    <span style="font-size:11px;color:#4A4A62;">© 2025 SparkEdge. All rights reserved.</span>
+  </div>
+  <div style="display:flex;gap:14px;align-items:center;">
+    <a href="sparkedge.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;">About</a>
+    <a href="terms.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;">Terms</a>
+    <a href="privacy.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;">Privacy</a>
+  </div>
+</div>
+<div style="height:42px;"></div><!-- spacer for footer -->
+
 </body>
 </html>

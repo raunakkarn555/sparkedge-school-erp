@@ -273,6 +273,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="lc-hint">
       <i data-lucide="lock" style="width:11px;height:11px;stroke:currentColor;"></i>
       All data stored locally · GitHub Pages hosted
+    </div>    <div style="border-top:1px solid var(--border);margin-top:18px;padding-top:14px;text-align:center;">
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;">SparkEdge</div>
+      <div style="font-size:10px;color:var(--text-dim);line-height:1.8;">
+        © 2025 <strong style="color:var(--text-muted);">Raunak Karn</strong> · All rights reserved<br>
+        <a href="terms.html" target="_blank" style="color:var(--text-dim);text-decoration:none;margin:0 4px;">Terms</a>·
+        <a href="privacy.html" target="_blank" style="color:var(--text-dim);text-decoration:none;margin:0 4px;">Privacy</a>·
+        <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="color:var(--accent);text-decoration:none;margin:0 4px;">🌐 sparkedge.in</a>
+      </div>
     </div>
   </div>
 </div>
@@ -327,6 +335,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <a class="nav-item" href="teacher-login.html" target="_blank" style="text-decoration:none;"><span class="nav-icon"><i data-lucide="user-check" class="lucide"></i></span> Teacher Portal <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">&#x2197;</span></a>
     <a class="nav-item" href="erp-guide.html" target="_blank" style="text-decoration:none;"><span class="nav-icon"><i data-lucide="book-open" class="lucide"></i></span> ERP Guide <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">&#x2197;</span></a>
   </nav>
+    <div class="nav-lbl">Legal & Links</div>
+    <a class="nav-item" href="terms.html" target="_blank" style="text-decoration:none;">
+      <span class="nav-icon"><i data-lucide="file-text" class="lucide"></i></span> Terms & Conditions
+      <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
+    </a>
+    <a class="nav-item" href="privacy.html" target="_blank" style="text-decoration:none;">
+      <span class="nav-icon"><i data-lucide="shield" class="lucide"></i></span> Privacy Policy
+      <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
+    </a>
+    <a class="nav-item" href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="text-decoration:none;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.18);">
+      <span class="nav-icon"><i data-lucide="globe" class="lucide"></i></span> <span style="color:var(--accent);font-weight:700;">SparkEdge Website</span>
+      <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
+    </a>
   <div class="sb-foot">
     <button class="sb-foot-btn" id="btn-export" onclick="doExport()">
       <i data-lucide="download" style="width:13px;height:13px;stroke:currentColor;"></i> Export Data
@@ -338,7 +359,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
     </button>
   </div>
-  <div class="sb-footer-brand">School ERP v2.0</div>
+  <div class="sb-footer-brand"><strong style="color:var(--text);font-family:'Syne',sans-serif;font-size:11px;">SparkEdge</strong><br><span style="font-size:8px;color:var(--text-dim);">© 2025 Raunak Karn · <a href="terms.html" style="color:var(--text-dim);text-decoration:none;">Terms</a> · <a href="privacy.html" style="color:var(--text-dim);text-decoration:none;">Privacy</a> · <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="color:var(--accent);text-decoration:none;">🌐 Website</a></span></div>
 </aside>
 
 <!-- ══ MAIN ══ -->
@@ -617,7 +638,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div><!-- /page-guide -->
 
   <footer class="main-footer">
-    <span>Teachers Portal v2.0 — School ERP</span>
+    <span><strong>SparkEdge</strong> Teachers Portal</span>
     <span id="footerRight"></span>
   </footer>
 </div><!-- /mainWrap -->
@@ -652,6 +673,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div class="fg" style="margin-bottom:12px;">
             <div class="f"><label>Full Name *</label><input id="tch-name" placeholder="e.g. Dr. Priya Sharma"/></div>
             <div class="f"><label>Employee Code *</label><input id="tch-empcode" placeholder="e.g. EMP-001"/></div>
+          </div>
+          <div class="fg" style="margin-bottom:12px;">
+            <div class="f">
+              <label>Teacher ID <span style="color:var(--text-dim);font-weight:400;">(auto-generated)</span></label>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--accent);font-family:monospace;font-weight:700;display:flex;align-items:center;gap:8px;">
+                <i data-lucide="hash" style="width:13px;height:13px;stroke:var(--accent);flex-shrink:0;"></i>
+                <span id="tch-id-preview">—</span>
+              </div>
+            </div>
+            <div class="f">
+              <label>Login Password *</label>
+              <div style="position:relative;">
+                <input id="tch-password" placeholder="Set a password for this teacher" type="text" style="padding-right:36px;"/>
+                <button type="button" onclick="document.getElementById('tch-password').value=generateTchPassword()" title="Auto-generate" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.25);border-radius:5px;color:var(--accent);cursor:pointer;font-size:10px;padding:3px 7px;font-weight:700;">AUTO</button>
+              </div>
+            </div>
           </div>
           <div class="fg">
             <div class="f"><label>Designation *</label>
@@ -1221,6 +1258,12 @@ function openTchModal(id) {
     if (!t) return;
     document.getElementById('tchModalTitle').textContent = 'Edit Teacher';
     document.getElementById('tch-edit-id').value  = t.id;
+    // Show existing ID in preview
+    const previewEl = document.getElementById('tch-id-preview');
+    if (previewEl) previewEl.textContent = t.id;
+    // Show existing password if stored
+    const pwdEl = document.getElementById('tch-password');
+    if (pwdEl) pwdEl.value = t.autoPassword || '';
     document.getElementById('tch-name').value     = t.name || '';
     document.getElementById('tch-empcode').value  = t.employeeCode || '';
     document.getElementById('tch-desig').value    = t.designation || '';
@@ -1250,6 +1293,13 @@ function openTchModal(id) {
     }
   } else {
     document.getElementById('tchModalTitle').textContent = 'Add Teacher';
+    // Show preview of auto-generated ID for new teacher
+    const previewId = generateTchID();
+    const previewEl = document.getElementById('tch-id-preview');
+    if (previewEl) previewEl.textContent = previewId;
+    // Pre-fill password field with empty (user must set manually)
+    const pwdEl = document.getElementById('tch-password');
+    if (pwdEl) pwdEl.value = '';
   }
   document.getElementById('tchModal').classList.add('open');
   if (window.lucide) setTimeout(() => lucide.createIcons(), 50);
@@ -1257,11 +1307,17 @@ function openTchModal(id) {
 
 function closeTchModal() { document.getElementById('tchModal').classList.remove('open'); }
 
+function generateTchPassword() {
+  const adj = ['Spark','Edge','Star','Ace','Top','Pro'];
+  const num = String(Math.floor(100 + Math.random() * 900));
+  return adj[Math.floor(Math.random() * adj.length)] + '@' + num;
+}
+
 function clearTchForm() {
   const ec = document.getElementById('extra-classes-container');
   if(ec) ec.innerHTML = '';
   ['tch-edit-id','tch-name','tch-empcode','tch-dept','tch-subjects','tch-qual',
-   'tch-phone','tch-email','tch-address','tch-dob','tch-join','tch-remarks','tch-salary'].forEach(id => {
+   'tch-phone','tch-email','tch-address','tch-dob','tch-join','tch-remarks','tch-salary','tch-password'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -1272,6 +1328,8 @@ function clearTchForm() {
   document.getElementById('tch-blood').value  = '';
   document.getElementById('tch-active').value = 'true';
   document.getElementById('tch-isct').checked = false;
+  const previewEl = document.getElementById('tch-id-preview');
+  if (previewEl) previewEl.textContent = '—';
   clearPhoto();
 }
 
@@ -1352,10 +1410,13 @@ function saveTeacher() {
   const empcode = document.getElementById('tch-empcode').value.trim();
   const desig   = document.getElementById('tch-desig').value;
   const dept    = document.getElementById('tch-dept').value.trim();
+  const manualPwd = document.getElementById('tch-password') ? document.getElementById('tch-password').value.trim() : '';
+  const eid_check = document.getElementById('tch-edit-id').value;
 
   if (!name)  { showToast('⚠️ Name is required.','warning'); return; }
   if (!desig) { showToast('⚠️ Designation is required.','warning'); return; }
   if (!dept)  { showToast('⚠️ Department is required.','warning'); return; }
+  if (!eid_check && !manualPwd) { showToast('⚠️ Password is required for new teacher.','warning'); return; }
 
   const data  = loadData();
   const eid   = document.getElementById('tch-edit-id').value;
@@ -1391,16 +1452,20 @@ function saveTeacher() {
     if (idx > -1) {
       // Keep photo if not changed
       if (!_photoData) obj.photo = data.teachers[idx].photo || null;
+      // Update password if provided in edit
+      const editPwd = document.getElementById('tch-password') ? document.getElementById('tch-password').value.trim() : '';
+      if (editPwd) obj.autoPassword = editPwd;
       data.teachers[idx] = { ...data.teachers[idx], ...obj };
       showToast('✅ Teacher updated!', 'success');
     }
   } else {
     obj.id        = generateTchID();
     obj.createdAt = new Date().toISOString();
-    // Auto-generate password: FirstName@EmpCode or FirstName@ID
+    // Use manually entered password (with fallback auto-gen)
+    const manualPwdFinal = document.getElementById('tch-password') ? document.getElementById('tch-password').value.trim() : '';
     const firstName = name.split(' ')[0];
     const codePart  = obj.employeeCode || String(obj.id).split('-').pop();
-    obj.autoPassword = firstName + '@teach' + codePart;
+    obj.autoPassword = manualPwdFinal || (firstName + '@teach' + codePart);
     data.teachers.push(obj);
     saveData(data);
     closeTchModal();

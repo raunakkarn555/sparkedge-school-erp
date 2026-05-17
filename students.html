@@ -269,6 +269,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="lc-hint">
       <i data-lucide="lock" style="width:11px;height:11px;stroke:currentColor;"></i>
       All data stored locally · GitHub Pages hosted
+    </div>    <div style="border-top:1px solid var(--border);margin-top:18px;padding-top:14px;text-align:center;">
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;">SparkEdge</div>
+      <div style="font-size:10px;color:var(--text-dim);line-height:1.8;">
+        © 2025 <strong style="color:var(--text-muted);">Raunak Karn</strong> · All rights reserved<br>
+        <a href="terms.html" target="_blank" style="color:var(--text-dim);text-decoration:none;margin:0 4px;">Terms</a>·
+        <a href="privacy.html" target="_blank" style="color:var(--text-dim);text-decoration:none;margin:0 4px;">Privacy</a>·
+        <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="color:var(--accent);text-decoration:none;margin:0 4px;">🌐 sparkedge.in</a>
+      </div>
     </div>
   </div>
 </div>
@@ -327,6 +335,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <a class="nav-item" href="teacher-login.html" target="_blank" style="text-decoration:none;"><span class="nav-icon"><i data-lucide="user-check" class="lucide"></i></span> Teacher Portal <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">&#x2197;</span></a>
     <a class="nav-item" href="erp-guide.html" target="_blank" style="text-decoration:none;"><span class="nav-icon"><i data-lucide="book-open" class="lucide"></i></span> ERP Guide <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">&#x2197;</span></a>
   </nav>
+    <div class="nav-lbl">Legal & Links</div>
+    <a class="nav-item" href="terms.html" target="_blank" style="text-decoration:none;">
+      <span class="nav-icon"><i data-lucide="file-text" class="lucide"></i></span> Terms & Conditions
+      <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
+    </a>
+    <a class="nav-item" href="privacy.html" target="_blank" style="text-decoration:none;">
+      <span class="nav-icon"><i data-lucide="shield" class="lucide"></i></span> Privacy Policy
+      <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
+    </a>
+    <a class="nav-item" href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="text-decoration:none;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.18);">
+      <span class="nav-icon"><i data-lucide="globe" class="lucide"></i></span> <span style="color:var(--accent);font-weight:700;">SparkEdge Website</span>
+      <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
+    </a>
   <div class="sb-foot">
     <button class="sb-foot-btn" id="btn-export" onclick="doExport()" style="display:none;">
       <i data-lucide="download" style="width:13px;height:13px;stroke:currentColor;"></i> Export Data
@@ -338,7 +359,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
     </button>
   </div>
-  <div class="sb-footer-brand">School ERP v2.0</div>
+  <div class="sb-footer-brand"><strong style="color:var(--text);font-family:'Syne',sans-serif;font-size:11px;">SparkEdge</strong><br><span style="font-size:8px;color:var(--text-dim);">© 2025 Raunak Karn · <a href="terms.html" style="color:var(--text-dim);text-decoration:none;">Terms</a> · <a href="privacy.html" style="color:var(--text-dim);text-decoration:none;">Privacy</a> · <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="color:var(--accent);text-decoration:none;">🌐 Website</a></span></div>
 </aside>
 
 <!-- ══ MAIN ══ -->
@@ -521,7 +542,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 
   <footer class="main-footer">
-    <span>Students Portal v2.0 — School ERP</span>
+    <span><strong>SparkEdge</strong> Students Portal</span>
     <span id="footerRight"></span>
   </footer>
 </div><!-- /mainWrap -->
@@ -556,6 +577,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div class="fg" style="margin-bottom:12px;">
             <div class="f"><label>Full Name *</label><input id="stu-name" placeholder="e.g. Ananya Sharma"/></div>
             <div class="f"><label>Date of Birth</label><input type="date" id="stu-dob"/></div>
+          </div>
+          <div class="fg" style="margin-bottom:12px;">
+            <div class="f">
+              <label>Student ID <span style="color:var(--text-dim);font-weight:400;">(auto-generated)</span></label>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--blue);font-family:monospace;font-weight:700;display:flex;align-items:center;gap:8px;">
+                <i data-lucide="hash" style="width:13px;height:13px;stroke:var(--blue);flex-shrink:0;"></i>
+                <span id="stu-id-preview">—</span>
+              </div>
+            </div>
+            <div class="f">
+              <label>Login Password *</label>
+              <div style="position:relative;">
+                <input id="stu-password" placeholder="Set a password for this student" type="text" style="padding-right:36px;"/>
+                <button type="button" onclick="document.getElementById('stu-password').value=generateStuPassword()" title="Auto-generate" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:5px;color:var(--blue);cursor:pointer;font-size:10px;padding:3px 7px;font-weight:700;">AUTO</button>
+              </div>
+            </div>
           </div>
           <div class="fg-4">
             <div class="f"><label>Gender</label>
@@ -1021,6 +1058,12 @@ function openStuModal(id) {
     if (!s) return;
     document.getElementById('stuModalTitle').textContent = 'Edit Student';
     document.getElementById('stu-edit-id').value  = s.id;
+    // Show existing ID
+    const previewEl = document.getElementById('stu-id-preview');
+    if (previewEl) previewEl.textContent = s.id;
+    // Show existing password
+    const pwdEl = document.getElementById('stu-password');
+    if (pwdEl) pwdEl.value = s.autoPassword || '';
     document.getElementById('stu-name').value     = s.name||'';
     document.getElementById('stu-dob').value      = s.dob||'';
     document.getElementById('stu-gender').value   = s.gender||'';
@@ -1055,6 +1098,13 @@ function openStuModal(id) {
     document.getElementById('stuModalTitle').textContent = 'Enroll Student';
     // Auto-fill today's admission date
     document.getElementById('stu-admdate').value = new Date().toISOString().slice(0,10);
+    // Show preview of auto-generated ID
+    const previewId = genStuID();
+    const previewEl = document.getElementById('stu-id-preview');
+    if (previewEl) previewEl.textContent = previewId;
+    // Clear password field
+    const pwdEl = document.getElementById('stu-password');
+    if (pwdEl) pwdEl.value = '';
   }
   document.getElementById('stuModal').classList.add('open');
   if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
@@ -1062,15 +1112,23 @@ function openStuModal(id) {
 
 function closeStuModal() { document.getElementById('stuModal').classList.remove('open'); }
 
+function generateStuPassword() {
+  const adj = ['Blue','Star','Moon','Sun','Sky','Ace'];
+  const num = String(Math.floor(100 + Math.random() * 900));
+  return adj[Math.floor(Math.random() * adj.length)] + '@' + num;
+}
+
 function clearStuForm() {
   ['stu-edit-id','stu-name','stu-dob','stu-aadhaar','stu-roll','stu-admno','stu-admdate',
    'stu-prevschool','stu-gname','stu-gphone','stu-gemail','stu-goccup','stu-address',
-   'stu-city','stu-state','stu-pin','stu-remarks'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+   'stu-city','stu-state','stu-pin','stu-remarks','stu-password'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   ['stu-gender','stu-blood','stu-category','stu-class','stu-section','stu-grel'].forEach(id => {
     const el=document.getElementById(id); if(el) el.value='';
   });
   document.getElementById('stu-active').value = 'true';
   document.getElementById('stu-session').value = (loadData().settings.currentSession)||'';
+  const previewEl = document.getElementById('stu-id-preview');
+  if (previewEl) previewEl.textContent = '—';
   clearPhoto();
 }
 
@@ -1102,11 +1160,14 @@ function saveStudent() {
   const gname  = document.getElementById('stu-gname').value.trim();
   const gphone = document.getElementById('stu-gphone').value.trim();
   const cls    = document.getElementById('stu-class').value;
+  const eid_check = document.getElementById('stu-edit-id').value;
+  const manualPwd = document.getElementById('stu-password') ? document.getElementById('stu-password').value.trim() : '';
 
   if (!name)   { showToast('⚠️ Student name is required.','warning'); return; }
   if (!cls)    { showToast('⚠️ Class is required.','warning'); return; }
   if (!gname)  { showToast('⚠️ Guardian name is required.','warning'); return; }
   if (!gphone) { showToast('⚠️ Guardian phone is required.','warning'); return; }
+  if (!eid_check && !manualPwd) { showToast('⚠️ Password is required for new student.','warning'); return; }
 
   const data = loadData();
   const eid  = document.getElementById('stu-edit-id').value;
@@ -1144,16 +1205,20 @@ function saveStudent() {
     const idx = data.students.findIndex(s=>s.id===eid);
     if (idx > -1) {
       if (!_photoData) obj.photo = data.students[idx].photo || null;
+      // Update password if changed
+      const editPwd = document.getElementById('stu-password') ? document.getElementById('stu-password').value.trim() : '';
+      if (editPwd) obj.autoPassword = editPwd;
       data.students[idx] = { ...data.students[idx], ...obj };
       showToast('✅ Student updated!','success');
     }
   } else {
     obj.id        = genStuID();
     obj.createdAt = new Date().toISOString();
-    // Auto-generate password: FirstName@RollOrID
+    // Use manually entered password (with fallback)
+    const manualPwdFinal = document.getElementById('stu-password') ? document.getElementById('stu-password').value.trim() : '';
     const firstName = name.split(' ')[0];
     const rollPart  = obj.rollNumber || String(obj.id).split('-').pop();
-    obj.autoPassword = firstName + '@' + rollPart;
+    obj.autoPassword = manualPwdFinal || (firstName + '@' + rollPart);
     data.students.push(obj);
     saveData(data);
     closeStuModal();

@@ -273,14 +273,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="lc-hint">
       <i data-lucide="lock" style="width:11px;height:11px;stroke:currentColor;"></i>
       All data stored locally · GitHub Pages hosted
-    </div>    <div style="border-top:1px solid var(--border);margin-top:18px;padding-top:14px;text-align:center;">
-      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;">SparkEdge</div>
-      <div style="font-size:10px;color:var(--text-dim);line-height:1.8;">
-        © 2026 <strong style="color:var(--text-muted);">Raunak Karn</strong> · All rights reserved<br>
-        <a href="terms.html" target="_blank" style="color:var(--text-dim);text-decoration:none;margin:0 4px;">Terms</a>·
-        <a href="privacy.html" target="_blank" style="color:var(--text-dim);text-decoration:none;margin:0 4px;">Privacy</a>·
-        <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="color:var(--accent);text-decoration:none;margin:0 4px;">🌐 sparkedge.in</a>
-      </div>
     </div>
   </div>
 </div>
@@ -335,19 +327,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <a class="nav-item" href="teacher-login.html" target="_blank" style="text-decoration:none;"><span class="nav-icon"><i data-lucide="user-check" class="lucide"></i></span> Teacher Portal <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">&#x2197;</span></a>
     <a class="nav-item" href="erp-guide.html" target="_blank" style="text-decoration:none;"><span class="nav-icon"><i data-lucide="book-open" class="lucide"></i></span> ERP Guide <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">&#x2197;</span></a>
   </nav>
-    <div class="nav-lbl">Legal & Links</div>
-    <a class="nav-item" href="terms.html" target="_blank" style="text-decoration:none;">
-      <span class="nav-icon"><i data-lucide="file-text" class="lucide"></i></span> Terms & Conditions
-      <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
-    </a>
-    <a class="nav-item" href="privacy.html" target="_blank" style="text-decoration:none;">
-      <span class="nav-icon"><i data-lucide="shield" class="lucide"></i></span> Privacy Policy
-      <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
-    </a>
-    <a class="nav-item" href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="text-decoration:none;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.18);">
-      <span class="nav-icon"><i data-lucide="globe" class="lucide"></i></span> <span style="color:var(--accent);font-weight:700;">SparkEdge Website</span>
-      <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
-    </a>
   <div class="sb-foot">
     <button class="sb-foot-btn" id="btn-export" onclick="doExport()">
       <i data-lucide="download" style="width:13px;height:13px;stroke:currentColor;"></i> Export Data
@@ -359,7 +338,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
     </button>
   </div>
-  <div class="sb-footer-brand"><strong style="color:var(--text);font-family:'Syne',sans-serif;font-size:11px;">SparkEdge</strong><br><span style="font-size:8px;color:var(--text-dim);">© 2026 Raunak Karn · <a href="terms.html" style="color:var(--text-dim);text-decoration:none;">Terms</a> · <a href="privacy.html" style="color:var(--text-dim);text-decoration:none;">Privacy</a> · <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="color:var(--accent);text-decoration:none;">🌐 Website</a></span></div>
+  <div class="sb-footer-brand">School ERP v2.0</div>
 </aside>
 
 <!-- ══ MAIN ══ -->
@@ -638,7 +617,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div><!-- /page-guide -->
 
   <footer class="main-footer">
-    <span><strong>SparkEdge</strong> Teachers Portal</span>
+    <span>Teachers Portal v2.0 — School ERP</span>
     <span id="footerRight"></span>
   </footer>
 </div><!-- /mainWrap -->
@@ -673,22 +652,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <div class="fg" style="margin-bottom:12px;">
             <div class="f"><label>Full Name *</label><input id="tch-name" placeholder="e.g. Dr. Priya Sharma"/></div>
             <div class="f"><label>Employee Code *</label><input id="tch-empcode" placeholder="e.g. EMP-001"/></div>
-          </div>
-          <div class="fg" style="margin-bottom:12px;">
-            <div class="f">
-              <label>Teacher ID <span style="color:var(--text-dim);font-weight:400;">(auto-generated)</span></label>
-              <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--accent);font-family:monospace;font-weight:700;display:flex;align-items:center;gap:8px;">
-                <i data-lucide="hash" style="width:13px;height:13px;stroke:var(--accent);flex-shrink:0;"></i>
-                <span id="tch-id-preview">—</span>
-              </div>
-            </div>
-            <div class="f">
-              <label>Login Password *</label>
-              <div style="position:relative;">
-                <input id="tch-password" placeholder="Set a password for this teacher" type="text" style="padding-right:36px;"/>
-                <button type="button" onclick="document.getElementById('tch-password').value=generateTchPassword()" title="Auto-generate" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.25);border-radius:5px;color:var(--accent);cursor:pointer;font-size:10px;padding:3px 7px;font-weight:700;">AUTO</button>
-              </div>
-            </div>
           </div>
           <div class="fg">
             <div class="f"><label>Designation *</label>
@@ -1258,12 +1221,6 @@ function openTchModal(id) {
     if (!t) return;
     document.getElementById('tchModalTitle').textContent = 'Edit Teacher';
     document.getElementById('tch-edit-id').value  = t.id;
-    // Show existing ID in preview
-    const previewEl = document.getElementById('tch-id-preview');
-    if (previewEl) previewEl.textContent = t.id;
-    // Show existing password if stored
-    const pwdEl = document.getElementById('tch-password');
-    if (pwdEl) pwdEl.value = t.autoPassword || '';
     document.getElementById('tch-name').value     = t.name || '';
     document.getElementById('tch-empcode').value  = t.employeeCode || '';
     document.getElementById('tch-desig').value    = t.designation || '';
@@ -1293,13 +1250,6 @@ function openTchModal(id) {
     }
   } else {
     document.getElementById('tchModalTitle').textContent = 'Add Teacher';
-    // Show preview of auto-generated ID for new teacher
-    const previewId = generateTchID();
-    const previewEl = document.getElementById('tch-id-preview');
-    if (previewEl) previewEl.textContent = previewId;
-    // Pre-fill password field with empty (user must set manually)
-    const pwdEl = document.getElementById('tch-password');
-    if (pwdEl) pwdEl.value = '';
   }
   document.getElementById('tchModal').classList.add('open');
   if (window.lucide) setTimeout(() => lucide.createIcons(), 50);
@@ -1307,17 +1257,11 @@ function openTchModal(id) {
 
 function closeTchModal() { document.getElementById('tchModal').classList.remove('open'); }
 
-function generateTchPassword() {
-  const adj = ['Spark','Edge','Star','Ace','Top','Pro'];
-  const num = String(Math.floor(100 + Math.random() * 900));
-  return adj[Math.floor(Math.random() * adj.length)] + '@' + num;
-}
-
 function clearTchForm() {
   const ec = document.getElementById('extra-classes-container');
   if(ec) ec.innerHTML = '';
   ['tch-edit-id','tch-name','tch-empcode','tch-dept','tch-subjects','tch-qual',
-   'tch-phone','tch-email','tch-address','tch-dob','tch-join','tch-remarks','tch-salary','tch-password'].forEach(id => {
+   'tch-phone','tch-email','tch-address','tch-dob','tch-join','tch-remarks','tch-salary'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -1328,8 +1272,6 @@ function clearTchForm() {
   document.getElementById('tch-blood').value  = '';
   document.getElementById('tch-active').value = 'true';
   document.getElementById('tch-isct').checked = false;
-  const previewEl = document.getElementById('tch-id-preview');
-  if (previewEl) previewEl.textContent = '—';
   clearPhoto();
 }
 
@@ -1410,13 +1352,10 @@ function saveTeacher() {
   const empcode = document.getElementById('tch-empcode').value.trim();
   const desig   = document.getElementById('tch-desig').value;
   const dept    = document.getElementById('tch-dept').value.trim();
-  const manualPwd = document.getElementById('tch-password') ? document.getElementById('tch-password').value.trim() : '';
-  const eid_check = document.getElementById('tch-edit-id').value;
 
   if (!name)  { showToast('⚠️ Name is required.','warning'); return; }
   if (!desig) { showToast('⚠️ Designation is required.','warning'); return; }
   if (!dept)  { showToast('⚠️ Department is required.','warning'); return; }
-  if (!eid_check && !manualPwd) { showToast('⚠️ Password is required for new teacher.','warning'); return; }
 
   const data  = loadData();
   const eid   = document.getElementById('tch-edit-id').value;
@@ -1452,20 +1391,16 @@ function saveTeacher() {
     if (idx > -1) {
       // Keep photo if not changed
       if (!_photoData) obj.photo = data.teachers[idx].photo || null;
-      // Update password if provided in edit
-      const editPwd = document.getElementById('tch-password') ? document.getElementById('tch-password').value.trim() : '';
-      if (editPwd) obj.autoPassword = editPwd;
       data.teachers[idx] = { ...data.teachers[idx], ...obj };
       showToast('✅ Teacher updated!', 'success');
     }
   } else {
     obj.id        = generateTchID();
     obj.createdAt = new Date().toISOString();
-    // Use manually entered password (with fallback auto-gen)
-    const manualPwdFinal = document.getElementById('tch-password') ? document.getElementById('tch-password').value.trim() : '';
+    // Auto-generate password: FirstName@EmpCode or FirstName@ID
     const firstName = name.split(' ')[0];
     const codePart  = obj.employeeCode || String(obj.id).split('-').pop();
-    obj.autoPassword = manualPwdFinal || (firstName + '@teach' + codePart);
+    obj.autoPassword = firstName + '@teach' + codePart;
     data.teachers.push(obj);
     saveData(data);
     closeTchModal();
@@ -1718,135 +1653,108 @@ function esc(s)        { return String(s||'').replace(/&/g,'&amp;').replace(/</g
     if (saved) { _user = saved; setTimeout(() => unlockApp(), 50); }
   } catch(e) {}
 })();
-<script>
+</script>
+
+/* ── CREDENTIALS MODAL ── */
 function showCredentialsModal(id, password, type) {
   const isTeacher = type === 'teacher';
   const loginUrl  = isTeacher ? 'teacher-login.html' : 'student-login.html';
-  const emoji     = isTeacher ? '\u{1F468}\u200D\u{1F3EB}' : '\u{1F393}';
+  const emoji     = isTeacher ? '👨‍🏫' : '🎓';
   const label     = isTeacher ? 'Teacher' : 'Student';
   const color     = isTeacher ? '#14B8A6' : '#FF6B35';
 
+  // Remove existing modal
   const old = document.getElementById('_cred_modal');
   if (old) old.remove();
 
   const modal = document.createElement('div');
   modal.id = '_cred_modal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;';
-
-  // Build the code snippet
-  const codeSnippet = isTeacher
-    ? `{ id: '${id}', password: '${password}' }, // → TEACHER_ACCOUNTS array`
-    : `{ id: '${id}', password: '${password}' }, // → STUDENT_ACCOUNTS array`;
-
-  const inner = document.createElement('div');
-  inner.style.cssText = 'background:#0E0E1A;border:1px solid #2A2A40;border-radius:18px;width:100%;max-width:460px;overflow:hidden;animation:_cfade .2s ease;';
-  inner.innerHTML = \`
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;animation:_cfade .2s ease;';
+  modal.innerHTML = `
     <style>@keyframes _cfade{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}</style>
-    <div style="background:linear-gradient(135deg,\${color}22,#0E0E1A);padding:22px 24px 16px;border-bottom:1px solid #1E1E30;">
-      <div style="font-size:26px;margin-bottom:8px;">\${emoji}</div>
-      <div style="font-family:'Syne',system-ui,sans-serif;font-size:17px;font-weight:800;color:#F0F0FA;">\${label} Added Successfully!</div>
-      <div style="font-size:13px;color:#7A7A9A;margin-top:4px;">Share these credentials with the \${label.toLowerCase()} / guardian</div>
-    </div>
-    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:12px;">
-      <div style="background:#141422;border:1px solid #1E1E30;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:11px;font-weight:700;color:#7A7A9A;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Login Credentials</div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <span style="font-size:12px;color:#7A7A9A;">\${label} ID</span>
-          <span style="font-family:monospace;font-size:14px;font-weight:700;color:#F0F0FA;">\${id}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <span style="font-size:12px;color:#7A7A9A;">Password</span>
-          <span style="font-family:monospace;font-size:14px;font-weight:700;color:\${color};">\${password}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:12px;color:#7A7A9A;">Login Page</span>
-          <span style="font-family:monospace;font-size:12px;color:#3B82F6;">\${loginUrl}</span>
-        </div>
+    <div style="background:#0E0E1A;border:1px solid #2A2A40;border-radius:18px;width:100%;max-width:440px;overflow:hidden;">
+      <div style="background:linear-gradient(135deg,${color}22,#0E0E1A);padding:22px 24px 16px;border-bottom:1px solid #1E1E30;">
+        <div style="font-size:28px;margin-bottom:8px;">${emoji}</div>
+        <div style="font-family:'Syne',system-ui,sans-serif;font-size:17px;font-weight:800;color:#F0F0FA;">${label} Added Successfully!</div>
+        <div style="font-size:13px;color:#7A7A9A;margin-top:4px;">Share these credentials with the ${label.toLowerCase()} / guardian</div>
       </div>
-      <div style="background:#141422;border:1px solid rgba(245,158,11,.22);border-radius:10px;padding:12px 14px;">
-        <div style="font-size:12px;color:#F59E0B;line-height:1.6;margin-bottom:8px;">
-          \u26A0\uFE0F <strong>Important:</strong> Add this to <code style="background:#1E1E30;padding:1px 5px;border-radius:3px;">school_data.js</code> to activate login:
+      <div style="padding:20px 24px;display:flex;flex-direction:column;gap:12px;">
+        <div style="background:#141422;border:1px solid #1E1E30;border-radius:10px;padding:14px 16px;">
+          <div style="font-size:11px;font-weight:700;color:#7A7A9A;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Login Credentials</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:12px;color:#7A7A9A;">${label} ID</span>
+            <span style="font-family:monospace;font-size:14px;font-weight:700;color:#F0F0FA;">${id}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:12px;color:#7A7A9A;">Password</span>
+            <span style="font-family:monospace;font-size:14px;font-weight:700;color:${color};">${password}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:#7A7A9A;">Login Page</span>
+            <span style="font-family:monospace;font-size:12px;color:#3B82F6;">${loginUrl}</span>
+          </div>
         </div>
-        <div style="background:#0A0A14;border:1px solid #1E1E30;border-radius:6px;padding:10px;font-family:monospace;font-size:12px;color:#F0F0FA;line-height:1.8;word-break:break-all;">\${codeSnippet}</div>
+        <div style="background:#141422;border:1px solid rgba(245,158,11,.22);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:12px;color:#F59E0B;line-height:1.6;">
+            ⚠️ <strong>Important:</strong> Add this to <code style="background:#1E1E30;padding:1px 5px;border-radius:3px;">school_data.js</code> to activate login:
+          </div>
+          <div style="margin-top:8px;background:#0A0A14;border:1px solid #1E1E30;border-radius:6px;padding:10px;font-family:monospace;font-size:12px;color:#F0F0FA;line-height:1.8;">
+            ${isTeacher
+              ? `{ id: '${id}', password: '${password}' },<br><span style="color:#7A7A9A;">// → TEACHER_ACCOUNTS array</span>`
+              : `{ id: '${id}', password: '${password}' },<br><span style="color:#7A7A9A;">// → STUDENT_ACCOUNTS array</span>`
+            }
+          </div>
+        </div>
+        <div id="_cred_copy_msg" style="display:none;text-align:center;font-size:12px;color:#22C55E;font-weight:600;">✅ Copied to clipboard!</div>
       </div>
-      <div id="_cred_copy_msg" style="display:none;text-align:center;font-size:12px;color:#22C55E;font-weight:600;">\u2705 Copied to clipboard!</div>
-    </div>
-    <div style="padding:14px 24px;border-top:1px solid #1E1E30;display:flex;gap:10px;">
-      <button id="_cred_copy_btn" style="flex:1;background:#141422;border:1px solid #1E1E30;border-radius:10px;padding:10px;font-size:13px;font-weight:600;color:#F0F0FA;cursor:pointer;">\u{1F4CB} Copy</button>
-      <button id="_cred_wa_btn" style="flex:1;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);border-radius:10px;padding:10px;font-size:13px;font-weight:600;color:#25D166;cursor:pointer;">\u{1F4AC} WhatsApp</button>
-      <button id="_cred_done_btn" style="flex:1;background:linear-gradient(135deg,\${color},\${color}CC);border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">Done \u2713</button>
-    </div>
-  \`;
-
-  modal.appendChild(inner);
+      <div style="padding:14px 24px;border-top:1px solid #1E1E30;display:flex;gap:10px;">
+        <button onclick="copyCredentials('${id}','${password}','${loginUrl}')" style="flex:1;background:#141422;border:1px solid #1E1E30;border-radius:10px;padding:10px;font-size:13px;font-weight:600;color:#F0F0FA;cursor:pointer;">📋 Copy</button>
+        <button onclick="shareWhatsApp('${id}','${password}','${loginUrl}','${label}')" style="flex:1;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);border-radius:10px;padding:10px;font-size:13px;font-weight:600;color:#25D166;cursor:pointer;">💬 WhatsApp</button>
+        <button onclick="document.getElementById('_cred_modal').remove()" style="flex:1;background:linear-gradient(135deg,${color},${color}CC);border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">Done ✓</button>
+      </div>
+    </div>`;
   document.body.appendChild(modal);
-
-  // Attach events after appending (avoids template literal escaping issues)
-  document.getElementById('_cred_copy_btn').onclick = function() {
-    copyCredentials(id, password, loginUrl);
-  };
-  document.getElementById('_cred_wa_btn').onclick = function() {
-    shareWhatsApp(id, password, loginUrl, label);
-  };
-  document.getElementById('_cred_done_btn').onclick = function() {
-    const m = document.getElementById('_cred_modal');
-    if (m) m.remove();
-  };
-  modal.addEventListener('click', function(e) {
-    if (e.target === modal) modal.remove();
-  });
 }
 
 function copyCredentials(id, pwd, url) {
-  const txt = 'Login ID: ' + id + '\nPassword: ' + pwd + '\nLogin Page: ' + (window.location.origin || '') + '/' + url;
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(txt).then(function() {
-      var msg = document.getElementById('_cred_copy_msg');
-      if (msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 2000); }
-    }).catch(function() {
-      // Fallback
-      try { var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } catch(e){}
-      var msg = document.getElementById('_cred_copy_msg');
-      if (msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 2000); }
-    });
-  } else {
-    try { var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } catch(e){}
-    var msg = document.getElementById('_cred_copy_msg');
-    if (msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 2000); }
-  }
+  const txt = `Login ID: ${id}\nPassword: ${pwd}\nLogin Page: ${window.location.origin}/${url}`;
+  navigator.clipboard.writeText(txt).then(() => {
+    const msg = document.getElementById('_cred_copy_msg');
+    if (msg) { msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 2000); }
+  });
 }
 
 function shareWhatsApp(id, pwd, url, label) {
-  var data = loadData();
-  var schoolName = (data.settings && data.settings.schoolName) || 'School ERP';
-  var text = encodeURIComponent(
-    '*' + schoolName + ' \u2014 ' + label + ' Login*\n\n' +
-    '*' + label + ' ID:* ' + id + '\n' +
-    '*Password:* ' + pwd + '\n' +
-    '*Login URL:* ' + (window.location.origin || '') + '/' + url + '\n\n' +
-    '_Please keep your credentials safe._'
+  const data = loadData();
+  const schoolName = data.settings.schoolName || 'School ERP';
+  const text = encodeURIComponent(
+    `*${schoolName} — ${label} Login*\n\n` +
+    `*${label} ID:* ${id}\n` +
+    `*Password:* ${pwd}\n` +
+    `*Login URL:* ${window.location.origin}/${url}\n\n` +
+    `_Please keep your credentials safe._`
   );
-  window.open('https://wa.me/?text=' + text, '_blank');
+  window.open(`https://wa.me/?text=${text}`, '_blank');
 }
-</script>
+
 
 <!-- SparkEdge Copyright Footer -->
-<div id="_sparkedge_footer" style="position:fixed;bottom:0;left:0;right:0;z-index:9990;background:rgba(8,8,16,.95);backdrop-filter:blur(10px);border-top:1px solid #1E1E30;padding:9px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:'DM Sans',system-ui,sans-serif;">
+<div id="_sparkedge_footer" style="position:fixed;bottom:0;left:0;right:0;z-index:9990;background:rgba(8,8,16,.92);backdrop-filter:blur(8px);border-top:1px solid #1E1E30;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:'DM Sans',system-ui,sans-serif;">
   <div style="display:flex;align-items:center;gap:8px;">
-    <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="display:flex;align-items:center;gap:7px;text-decoration:none;">
+    <a href="sparkedge.html" target="_blank" style="display:flex;align-items:center;gap:7px;text-decoration:none;">
       <div style="width:22px;height:22px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;font-family:'Syne',system-ui,sans-serif;">S</div>
-      <span style="font-size:13px;font-weight:800;font-family:'Syne',system-ui,sans-serif;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">SparkEdge</span>
+      <span style="font-size:12px;font-weight:800;font-family:'Syne',system-ui,sans-serif;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">SparkEdge</span>
     </a>
     <span style="font-size:11px;color:#3A3A52;">|</span>
-    <span style="font-size:11px;color:#4A4A62;">&copy; 2026 Raunak Karn &middot; All rights reserved.</span>
+    <span style="font-size:11px;color:#4A4A62;">© 2025 SparkEdge. All rights reserved.</span>
   </div>
   <div style="display:flex;gap:14px;align-items:center;">
-    <a href="terms.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Terms</a>
-    <a href="privacy.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Privacy</a>
-    <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="font-size:11px;color:#FF6B35;text-decoration:none;font-weight:600;" onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">&#127760; sparkedge.in</a>
+    <a href="sparkedge.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;">About</a>
+    <a href="terms.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;">Terms</a>
+    <a href="privacy.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;">Privacy</a>
   </div>
 </div>
-<div style="height:46px;"></div>
+<div style="height:42px;"></div><!-- spacer for footer -->
 
 </body>
 </html>

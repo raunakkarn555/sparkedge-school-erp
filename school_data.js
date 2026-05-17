@@ -114,6 +114,32 @@ const STUDENT_ACCOUNTS = [
 ];
 
 
+// ── TEACHER ACCOUNTS ──────────────────────────────────────────
+// Powers teacher-login.html portal.
+// The `id` MUST exactly match the teacher's auto-generated ID
+// (format: TCH-YYYY-NNN, e.g. TCH-2025-003).
+//
+// STEP-BY-STEP:
+//   1. Add teacher in teachers.html → note auto-generated ID shown on their card
+//   2. Add a block below with that id + a password
+//   3. git push → teacher opens teacher-login.html and logs in from anywhere
+//
+// If TEACHER_ACCOUNTS is empty or id not found, teacher can use OWNER_PASSWORD
+// as a fallback (useful for initial setup and testing).
+//
+const TEACHER_ACCOUNTS = [
+  // ────── EXAMPLE — delete or uncomment ──────
+  // {
+  //   id:       'TCH-2025-001',   // ← copy exact id from teachers.html
+  //   password: 'Rahul@teach1',   // ← share this with the teacher
+  // },
+  // {
+  //   id:       'TCH-2025-002',
+  //   password: 'Priya@teach2',
+  // },
+  // ──────────────────────────────────────────
+];
+
 /* ══════════════════════════════════════════════════════════════
    §2  AUTH FUNCTIONS  (do not edit below this line normally)
    ══════════════════════════════════════════════════════════════ */
@@ -128,6 +154,19 @@ function authenticateAdmin(password) {
   }
   const m = STAFF_MEMBERS.find(x => x.password === password && x.active !== false);
   if (m) return { id:m.id, name:m.name, role:m.role, isOwner:false, permissions:m.permissions||{} };
+  return null;
+}
+
+function authenticateTeacher(teacherId, password) {
+  // Check TEACHER_ACCOUNTS
+  const acc = TEACHER_ACCOUNTS.find(a => a.id === teacherId && a.password === password);
+  if (acc) {
+    return loadData().teachers.find(t => t.id === teacherId && t.active !== false) || null;
+  }
+  // Fallback: owner password lets any teacher log in
+  if (password === OWNER_PASSWORD) {
+    return loadData().teachers.find(t => t.id === teacherId && t.active !== false) || null;
+  }
   return null;
 }
 
@@ -187,7 +226,11 @@ const DEFAULT_SCHEMA = {
     setupDone:false, updatedAt:'',
   },
   teachers:[],      // { id, name, photo(b64), employeeCode, designation, department,
-                    //   subjectsTaught[], classAssigned, sectionAssigned, isClassTeacher,
+                    //   subjectsTaught[],         ← comma-sep string e.g. 'Maths,Physics'
+                    //   classAssigned,            ← primary class (string) for classteacher
+                    //   sectionAssigned,          ← primary section
+                    //   isClassTeacher,
+                    //   classesAssigned:[],       ← NEW: [{class,section,subjects[]}] multi-class
                     //   phone, email, address, dob, joiningDate, qualification, salary, active, createdAt }
   students:[],      // { id, name, photo(b64), rollNumber, class, section, dob, gender,
                     //   bloodGroup, category, aadhaar, admissionDate, admissionNo, session,
@@ -252,11 +295,13 @@ function importData(jsonStr) {
     ARR.forEach(key => {
       if (!Array.isArray(inc[key])) return;
       if (!Array.isArray(merged[key])) merged[key]=[];
+      let _skipped=0;
       inc[key].forEach(item => {
-        if (!item.id) return;
+        if (!item.id) { _skipped++; return; }
         const i = merged[key].findIndex(e=>e.id===item.id);
         i>-1 ? (merged[key][i]={...merged[key][i],...item}) : merged[key].push(item);
       });
+      if(_skipped>0) console.warn('[SchoolERP] importData: '+_skipped+' records in '+key+' skipped (missing id field)');
     });
     return merged;
   } catch(e) { showToast('❌ Import failed — invalid JSON.','error'); return null; }
@@ -267,6 +312,7 @@ function importData(jsonStr) {
    §6  ID GENERATOR  →  PREFIX-YYYY-NNN  e.g. STU-2025-007
    ══════════════════════════════════════════════════════════════ */
 
+const _idCounters = {};
 const _PM = { TCH:'teachers',STU:'students',FST:'feeStructures',RCP:'feePayments',
               EXM:'exams',MRK:'marks',DOC:'documents',ANN:'announcements',TTB:'timetable' };
 
@@ -279,7 +325,8 @@ function generateID(prefix) {
       const n=parseInt(x.id.split('-').pop(),10); if(!isNaN(n)&&n>max) max=n;
     }
   });
-  return `${prefix}-${yr}-${String(max+1).padStart(3,'0')}`;
+  _idCounters[prefix] = Math.max(max, _idCounters[prefix]||0) + 1;
+  return `${prefix}-${yr}-${String(_idCounters[prefix]).padStart(3,'0')}`;
 }
 
 
@@ -483,10 +530,61 @@ function _mergeSchema(def,saved){
    §15  PUBLIC API — window.ERP
    ══════════════════════════════════════════════════════════════ */
 
+
+/* ══════════════════════════════════════════════════════════════
+   §16  GOOGLE DRIVE SYNC  ← EDIT THIS URL
+   ══════════════════════════════════════════════════════════════
+
+   HOW TO SET UP (one-time, 5 minutes):
+   1. Admin exports JSON  → school-data-DATE.json
+   2. Upload to Google Drive
+   3. Right-click file → Share → Anyone with link → Viewer
+   4. Copy the share link.  It looks like:
+      https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+   5. Replace FILE_ID below in DRIVE_FILE_ID
+   6. git push → done. Students click Sync and get latest data.
+
+   TO UPDATE DATA:
+   - Export new JSON from admin panel
+   - In Google Drive, right-click old file → Manage versions → Upload new version
+     (the FILE_ID stays the same — no need to change the code)
+   ══════════════════════════════════════════════════════════════ */
+
+const DRIVE_FILE_ID = 'YOUR_GOOGLE_DRIVE_FILE_ID_HERE'; // ← PASTE FILE_ID HERE
+
+function buildDriveDirectURL(fileId) {
+  return 'https://drive.google.com/uc?export=download&id=' + fileId;
+}
+
+async function syncFromDrive(onSuccess, onError) {
+  if (!DRIVE_FILE_ID || DRIVE_FILE_ID === 'YOUR_GOOGLE_DRIVE_FILE_ID_HERE') {
+    showToast('⚠️ Drive sync not configured. Edit DRIVE_FILE_ID in school_data.js', 'warning', 5000);
+    if (onError) onError(new Error('Not configured'));
+    return;
+  }
+  try {
+    showToast('🔄 Syncing from school server…', 'info', 8000);
+    const url  = buildDriveDirectURL(DRIVE_FILE_ID);
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const json = await resp.text();
+    const merged = importData(json);
+    if (!merged) throw new Error('Parse failed');
+    saveData(merged);
+    showToast('✅ School data synced successfully!', 'success', 4000);
+    if (onSuccess) onSuccess(merged);
+  } catch(e) {
+    console.error('[SchoolERP] syncFromDrive:', e);
+    showToast('❌ Sync failed. Try importing manually or check Drive link.', 'error', 5000);
+    if (onError) onError(e);
+  }
+}
+
 window.ERP = {
   // ── Auth ──────────────────────────────────────
-  authenticateAdmin, authenticateStudent,
+  authenticateAdmin, authenticateStudent, authenticateTeacher,
   getStaffList, getStudentAccountIDs,
+  TEACHER_ACCOUNTS,
   setAdminSession,   getAdminSession,
   setStudentSession, getStudentSession,
   logoutAdmin,       logoutStudent,
@@ -513,6 +611,10 @@ window.ERP = {
 
   // ── UI ────────────────────────────────────────
   showToast,
+
+  // ── Drive Sync ────────────────────────────────
+  syncFromDrive,
+  DRIVE_FILE_ID: () => DRIVE_FILE_ID,
   confirm: erp_confirm,
 
   openImportModal()  { const e=document.getElementById('_erp_im'); if(e)e.style.display='flex'; },

@@ -349,6 +349,8 @@ tbody td{padding:11px 14px;vertical-align:middle;}
     <a class="nav-item" href="students.html"><span class="nav-icon"><i data-lucide="users" class="lucide"></i></span> Students</a>
     <a class="nav-item" href="teachers.html"><span class="nav-icon"><i data-lucide="user-check" class="lucide"></i></span> Teachers</a>
     <a class="nav-item" href="fees.html"><span class="nav-icon"><i data-lucide="indian-rupee" class="lucide"></i></span> Fees</a>
+    <a class="nav-item" href="teacher-login.html" target="_blank"><span class="nav-icon"><i data-lucide="user-check" class="lucide"></i></span> Teacher Portal <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">↗</span></a>
+    <a class="nav-item" href="erp-guide.html" target="_blank"><span class="nav-icon"><i data-lucide="book-open" class="lucide"></i></span> ERP Guide <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">↗</span></a>
   </nav>
 
   <div class="sb-foot">
@@ -362,7 +364,7 @@ tbody td{padding:11px 14px;vertical-align:middle;}
       <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
     </button>
   </div>
-  <div class="sb-footer-brand">SparkEdge Internal Tools</div>
+  <div class="sb-footer-brand">School ERP v2.0</div>
 </aside>
 
 <!-- ══════════ MAIN ══════════ -->
@@ -1250,6 +1252,7 @@ function validateMarkInput(inp){
   const max = parseFloat(inp.dataset.max)||100;
   const val = parseFloat(inp.value);
   inp.classList.toggle('over-max', !isNaN(val) && val > max);
+  window._marksDirty = true;
   // Update live result
   const row    = inp.closest('tr');
   const stuId  = row ? row.dataset.studentId : null;
@@ -1290,6 +1293,7 @@ function saveAllMarks(examId){
   const rows  = document.querySelectorAll('#marksEntryBody tr[data-student-id]');
   if(!rows.length){ showToast('⚠️ No students to save.','warning'); return; }
 
+  window._marksDirty = false;
   let saved=0, skipped=0;
   rows.forEach(row=>{
     const stuId  = row.dataset.studentId;
@@ -1298,7 +1302,7 @@ function saveAllMarks(examId){
     if(!hasAny){ skipped++; return; }
 
     const subjectMarks = subjects.map((sub,i)=>{
-      const mo    = parseFloat(inputs[i]?.value)||0;
+      const mo    = Math.min(parseFloat(inputs[i]?.value)||0, sub.maxMarks); // clamp to max
       const grade = ERP.getGrade(sub.maxMarks>0?Math.round(mo/sub.maxMarks*100):0);
       const pass  = mo >= (sub.passingMarks||33);
       return {

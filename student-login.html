@@ -247,7 +247,20 @@ tbody td{padding:11px 14px;vertical-align:middle;}
 
     <div class="lc-hint">
       <i data-lucide="info" style="width:11px;height:11px;stroke:currentColor;"></i>
-      Your ID &amp; password were shared by your school. Contact admin if you need help.
+      Your ID &amp; password were shared by your school.
+    </div>
+
+    <!-- Data sync buttons -->
+    <div style="margin-top:18px;border-top:1px solid var(--border);padding-top:18px;display:flex;flex-direction:column;gap:8px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-align:center;margin-bottom:2px;">FIRST TIME? LOAD SCHOOL DATA</div>
+      <button onclick="doGDriveSync()" id="syncDriveBtn" style="width:100%;padding:11px;background:rgba(34,197,94,.09);border:1px solid rgba(34,197,94,.28);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;" onmouseover="this.style.background='rgba(34,197,94,.16)'" onmouseout="this.style.background='rgba(34,197,94,.09)'">
+        <i data-lucide="refresh-cw" style="width:14px;height:14px;stroke:currentColor;"></i>
+        🔄 Sync from school (Google Drive)
+      </button>
+      <button onclick="ERP.openImportModal()" style="width:100%;padding:11px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.22);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;" onmouseover="this.style.background='rgba(59,130,246,.16)'" onmouseout="this.style.background='rgba(59,130,246,.08)'">
+        <i data-lucide="upload" style="width:14px;height:14px;stroke:currentColor;"></i>
+        📂 Upload JSON data file
+      </button>
     </div>
   </div>
 </div>
@@ -312,11 +325,14 @@ tbody td{padding:11px 14px;vertical-align:middle;}
   </nav>
 
   <div class="sb-foot">
+    <a class="sb-foot-btn" href="erp-guide.html" target="_blank" style="text-decoration:none;">
+      <i data-lucide="book-open" style="width:13px;height:13px;stroke:currentColor;"></i> Help &amp; Guide
+    </a>
     <button class="sb-foot-btn red" onclick="doLogout()">
       <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Sign Out
     </button>
   </div>
-  <div class="sb-footer-brand">SparkEdge Internal Tools</div>
+  <div class="sb-footer-brand">School ERP v2.0</div>
 </aside>
 
 <!-- ══════════ MAIN ══════════ -->
@@ -465,7 +481,7 @@ tbody td{padding:11px 14px;vertical-align:middle;}
 
   <footer style="padding:14px 24px;border-top:1px solid var(--border);background:var(--bg-card);font-size:10px;color:var(--text-dim);display:flex;align-items:center;justify-content:space-between;letter-spacing:.4px;text-transform:uppercase;">
     <span>Student Portal</span>
-    <span>SparkEdge Internal Tools</span>
+    <span>School ERP v2.0</span>
   </footer>
 </div>
 
@@ -542,9 +558,34 @@ function doLogout(){
   ERP.logoutStudent();
 }
 
+/* ── DRIVE SYNC ── */
+function doGDriveSync(){
+  const btn = document.getElementById('syncDriveBtn');
+  if(btn){ btn.textContent = '⏳ Syncing…'; btn.disabled = true; }
+  ERP.syncFromDrive(
+    (merged) => {
+      // success - reload page so student can login with fresh data
+      showToast('✅ Data synced! You can now log in.', 'success', 3000);
+      setTimeout(() => location.reload(), 1800);
+    },
+    (err) => {
+      if(btn){ btn.innerHTML = '<i data-lucide="refresh-cw" style="width:14px;height:14px;stroke:currentColor;"></i> 🔄 Sync from school (Google Drive)'; btn.disabled = false; lucide.createIcons(); }
+    }
+  );
+}
+
+/* ── IMPORT HOOK ── */
+ERP.onImportSuccess = function(merged) {
+  showToast('✅ Data imported! You can now log in.', 'success', 3000);
+  setTimeout(() => location.reload(), 1500);
+};
+
 /* ── BOOT ── */
 function bootApp(){
   if(!_stu) return;
+  // Always re-fetch fresh student record from localStorage (fixes stale session bug)
+  const fresh = ERP.getStudent(_stu.id);
+  if (fresh) _stu = fresh;
   const data = ERP.loadData();
   const s    = data.settings;
 

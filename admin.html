@@ -336,7 +336,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
     </button>
   </div>
-  <div class="sb-footer-brand">SparkEdge Internal Tools</div>
+  <div class="sb-footer-brand">School ERP v2.0</div>
 </aside>
 
 <!-- ══════════ MAIN ══════════ -->
@@ -1300,6 +1300,10 @@ const ALL_NAV = [
   { section:'Documents', items:[
     { id:'docs', label:'Certificates', icon:'file-text', perm:'docs', href:'docs.html' },
     { id:'student-portal', label:'Student Portal', icon:'user-circle', perm:null, href:'student-login.html', blank:true },
+    { id:'teacher-portal', label:'Teacher Portal', icon:'user-check', perm:null, href:'teacher-login.html', blank:true },
+  ]},
+  { section:'Help', items:[
+    { id:'erp-guide', label:'ERP Guide', icon:'book-open', perm:null, href:'erp-guide.html', blank:true },
   ]},
   { section:'System', items:[
     { id:'team', label:'Team Members', icon:'shield-check', perm:null, ownerOnly:true, internal:true },

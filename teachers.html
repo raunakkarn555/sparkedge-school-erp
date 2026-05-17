@@ -323,19 +323,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <span class="nav-icon"><i data-lucide="backpack" class="lucide"></i></span> Students
       <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
     </a>
+  
+    <a class="nav-item" href="teacher-login.html" target="_blank" style="text-decoration:none;"><span class="nav-icon"><i data-lucide="user-check" class="lucide"></i></span> Teacher Portal <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">&#x2197;</span></a>
+    <a class="nav-item" href="erp-guide.html" target="_blank" style="text-decoration:none;"><span class="nav-icon"><i data-lucide="book-open" class="lucide"></i></span> ERP Guide <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">&#x2197;</span></a>
   </nav>
   <div class="sb-foot">
-    <button class="sb-foot-btn" id="btn-export" onclick="doExport()" style="display:none;">
+    <button class="sb-foot-btn" id="btn-export" onclick="doExport()">
       <i data-lucide="download" style="width:13px;height:13px;stroke:currentColor;"></i> Export Data
     </button>
-    <button class="sb-foot-btn" id="btn-import" onclick="openImportModal()" style="display:none;">
+    <button class="sb-foot-btn" id="btn-import" onclick="openImportModal()">
       <i data-lucide="upload" style="width:13px;height:13px;stroke:currentColor;"></i> Import Data
     </button>
     <button class="sb-foot-btn red" onclick="doLogout()">
       <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
     </button>
   </div>
-  <div class="sb-footer-brand">SparkEdge Internal Tools</div>
+  <div class="sb-footer-brand">School ERP v2.0</div>
 </aside>
 
 <!-- ══ MAIN ══ -->
@@ -695,6 +698,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
             Yes, assign as Class Teacher
           </label>
         </div>
+      </div>
+
+      <!-- Multi-class assignment -->
+      <div style="grid-column:1/-1;margin-top:4px;">
+        <div class="modal-section-title" style="margin-bottom:10px;">ADDITIONAL CLASS ASSIGNMENTS</div>
+        <div style="background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.15);border-radius:9px;padding:12px 14px;font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.7;">
+          Use this section to assign the teacher to <strong style="color:var(--text);">multiple classes/sections</strong>. For each row, pick a class, section, and the subjects they teach there. The primary class above is for classteacher assignment.
+        </div>
+        <div id="extra-classes-container"><!-- rows added by JS --></div>
+        <button type="button" onclick="addExtraClassRow()" style="background:none;border:1px dashed var(--border-hi);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;width:100%;transition:all .14s;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border-hi)';this.style.color='var(--text-muted)'">
+          <i data-lucide="plus" style="width:13px;height:13px;stroke:currentColor;"></i> Add Another Class
+        </button>
       </div>
 
       <div class="modal-section-title">CONTACT DETAILS</div>
@@ -1211,6 +1226,8 @@ function openTchModal(id) {
     document.getElementById('tch-desig').value    = t.designation || '';
     document.getElementById('tch-dept').value     = t.department || '';
     document.getElementById('tch-subjects').value = t.subjectsTaught || '';
+  // Load extra classes
+  setTimeout(() => loadExtraClasses(t.classesAssigned || []), 50);
     document.getElementById('tch-qual').value     = t.qualification || '';
     document.getElementById('tch-class').value    = t.classAssigned || '';
     document.getElementById('tch-section').value  = t.sectionAssigned || '';
@@ -1241,6 +1258,8 @@ function openTchModal(id) {
 function closeTchModal() { document.getElementById('tchModal').classList.remove('open'); }
 
 function clearTchForm() {
+  const ec = document.getElementById('extra-classes-container');
+  if(ec) ec.innerHTML = '';
   ['tch-edit-id','tch-name','tch-empcode','tch-dept','tch-subjects','tch-qual',
    'tch-phone','tch-email','tch-address','tch-dob','tch-join','tch-remarks','tch-salary'].forEach(id => {
     const el = document.getElementById(id);
@@ -1287,6 +1306,54 @@ function saveTeacher() {
   const dept   = document.getElementById('tch-dept').value.trim();
 
   if (!name)  { showToast('⚠️ Name is required.','warning'); return; }
+/* ── MULTI-CLASS HELPERS ── */
+function addExtraClassRow(cls, sec, subs) {
+  const data = ERP.loadData();
+  const classes  = data.settings.classes  || [];
+  const sections = data.settings.sections || [];
+  const container = document.getElementById('extra-classes-container');
+  if (!container) return;
+  const idx = container.children.length;
+  const row = document.createElement('div');
+  row.className = 'extra-class-row';
+  row.setAttribute('data-idx', idx);
+  row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:8px;align-items:center;background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:6px;';
+  row.innerHTML = `
+    <select class="ec-class" style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;color:var(--text);outline:none;">
+      <option value="">Class…</option>
+      ${classes.map(c=>`<option value="${c}" ${cls===c?'selected':''}>${c}</option>`).join('')}
+    </select>
+    <select class="ec-section" style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;color:var(--text);outline:none;">
+      <option value="">Sec…</option>
+      ${sections.map(s=>`<option value="${s}" ${sec===s?'selected':''}>${s}</option>`).join('')}
+    </select>
+    <input class="ec-subjects" value="${subs||''}" placeholder="Subjects, comma-sep e.g. Maths, Physics"
+      style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;color:var(--text);outline:none;width:100%;"/>
+    <button type="button" onclick="this.closest('.extra-class-row').remove()"
+      style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);border-radius:6px;padding:6px 10px;color:var(--red);cursor:pointer;font-size:14px;line-height:1;">✕</button>`;
+  container.appendChild(row);
+  if(typeof lucide!=='undefined') lucide.createIcons();
+}
+
+function collectExtraClasses() {
+  const rows = document.querySelectorAll('.extra-class-row');
+  const result = [];
+  rows.forEach(row => {
+    const cls  = row.querySelector('.ec-class')?.value;
+    const sec  = row.querySelector('.ec-section')?.value;
+    const subs = (row.querySelector('.ec-subjects')?.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+    if (cls) result.push({ class:cls, section:sec||'', subjects:subs });
+  });
+  return result;
+}
+
+function loadExtraClasses(classesAssigned) {
+  const container = document.getElementById('extra-classes-container');
+  if (!container) return;
+  container.innerHTML = '';
+  (classesAssigned||[]).forEach(ca => addExtraClassRow(ca.class, ca.section, (ca.subjects||[]).join(', ')));
+}
+
   if (!desig) { showToast('⚠️ Designation is required.','warning'); return; }
   if (!dept)  { showToast('⚠️ Department is required.','warning'); return; }
 
@@ -1313,6 +1380,7 @@ function saveTeacher() {
     salary:         parseFloat(document.getElementById('tch-salary').value) || 0,
     active:         document.getElementById('tch-active').value !== 'false',
     remarks:        document.getElementById('tch-remarks').value.trim(),
+    classesAssigned: collectExtraClasses(),
   };
 
   // Photo

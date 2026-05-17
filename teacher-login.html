@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Teacher Portal — School ERP</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="school_data.js"></script>
+<style>
+:root{
+  --bg:#080810;--bg-card:#0E0E1A;--bg-raised:#141422;--bg-hover:#1A1A2A;
+  --border:#1E1E30;--border-hi:#2A2A40;
+  --accent:#14B8A6;--accent2:#6366F1;--gold:#FFB347;
+  --green:#22C55E;--blue:#3B82F6;--red:#EF4444;--purple:#9B7FD4;--yellow:#F59E0B;
+  --text:#F0F0FA;--text-muted:#7A7A9A;--text-dim:#3A3A5A;
+  --radius:12px;--radius-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px;}
+.lucide{width:16px;height:16px;stroke-width:2;flex-shrink:0;}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;}
+#loginScreen::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(20,184,166,.1) 0%,transparent 65%);border-radius:50%;pointer-events:none;}
+.lc{position:relative;background:var(--bg-card);border:1px solid rgba(20,184,166,.25);border-radius:20px;padding:44px 40px;width:440px;max-width:94vw;box-shadow:0 40px 80px rgba(0,0,0,.6);}
+.lc-badge{display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.5px;margin:0 auto 16px;width:fit-content;}
+.lc-icon{width:68px;height:68px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 12px 32px rgba(20,184,166,.3);}
+.lc-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;text-align:center;margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:28px;line-height:1.6;}
+.lc-school-name{color:var(--text);font-weight:600;}
+.lc-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:#EF4444;margin-bottom:14px;display:none;align-items:center;gap:8px;}
+.lc-field{position:relative;margin-bottom:14px;}
+.lc-field label{display:block;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-muted);margin-bottom:5px;}
+.lc-field input{width:100%;background:var(--bg-raised);border:1px solid var(--border);border-radius:10px;padding:12px 46px 12px 16px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+.lc-field input:focus{border-color:rgba(20,184,166,.55);box-shadow:0 0 0 3px rgba(20,184,166,.08);}
+.lc-eye{position:absolute;right:12px;bottom:12px;background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;padding:4px;}
+.lc-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 24px rgba(20,184,166,.25);}
+.lc-btn:hover{opacity:.9;transform:translateY(-1px);}
+.lc-hint{text-align:center;font-size:11px;color:var(--text-dim);margin-top:14px;display:flex;align-items:center;justify-content:center;gap:5px;line-height:1.6;}
+.lc-sync{margin-top:16px;border-top:1px solid var(--border);padding-top:16px;display:flex;flex-direction:column;gap:8px;}
+.lc-sync-lbl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-align:center;}
+.sync-btn{width:100%;padding:11px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;}
+.sync-btn-green{background:rgba(34,197,94,.09);border:1px solid rgba(34,197,94,.28);color:var(--green);}
+.sync-btn-green:hover{background:rgba(34,197,94,.16);}
+.sync-btn-blue{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.22);color:var(--blue);}
+.sync-btn-blue:hover{background:rgba(59,130,246,.16);}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
+.shake{animation:shake .3s ease;}
+
+/* ── LAYOUT ── */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:235px;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform .25s ease;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-sess{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-top:1px;}
+
+/* Teacher profile card in sidebar */
+.sb-teacher{margin:10px 12px;padding:12px;background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.16);border-radius:10px;text-align:center;}
+.sb-tch-av{width:48px;height:48px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:#fff;margin:0 auto 8px;overflow:hidden;}
+.sb-tch-name{font-size:13px;font-weight:700;margin-bottom:2px;}
+.sb-tch-role{font-size:11px;color:var(--text-muted);}
+.sb-tch-badge{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.25);color:var(--accent);}
+
+.sb-nav{padding:10px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:12px 8px 5px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .13s;border:none;background:none;width:100%;text-align:left;text-decoration:none;}
+.nav-item:hover{background:var(--bg-raised);color:var(--text);}
+.nav-item.active{background:rgba(20,184,166,.1);color:var(--accent);border:1px solid rgba(20,184,166,.2);}
+.nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;display:flex;align-items:center;}
+.nav-ext{margin-left:auto;font-size:10px;color:var(--text-dim);}
+.sb-foot{padding:10px;border-top:1px solid var(--border);}
+.sb-foot-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;font-size:12px;color:var(--text-muted);background:none;border:none;cursor:pointer;width:100%;text-align:left;transition:all .13s;font-family:'DM Sans',sans-serif;text-decoration:none;}
+.sb-foot-btn:hover{background:var(--bg-raised);color:var(--text);}
+.sb-foot-btn.red:hover{color:var(--red);}
+.sb-footer-brand{text-align:center;font-size:9px;color:var(--text-dim);letter-spacing:.5px;padding:6px;border-top:1px solid var(--border);}
+
+/* ── MAIN ── */
+.main{margin-left:235px;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{padding:13px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,16,.9);backdrop-filter:blur(14px);position:sticky;top:0;z-index:40;}
+.tb-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;}
+.tb-sub{font-size:12px;color:var(--text-muted);}
+.tb-right{display:flex;align-items:center;gap:8px;}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text-muted);}
+.btn-ghost:hover{background:var(--bg-raised);color:var(--text);}
+.btn-green{background:rgba(34,197,94,.11);border:1px solid rgba(34,197,94,.28);color:var(--green);}
+.btn-blue{background:rgba(59,130,246,.11);border:1px solid rgba(59,130,246,.28);color:var(--blue);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+
+/* ── PAGE ── */
+.page{display:none;padding:24px;animation:pgIn .18s ease;}
+.page.active{display:block;}
+@keyframes pgIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+
+/* ── CARDS ── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;}
+.card-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-hdr-icon{width:28px;height:28px;border-radius:7px;background:rgba(20,184,166,.09);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-hdr-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.card-hdr-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.card-body{padding:18px;}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
+.stat-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.stat-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;}
+.stat-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1;}
+.stat-sub{font-size:11px;color:var(--text-muted);margin-top:4px;}
+
+/* ── INFO GRID ── */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.info-item{background:var(--bg-raised);border-radius:8px;padding:10px 12px;}
+.info-lbl{font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--text-dim);text-transform:uppercase;margin-bottom:3px;}
+.info-val{font-size:13px;color:var(--text);}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--bg-raised);}
+
+/* ── PILLS ── */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.pill-green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);color:var(--green);}
+.pill-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:var(--red);}
+.pill-gold{background:rgba(255,179,71,.12);border:1px solid rgba(255,179,71,.3);color:var(--gold);}
+.pill-blue{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:var(--blue);}
+.pill-teal{background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.25);color:var(--accent);}
+
+/* ── SUBJECT/CLASS TAGS ── */
+.tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:6px;background:var(--bg-raised);border:1px solid var(--border);color:var(--text-muted);margin:2px;}
+.tag-accent{border-color:rgba(20,184,166,.3);color:var(--accent);background:rgba(20,184,166,.07);}
+
+/* ── TIMETABLE ── */
+.tt-grid{display:grid;grid-template-columns:auto repeat(6,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.tt-header{background:var(--bg-raised);padding:10px 8px;text-align:center;font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);}
+.tt-period{background:var(--bg-raised);padding:8px;text-align:center;font-size:11px;color:var(--text-dim);font-weight:600;}
+.tt-cell{background:var(--bg-card);padding:8px 6px;text-align:center;}
+.tt-cell-sub{font-size:11px;font-weight:700;color:var(--accent);}
+.tt-cell-class{font-size:10px;color:var(--text-muted);margin-top:2px;}
+.tt-cell-empty{font-size:18px;color:var(--text-dim);}
+
+/* ── ANNOUNCEMENT ── */
+.ann-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;}
+.ann-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px;}
+.ann-meta{font-size:11px;color:var(--text-muted);margin-bottom:8px;}
+.ann-body{font-size:13px;color:var(--text-muted);line-height:1.65;}
+
+/* ── MARKS VIEW ── */
+.exam-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;}
+.exam-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.exam-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.exam-meta{font-size:12px;color:var(--text-muted);}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:44px 20px;color:var(--text-dim);}
+.empty-ic{font-size:34px;margin-bottom:10px;}
+.empty-tx{font-size:14px;}
+
+/* ── MOBILE ── */
+.mob-bar{display:none;position:fixed;top:0;left:0;right:0;height:54px;background:var(--bg-card);border-bottom:1px solid var(--border);z-index:60;align-items:center;padding:0 16px;gap:12px;}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49;}
+.sb-overlay.open{display:block;}
+.sidebar.mob-open{transform:translateX(0)!important;}
+@media(max-width:900px){
+  .mob-bar{display:flex!important;}
+  .sidebar{transform:translateX(-100%);}
+  .main{margin-left:0;padding-top:54px;}
+  .topbar{top:54px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .info-grid{grid-template-columns:1fr;}
+  .tt-grid{display:block;overflow-x:auto;}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr;}
+  .page{padding:14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="loginScreen">
+  <div class="lc">
+    <div class="lc-badge">
+      <i data-lucide="book-open" style="width:12px;height:12px;stroke:currentColor;"></i>
+      TEACHER PORTAL
+    </div>
+    <div class="lc-icon">
+      <i data-lucide="user-check" style="width:32px;height:32px;stroke:#fff;stroke-width:1.75;"></i>
+    </div>
+    <div class="lc-title">Teacher Portal</div>
+    <div class="lc-sub">Sign in to <span class="lc-school-name" id="lc-school">your school</span></div>
+
+    <div class="lc-err" id="lc-err">
+      <i data-lucide="alert-triangle" style="width:14px;height:14px;flex-shrink:0;stroke:currentColor;"></i>
+      <span id="lc-err-msg">Invalid ID or password.</span>
+    </div>
+
+    <!-- Login field: Teacher ID (auto-generated TCH-YYYY-NNN) -->
+    <div class="lc-field">
+      <label>TEACHER ID</label>
+      <input type="text" id="lc-id" placeholder="e.g. TCH-2025-003" autocomplete="username"
+             onkeydown="if(event.key==='Enter')document.getElementById('lc-pwd').focus()"/>
+    </div>
+    <div class="lc-field">
+      <label>PASSWORD</label>
+      <input type="password" id="lc-pwd" placeholder="Enter your password" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="lc-eye" id="lc-eye" onclick="toggleEye()">
+        <i data-lucide="eye" style="width:15px;height:15px;stroke:currentColor;"></i>
+      </button>
+    </div>
+
+    <button class="lc-btn" onclick="doLogin()">
+      <i data-lucide="log-in" style="width:16px;height:16px;stroke:#fff;"></i>
+      Sign In to Portal
+    </button>
+
+    <div class="lc-hint">
+      <i data-lucide="info" style="width:11px;height:11px;stroke:currentColor;"></i>
+      Your Teacher ID &amp; password are set in <code style="background:var(--bg-raised);padding:1px 5px;border-radius:4px;font-size:10px;">school_data.js</code> by the school admin.
+    </div>
+
+    <!-- Data sync buttons -->
+    <div class="lc-sync">
+      <div class="lc-sync-lbl">FIRST TIME? LOAD SCHOOL DATA</div>
+      <button onclick="doGDriveSync()" id="syncDriveBtn" class="sync-btn sync-btn-green">
+        <i data-lucide="refresh-cw" style="width:14px;height:14px;stroke:currentColor;"></i>
+        🔄 Sync from school (Google Drive)
+      </button>
+      <button onclick="ERP.openImportModal()" class="sync-btn sync-btn-blue">
+        <i data-lucide="upload" style="width:14px;height:14px;stroke:currentColor;"></i>
+        📂 Upload JSON data file
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MOBILE BAR ══════════ -->
+<div class="mob-bar" id="mobBar">
+  <button onclick="toggleSB()" style="background:none;border:none;color:var(--text);cursor:pointer;display:flex;align-items:center;">
+    <i data-lucide="menu" style="width:22px;height:22px;stroke:currentColor;"></i>
+  </button>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="sb-icon" style="width:28px;height:28px;">
+      <i data-lucide="book-open" style="width:14px;height:14px;stroke:#fff;stroke-width:2;"></i>
+    </div>
+    <span id="mob-title" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;">Teacher Portal</span>
+  </div>
+</div>
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSB()"></div>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-icon">
+      <i data-lucide="book-open" style="width:18px;height:18px;stroke:#fff;stroke-width:2;"></i>
+    </div>
+    <div style="flex:1;min-width:0;">
+      <div class="sb-name" id="sb-school">School ERP</div>
+      <div class="sb-sess" id="sb-sess">2025-26</div>
+    </div>
+  </div>
+
+  <div class="sb-teacher">
+    <div class="sb-tch-av" id="sb-av">TC</div>
+    <div class="sb-tch-name" id="sb-name">—</div>
+    <div class="sb-tch-role" id="sb-role">—</div>
+    <span class="sb-tch-badge">👨‍🏫 Teacher</span>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="nav-lbl">My Portal</div>
+    <button class="nav-item active" onclick="showPage('dashboard')">
+      <span class="nav-icon"><i data-lucide="layout-dashboard" class="lucide"></i></span> Dashboard
+    </button>
+    <button class="nav-item" onclick="showPage('profile')">
+      <span class="nav-icon"><i data-lucide="user" class="lucide"></i></span> My Profile
+    </button>
+    <button class="nav-item" onclick="showPage('myClasses')">
+      <span class="nav-icon"><i data-lucide="school" class="lucide"></i></span> My Classes
+    </button>
+    <button class="nav-item" onclick="showPage('timetable')">
+      <span class="nav-icon"><i data-lucide="calendar-days" class="lucide"></i></span> My Timetable
+    </button>
+    <button class="nav-item" onclick="showPage('marks')">
+      <span class="nav-icon"><i data-lucide="bar-chart-2" class="lucide"></i></span> Marks Entry
+    </button>
+    <button class="nav-item" onclick="showPage('announcements')">
+      <span class="nav-icon"><i data-lucide="megaphone" class="lucide"></i></span> Notices
+      <span id="ann-badge" style="display:none;margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;"></span>
+    </button>
+  </nav>
+
+  <div class="sb-foot">
+    <a class="sb-foot-btn" href="erp-guide.html" target="_blank" style="text-decoration:none;">
+      <i data-lucide="book-open" style="width:13px;height:13px;stroke:currentColor;"></i> Help &amp; Guide
+    </a>
+    <button class="sb-foot-btn red" onclick="doLogout()">
+      <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Sign Out
+    </button>
+  </div>
+  <div class="sb-footer-brand">School ERP v2.0 · Teacher Portal</div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main" id="mainWrap" style="display:none;">
+  <div class="topbar">
+    <div>
+      <div class="tb-title" id="tb-title">Dashboard</div>
+      <div class="tb-sub" id="tb-sub">Welcome back</div>
+    </div>
+    <div class="tb-right">
+      <div style="text-align:right;" id="topbar-teacher">
+        <div style="font-size:13px;font-weight:700;" id="tb-tch-name">—</div>
+        <div style="font-size:11px;color:var(--text-muted);" id="tb-tch-role">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DASHBOARD ══ -->
+  <div class="page active" id="page-dashboard">
+    <div class="stats-row" id="dash-stats"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-hdr-icon"><i data-lucide="users" class="lucide"></i></div>
+          <div><div class="card-hdr-title">My Students</div><div class="card-hdr-sub">Students in assigned classes</div></div>
+        </div>
+        <div class="card-body" id="dash-students"></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-hdr-icon"><i data-lucide="megaphone" class="lucide"></i></div>
+          <div><div class="card-hdr-title">Notices</div></div>
+        </div>
+        <div class="card-body" id="dash-notices"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PROFILE ══ -->
+  <div class="page" id="page-profile">
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon"><i data-lucide="user" class="lucide"></i></div>
+        <div><div class="card-hdr-title">My Profile</div><div class="card-hdr-sub">Your teacher record (contact admin to update)</div></div>
+      </div>
+      <div class="card-body">
+        <div id="profile-hero" style="display:flex;align-items:center;gap:18px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border);"></div>
+        <div class="info-grid" id="profile-grid"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon"><i data-lucide="book" class="lucide"></i></div>
+        <div><div class="card-hdr-title">Academic Assignments</div></div>
+      </div>
+      <div class="card-body" id="profile-assignments"></div>
+    </div>
+  </div>
+
+  <!-- ══ MY CLASSES ══ -->
+  <div class="page" id="page-myClasses">
+    <div id="classes-list"></div>
+  </div>
+
+  <!-- ══ TIMETABLE ══ -->
+  <div class="page" id="page-timetable">
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon"><i data-lucide="calendar-days" class="lucide"></i></div>
+        <div><div class="card-hdr-title">My Timetable</div><div class="card-hdr-sub">Periods assigned to me across all classes</div></div>
+      </div>
+      <div class="card-body" id="timetable-body"></div>
+    </div>
+  </div>
+
+  <!-- ══ MARKS ENTRY ══ -->
+  <div class="page" id="page-marks">
+    <div style="margin-bottom:16px;background:rgba(20,184,166,.05);border:1px solid rgba(20,184,166,.18);border-radius:var(--radius);padding:14px 18px;font-size:13px;color:var(--text-muted);line-height:1.7;">
+      <strong style="color:var(--text);">📝 Marks Entry:</strong> Select an exam below to enter/edit marks for your assigned students. After entering, data syncs when admin exports and re-shares the JSON.
+    </div>
+    <div id="marks-exam-list"></div>
+  </div>
+
+  <!-- ══ ANNOUNCEMENTS ══ -->
+  <div class="page" id="page-announcements">
+    <div id="ann-list"></div>
+  </div>
+
+  <footer style="padding:14px 24px;border-top:1px solid var(--border);background:var(--bg-card);font-size:10px;color:var(--text-dim);display:flex;align-items:center;justify-content:space-between;letter-spacing:.4px;text-transform:uppercase;margin-top:auto;">
+    <span>Teacher Portal</span>
+    <span>School ERP v2.0</span>
+  </footer>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   TEACHER-LOGIN.HTML  —  Teacher Self-Service Portal
+   Depends on: school_data.js (ERP global)
+
+   HOW TEACHER ACCOUNTS WORK:
+   Teachers log in with their auto-generated Teacher ID
+   (e.g. TCH-2025-003) + a password set in TEACHER_ACCOUNTS
+   inside school_data.js.  Add this section to school_data.js:
+
+   const TEACHER_ACCOUNTS = [
+     { id: 'TCH-2025-001', password: 'Rahul@2025' },
+     { id: 'TCH-2025-002', password: 'Priya@2025' },
+   ];
+
+   And add to window.ERP:
+     authenticateTeacher,  (see below — uses TEACHER_ACCOUNTS)
+
+   Until then, teachers log in with the OWNER_PASSWORD.
+═══════════════════════════════════════════════════ */
+
+let _tch = null; // logged-in teacher object
+
+/* ── HELPERS ── */
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(d){ if(!d)return'—'; try{return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return d;} }
+
+/* ── AUTH ── */
+function doLogin(){
+  const tid = document.getElementById('lc-id').value.trim();
+  const pwd = document.getElementById('lc-pwd').value;
+  if(!tid){ showErr('Please enter your Teacher ID.'); return; }
+  if(!pwd){ showErr('Please enter your password.');  return; }
+
+  // Try authenticating as teacher from data
+  const data = ERP.loadData();
+  const tch  = data.teachers.find(t => t.id === tid && t.active !== false);
+  if (!tch){ showErr('Teacher ID not found. Ask admin to check your record.'); shake(); return; }
+
+  // Password check: uses TEACHER_ACCOUNTS if defined in school_data.js,
+  // otherwise falls back to owner password (for initial setup)
+  let authenticated = false;
+  if (typeof TEACHER_ACCOUNTS !== 'undefined') {
+    const acc = TEACHER_ACCOUNTS.find(a => a.id === tid && a.password === pwd);
+    if (acc) authenticated = true;
+  }
+  // fallback: owner password lets any teacher log in (for setup/testing)
+  if (!authenticated && typeof OWNER_PASSWORD !== 'undefined' && pwd === OWNER_PASSWORD) {
+    authenticated = true;
+  }
+
+  if (!authenticated){
+    showErr('Incorrect password. Contact school admin.');
+    shake();
+    return;
+  }
+
+  // Always fetch fresh teacher record
+  _tch = ERP.loadData().teachers.find(t => t.id === tid) || tch;
+  sessionStorage.setItem('erp_teacher', JSON.stringify({ id: _tch.id, name: _tch.name }));
+  bootApp();
+}
+
+function showErr(msg){
+  const el = document.getElementById('lc-err');
+  document.getElementById('lc-err-msg').textContent = msg;
+  el.style.display = 'flex';
+}
+function shake(){
+  const lc = document.querySelector('.lc');
+  lc.classList.add('shake');
+  setTimeout(() => lc.classList.remove('shake'), 350);
+}
+
+function toggleEye(){
+  const inp = document.getElementById('lc-pwd');
+  const ico = document.querySelector('#lc-eye i');
+  if(inp.type==='password'){ inp.type='text'; ico.setAttribute('data-lucide','eye-off'); }
+  else { inp.type='password'; ico.setAttribute('data-lucide','eye'); }
+  lucide.createIcons();
+}
+
+function doLogout(){
+  sessionStorage.removeItem('erp_teacher');
+  location.reload();
+}
+
+/* ── DRIVE SYNC ── */
+function doGDriveSync(){
+  const btn = document.getElementById('syncDriveBtn');
+  if(btn){ btn.textContent = '⏳ Syncing…'; btn.disabled = true; }
+  ERP.syncFromDrive(
+    () => {
+      ERP.showToast('✅ Data synced! You can now log in.', 'success', 3000);
+      setTimeout(() => location.reload(), 1800);
+    },
+    () => {
+      if(btn){ btn.innerHTML = '<i data-lucide="refresh-cw" style="width:14px;height:14px;stroke:currentColor;"></i> 🔄 Sync from school (Google Drive)'; btn.disabled = false; lucide.createIcons(); }
+    }
+  );
+}
+
+ERP.onImportSuccess = function() {
+  ERP.showToast('✅ Data imported! You can now log in.', 'success');
+  setTimeout(() => location.reload(), 1500);
+};
+
+/* ── BOOT ── */
+function bootApp(){
+  if(!_tch) return;
+  // Always re-fetch fresh teacher from localStorage
+  const fresh = ERP.loadData().teachers.find(t => t.id === _tch.id);
+  if(fresh) _tch = fresh;
+
+  const data = ERP.loadData();
+  const s    = data.settings;
+
+  // Sidebar
+  document.getElementById('sb-school').textContent = s.schoolName || 'School ERP';
+  document.getElementById('sb-sess').textContent   = s.currentSession || '';
+  document.getElementById('sb-name').textContent   = _tch.name;
+  document.getElementById('sb-role').textContent   = (_tch.designation||'') + (_tch.department ? ' · ' + _tch.department : '');
+  document.getElementById('mob-title').textContent = 'Teacher Portal';
+
+  // Avatar
+  const avEl = document.getElementById('sb-av');
+  if(_tch.photo){
+    avEl.innerHTML = `<img src="${_tch.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:11px;"/>`;
+  } else {
+    avEl.textContent = ERP.getInitials(_tch.name);
+  }
+
+  // Topbar
+  document.getElementById('tb-tch-name').textContent = _tch.name;
+  document.getElementById('tb-tch-role').textContent = _tch.designation || 'Teacher';
+
+  // School name on login (shown even before login)
+  document.getElementById('lc-school').textContent = s.schoolName || 'your school';
+
+  // Notices badge
+  const ann = ERP.getActiveAnnouncements('Teachers');
+  if(ann.length){
+    const b = document.getElementById('ann-badge');
+    b.textContent = ann.length;
+    b.style.display = 'inline-block';
+  }
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainWrap').style.display    = 'flex';
+  document.getElementById('mainWrap').style.flexDirection = 'column';
+
+  renderDashboard();
+  lucide.createIcons();
+}
+
+/* ── NAVIGATION ── */
+const PAGE_META = {
+  dashboard:     { title:'Dashboard',       sub:'Your teaching overview' },
+  profile:       { title:'My Profile',      sub:'Your teacher record' },
+  myClasses:     { title:'My Classes',      sub:'Students & class assignments' },
+  timetable:     { title:'My Timetable',    sub:'Periods assigned to you' },
+  marks:         { title:'Marks Entry',     sub:'Enter exam marks for your students' },
+  announcements: { title:'Notices',         sub:'School announcements' },
+};
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const pg = document.getElementById('page-'+name);
+  if(pg) pg.classList.add('active');
+  // find matching nav button
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    if(btn.getAttribute('onclick') === `showPage('${name}')`) btn.classList.add('active');
+  });
+  const m = PAGE_META[name] || {};
+  document.getElementById('tb-title').textContent = m.title || name;
+  document.getElementById('tb-sub').textContent   = m.sub   || '';
+  document.getElementById('sidebar').classList.remove('mob-open');
+  document.getElementById('sbOverlay').classList.remove('open');
+  if(name==='dashboard')    renderDashboard();
+  if(name==='profile')      renderProfile();
+  if(name==='myClasses')    renderMyClasses();
+  if(name==='timetable')    renderTimetable();
+  if(name==='marks')        renderMarks();
+  if(name==='announcements')renderAnnouncements();
+}
+
+function toggleSB(){
+  const sb=document.getElementById('sidebar'),ov=document.getElementById('sbOverlay');
+  const o=sb.classList.toggle('mob-open');
+  ov.classList.toggle('open',o);
+}
+
+/* ── DASHBOARD ── */
+function renderDashboard(){
+  const data = ERP.loadData();
+  const mySubjects  = (_tch.subjectsTaught||'').split(',').map(s=>s.trim()).filter(Boolean);
+  // Get all students in teacher's assigned classes
+  const myStudents  = getMyStudents(data);
+  // Count exams in teacher's classes
+  const myExams     = data.exams.filter(e => isMyClass(e.class, e.section));
+  const annList     = ERP.getActiveAnnouncements('Teachers');
+
+  // Stats
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(20,184,166,.12);"><i data-lucide="users" class="lucide" style="stroke:var(--accent);"></i></div>
+      <div class="stat-lbl">My Students</div>
+      <div class="stat-val" style="color:var(--accent);">${myStudents.length}</div>
+      <div class="stat-sub">Across assigned classes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(155,127,212,.12);"><i data-lucide="book" class="lucide" style="stroke:var(--purple);"></i></div>
+      <div class="stat-lbl">Subjects</div>
+      <div class="stat-val" style="color:var(--purple);">${mySubjects.length||1}</div>
+      <div class="stat-sub">${mySubjects.slice(0,2).join(', ')||'See profile'}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(59,130,246,.12);"><i data-lucide="clipboard-list" class="lucide" style="stroke:var(--blue);"></i></div>
+      <div class="stat-lbl">Exams</div>
+      <div class="stat-val" style="color:var(--blue);">${myExams.length}</div>
+      <div class="stat-sub">For my classes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(255,179,71,.12);"><i data-lucide="megaphone" class="lucide" style="stroke:var(--gold);"></i></div>
+      <div class="stat-lbl">Notices</div>
+      <div class="stat-val" style="color:var(--gold);">${annList.length}</div>
+      <div class="stat-sub">Active announcements</div>
+    </div>`;
+
+  // Students preview
+  const stuEl = document.getElementById('dash-students');
+  if(!myStudents.length){
+    stuEl.innerHTML = `<div class="empty"><div class="empty-ic">👥</div><div class="empty-tx">No classes assigned yet</div></div>`;
+  } else {
+    // Group by class
+    const byClass = {};
+    myStudents.forEach(s => {
+      const k = `Class ${s.class}${s.section?' '+s.section:''}`;
+      if(!byClass[k]) byClass[k]=[];
+      byClass[k].push(s);
+    });
+    stuEl.innerHTML = Object.entries(byClass).map(([cls,stus])=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+        <div style="font-size:13px;font-weight:600;">${esc(cls)}</div>
+        <span class="pill pill-teal">${stus.length} students</span>
+      </div>`).join('');
+  }
+
+  // Notices
+  const notEl = document.getElementById('dash-notices');
+  if(!annList.length){
+    notEl.innerHTML = `<div class="empty"><div class="empty-ic">📭</div><div class="empty-tx">No notices</div></div>`;
+  } else {
+    notEl.innerHTML = annList.slice(0,3).map(a=>`
+      <div style="padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="font-size:13px;font-weight:600;margin-bottom:2px;">${esc(a.title)}</div>
+        <div style="font-size:12px;color:var(--text-muted);">${(a.body||'').slice(0,80)}${(a.body||'').length>80?'…':''}</div>
+      </div>`).join('');
+  }
+
+  lucide.createIcons();
+}
+
+/* ── PROFILE ── */
+function renderProfile(){
+  const t = _tch;
+  const subjects = (t.subjectsTaught||'').split(',').map(s=>s.trim()).filter(Boolean);
+
+  document.getElementById('profile-hero').innerHTML = `
+    <div style="width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden;">
+      ${t.photo ? `<img src="${t.photo}" style="width:100%;height:100%;object-fit:cover;"/>` : esc(ERP.getInitials(t.name))}
+    </div>
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;">${esc(t.name)}</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">${esc(t.designation||'Teacher')} · ${esc(t.department||'')}</div>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span class="pill pill-teal">ID: ${esc(t.id)}</span>
+        ${t.isClassTeacher?`<span class="pill pill-gold">🏫 Class Teacher</span>`:''}
+        <span class="pill ${t.active!==false?'pill-green':'pill-red'}">${t.active!==false?'Active':'Inactive'}</span>
+      </div>
+    </div>`;
+
+  document.getElementById('profile-grid').innerHTML = `
+    <div class="info-item"><div class="info-lbl">Employee Code</div><div class="info-val">${esc(t.employeeCode||'—')}</div></div>
+    <div class="info-item"><div class="info-lbl">Date of Birth</div><div class="info-val">${fmtDate(t.dob)}</div></div>
+    <div class="info-item"><div class="info-lbl">Phone</div><div class="info-val">${esc(t.phone||'—')}</div></div>
+    <div class="info-item"><div class="info-lbl">Email</div><div class="info-val">${esc(t.email||'—')}</div></div>
+    <div class="info-item"><div class="info-lbl">Qualification</div><div class="info-val">${esc(t.qualification||'—')}</div></div>
+    <div class="info-item"><div class="info-lbl">Joining Date</div><div class="info-val">${fmtDate(t.joiningDate)}</div></div>
+    <div class="info-item" style="grid-column:1/-1;"><div class="info-lbl">Address</div><div class="info-val">${esc(t.address||'—')}</div></div>`;
+
+  document.getElementById('profile-assignments').innerHTML = `
+    <div style="margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">SUBJECTS TAUGHT</div>
+      <div>${subjects.length ? subjects.map(s=>`<span class="tag tag-accent">${esc(s)}</span>`).join('') : '<span style="font-size:13px;color:var(--text-muted);">None assigned</span>'}</div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">PRIMARY CLASS</div>
+      <div style="font-size:13px;">${t.classAssigned ? `Class ${t.classAssigned}${t.sectionAssigned?' - Section '+t.sectionAssigned:''}${t.isClassTeacher?' <span class="pill pill-gold" style="font-size:10px;">Class Teacher</span>':''}` : 'None'}</div>
+    </div>
+    ${(t.classesAssigned&&t.classesAssigned.length) ? `
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">ADDITIONAL CLASSES</div>
+      ${t.classesAssigned.map(ca=>`
+        <div style="background:var(--bg-raised);border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <span style="font-size:13px;font-weight:600;">Class ${esc(ca.class)}${ca.section?' - '+esc(ca.section):''}</span>
+            ${ca.subjects&&ca.subjects.length ? `<div>${ca.subjects.map(s=>`<span class="tag" style="font-size:10px;">${esc(s)}</span>`).join('')}</div>` : ''}
+          </div>
+        </div>`).join('')}
+    </div>` : ''}`;
+
+  lucide.createIcons();
+}
+
+/* ── MY CLASSES ── */
+function renderMyClasses(){
+  const data = ERP.loadData();
+  const myStudents = getMyStudents(data);
+
+  const el = document.getElementById('classes-list');
+  if(!myStudents.length){
+    el.innerHTML = `<div class="empty"><div class="empty-ic">🏫</div><div class="empty-tx">No classes assigned to you yet. Contact admin.</div></div>`;
+    return;
+  }
+
+  // Group by class+section
+  const byClass = {};
+  myStudents.forEach(s => {
+    const k = `${s.class}||${s.section||''}`;
+    if(!byClass[k]) byClass[k] = { class:s.class, section:s.section, students:[] };
+    byClass[k].students.push(s);
+  });
+
+  el.innerHTML = Object.values(byClass).map(grp => `
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon"><i data-lucide="school" class="lucide"></i></div>
+        <div>
+          <div class="card-hdr-title">Class ${esc(grp.class)}${grp.section?' - Section '+esc(grp.section):''}</div>
+          <div class="card-hdr-sub">${grp.students.length} students</div>
+        </div>
+        ${_tch.classAssigned===grp.class && _tch.sectionAssigned===(grp.section||'') && _tch.isClassTeacher
+          ? `<span class="pill pill-gold" style="margin-left:auto;">🏫 Class Teacher</span>` : ''}
+      </div>
+      <div class="card-body">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Roll</th><th>Student Name</th><th>Gender</th><th>Guardian</th><th>Phone</th></tr></thead>
+            <tbody>
+              ${grp.students.sort((a,b)=>(a.rollNumber||0)-(b.rollNumber||0)).map((s,i)=>`
+                <tr>
+                  <td style="color:var(--text-muted);">${i+1}</td>
+                  <td><span class="pill pill-teal">${esc(s.rollNumber||'—')}</span></td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <div style="width:30px;height:30px;border-radius:8px;background:var(--bg-raised);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">${esc(ERP.getInitials(s.name))}</div>
+                      <span style="font-weight:600;">${esc(s.name)}</span>
+                    </div>
+                  </td>
+                  <td>${esc(s.gender||'—')}</td>
+                  <td>${esc(s.guardianName||'—')}</td>
+                  <td>${esc(s.guardianPhone||'—')}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>`).join('');
+
+  lucide.createIcons();
+}
+
+/* ── TIMETABLE ── */
+function renderTimetable(){
+  const data  = ERP.loadData();
+  const DAYS  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  // Find all periods across all timetables where this teacher is assigned
+  const myPeriods = {}; // day -> [{period, subject, class, section}]
+  DAYS.forEach(d => myPeriods[d] = []);
+
+  data.timetable.forEach(tt => {
+    DAYS.forEach(day => {
+      const periods = (tt.schedule && tt.schedule[day]) || [];
+      periods.forEach(p => {
+        if(p.teacherId === _tch.id){
+          myPeriods[day].push({ ...p, class:tt.class, section:tt.section });
+        }
+      });
+    });
+  });
+
+  const maxPeriods = Math.max(...DAYS.map(d => myPeriods[d].length), 0);
+
+  if(maxPeriods === 0){
+    document.getElementById('timetable-body').innerHTML = `<div class="empty"><div class="empty-ic">📅</div><div class="empty-tx">No periods assigned yet. Admin needs to set up the timetable.</div></div>`;
+    lucide.createIcons();
+    return;
+  }
+
+  // Build a day-column grid
+  let html = `<div style="overflow-x:auto;"><table style="width:100%;min-width:600px;border-collapse:collapse;">
+    <thead><tr>
+      <th style="width:60px;background:var(--bg-raised);">Period</th>
+      ${SHORT.map(d=>`<th style="background:var(--bg-raised);padding:10px 8px;font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);">${d}</th>`).join('')}
+    </tr></thead>
+    <tbody>`;
+
+  for(let p = 1; p <= maxPeriods+2; p++){
+    html += `<tr>
+      <td style="text-align:center;font-size:11px;font-weight:700;color:var(--text-dim);padding:8px;border-bottom:1px solid var(--border);">P${p}</td>`;
+    DAYS.forEach(day => {
+      const period = myPeriods[day].find(x => x.period === p);
+      if(period){
+        html += `<td style="padding:6px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);">
+          <div class="tt-cell-sub">${esc(period.subject||'—')}</div>
+          <div class="tt-cell-class">Cl.${esc(period.class)}${period.section?'-'+esc(period.section):''}</div>
+          ${period.startTime?`<div style="font-size:9px;color:var(--text-dim);">${esc(period.startTime)}–${esc(period.endTime||'')}</div>`:''}
+        </td>`;
+      } else {
+        html += `<td style="padding:6px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);text-align:center;color:var(--text-dim);font-size:18px;">·</td>`;
+      }
+    });
+    html += `</tr>`;
+  }
+  html += `</tbody></table></div>`;
+  document.getElementById('timetable-body').innerHTML = html;
+  lucide.createIcons();
+}
+
+/* ── MARKS ENTRY (read-only view + note) ── */
+function renderMarks(){
+  const data  = ERP.loadData();
+  const exams = data.exams.filter(e => isMyClass(e.class, e.section));
+  const el    = document.getElementById('marks-exam-list');
+
+  if(!exams.length){
+    el.innerHTML = `<div class="empty"><div class="empty-ic">📋</div><div class="empty-tx">No exams created for your classes yet.</div></div>`;
+    lucide.createIcons();
+    return;
+  }
+
+  el.innerHTML = exams.map(exam => {
+    const students = ERP.getStudentsByClass(exam.class, exam.section||'');
+    const savedMarks = data.marks.filter(m => m.examId === exam.id);
+    const pendingCount = students.length - savedMarks.length;
+
+    return `
+    <div class="exam-card">
+      <div class="exam-hdr">
+        <div>
+          <div class="exam-name">${esc(exam.name)}</div>
+          <div class="exam-meta">Class ${esc(exam.class)}${exam.section?' - '+esc(exam.section):''} · ${exam.subjects?exam.subjects.length:0} subjects</div>
+        </div>
+        <span class="pill ${pendingCount>0?'pill-gold':'pill-green'}">${pendingCount>0?pendingCount+' pending':'All saved'}</span>
+        <span class="pill ${exam.resultDeclared?'pill-green':'pill-blue'}">${exam.resultDeclared?'Declared':'Pending'}</span>
+      </div>
+      <div style="padding:12px 18px;font-size:12px;color:var(--text-muted);">
+        Subjects: ${(exam.subjects||[]).map(s=>`<span class="tag">${esc(s.name)}</span>`).join(' ')||'—'} ·
+        ${savedMarks.length}/${students.length} students marked
+        <div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);border-radius:8px;font-size:12px;color:var(--blue);">
+          💡 To enter marks: open <strong>marks.html</strong> in the admin panel and log in. Teacher marks entry direct from this portal is coming soon.
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  lucide.createIcons();
+}
+
+/* ── ANNOUNCEMENTS ── */
+function renderAnnouncements(){
+  const anns = ERP.getActiveAnnouncements('Teachers');
+  const el   = document.getElementById('ann-list');
+  if(!anns.length){
+    el.innerHTML = `<div class="empty"><div class="empty-ic">📢</div><div class="empty-tx">No active notices for teachers</div></div>`;
+    lucide.createIcons();
+    return;
+  }
+  el.innerHTML = anns.slice().reverse().map(a => `
+    <div class="ann-item">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;">
+        <div class="ann-title">${esc(a.title)}</div>
+        <span class="pill ${a.priority==='Urgent'?'pill-red':a.priority==='Important'?'pill-gold':'pill-blue'}">${a.priority||'Normal'}</span>
+      </div>
+      <div class="ann-meta">${a.targetRole} · ${fmtDate(a.publishDate)}</div>
+      <div class="ann-body">${esc(a.body)}</div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+/* ── HELPERS ── */
+function getMyStudents(data){
+  const result = [];
+  // Primary class
+  if(_tch.classAssigned){
+    ERP.getStudentsByClass(_tch.classAssigned, _tch.sectionAssigned||'').forEach(s => {
+      if(!result.find(r=>r.id===s.id)) result.push(s);
+    });
+  }
+  // Additional classes (classesAssigned array)
+  if(_tch.classesAssigned && Array.isArray(_tch.classesAssigned)){
+    _tch.classesAssigned.forEach(ca => {
+      ERP.getStudentsByClass(ca.class, ca.section||'').forEach(s => {
+        if(!result.find(r=>r.id===s.id)) result.push(s);
+      });
+    });
+  }
+  return result;
+}
+
+function isMyClass(cls, section){
+  if(_tch.classAssigned === cls && (!section || !_tch.sectionAssigned || _tch.sectionAssigned === section)) return true;
+  if(_tch.classesAssigned && Array.isArray(_tch.classesAssigned)){
+    return _tch.classesAssigned.some(ca => ca.class===cls && (!section || !ca.section || ca.section===section));
+  }
+  return false;
+}
+
+/* ── INIT ── */
+(function(){
+  // Pre-fill school name
+  const d = ERP.loadData();
+  document.getElementById('lc-school').textContent = d.settings.schoolName || 'your school';
+
+  // Restore session
+  const sess = sessionStorage.getItem('erp_teacher');
+  if(sess){
+    try {
+      const s   = JSON.parse(sess);
+      const tch = d.teachers.find(t => t.id === s.id);
+      if(tch){ _tch = tch; bootApp(); }
+    } catch(e) {}
+  }
+  lucide.createIcons();
+})();
+</script>
+</body>
+</html>

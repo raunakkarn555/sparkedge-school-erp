@@ -1049,5 +1049,598 @@ ${htmlContent}
 </div>
 <div style="height:46px;"></div>
 
+
+<script src="school_data.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   ADMIN.HTML — Complete Admin Panel Logic
+   Depends on: school_data.js (ERP global)
+══════════════════════════════════════════════════════════════ */
+
+let _user = null;
+
+/* ── AUTH ─────────────────────────────────────────────────── */
+function doLogin() {
+  const pwd = document.getElementById('lc-pwd').value;
+  const u   = ERP.authenticateAdmin(pwd);
+  if (!u) {
+    const err = document.getElementById('lc-err');
+    err.style.display = 'flex';
+    document.querySelector('.lc').classList.add('shake');
+    setTimeout(() => document.querySelector('.lc').classList.remove('shake'), 400);
+    return;
+  }
+  ERP.setAdminSession(u);
+  _user = u;
+  unlockApp();
+}
+
+function toggleEye() {
+  const inp = document.getElementById('lc-pwd');
+  inp.type  = inp.type === 'password' ? 'text' : 'password';
+}
+
+function doLogout() {
+  ERP.logoutAdmin();
+}
+
+function setRoleHint(role) {
+  document.getElementById('rt-owner').classList.toggle('active', role === 'owner');
+  document.getElementById('rt-staff').classList.toggle('active', role === 'staff');
+}
+
+function unlockApp() {
+  if (!_user) return;
+  const data = ERP.loadData();
+
+  document.getElementById('lc-school').textContent  = data.settings.schoolName || 'School ERP';
+  document.getElementById('sb-school').textContent  = data.settings.schoolName || 'School ERP';
+  document.getElementById('mob-school').textContent = data.settings.schoolName || 'School ERP';
+  document.getElementById('sb-sess').textContent    = data.settings.currentSession || '';
+  document.getElementById('sb-user').textContent    = _user.name;
+  document.getElementById('sb-user-av').textContent = ERP.getInitials(_user.name);
+
+  const badge = document.getElementById('sb-role-badge');
+  if (_user.isOwner) {
+    badge.textContent = '👑 Owner';
+    badge.className   = 'sb-role-badge sb-role-owner';
+  } else {
+    badge.textContent = _user.role || 'Staff';
+    badge.className   = 'sb-role-badge sb-role-staff';
+  }
+
+  // Show export/import if permitted
+  const canExport = _user.isOwner || (_user.permissions && _user.permissions.export);
+  if (canExport) {
+    const expBtn = document.getElementById('sb-export-btn');
+    const impBtn = document.getElementById('sb-import-btn');
+    if (expBtn) expBtn.style.display = 'flex';
+    if (impBtn) impBtn.style.display = 'flex';
+  }
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainWrap').style.display    = 'flex';
+  document.getElementById('mainWrap').style.flexDirection = 'column';
+
+  // Build nav
+  buildNav();
+
+  // Boot dashboard
+  showPage('dashboard');
+  lucide.createIcons();
+  document.getElementById('footerRight').textContent =
+    `🔐 ADMIN PANEL · © ${new Date().getFullYear()} SPARKEDGE`;
+}
+
+/* ── NAV BUILD ────────────────────────────────────────────── */
+const NAV_ITEMS = [
+  { id:'dashboard',     label:'Dashboard',       icon:'layout-dashboard', always:true },
+  { id:'students',      label:'Students',        icon:'backpack',         perm:'students',  href:'students.html' },
+  { id:'teachers',      label:'Teachers',        icon:'user-check',       perm:'teachers',  href:'teachers.html' },
+  { id:'fees',          label:'Fee Management',  icon:'indian-rupee',     perm:'fees',      href:'fees.html' },
+  { id:'marks',         label:'Marks & Results', icon:'bar-chart-2',      perm:'marks',     href:'marks.html' },
+  { id:'docs',          label:'Documents',       icon:'file-text',        perm:'docs',      href:'docs.html' },
+  { id:'timetable',     label:'Timetable',       icon:'calendar',         perm:'timetable', href:'timetable.html' },
+  { id:'announcements', label:'Announcements',   icon:'megaphone',        perm:'announcements' },
+  { id:'team',          label:'Team',            icon:'users-2',          ownerOnly:true },
+  { id:'settings',      label:'Settings',        icon:'settings-2',       perm:'settings',  ownerOnly:false },
+];
+
+function buildNav() {
+  const nav = document.getElementById('mainNav');
+  if (!nav) return;
+  nav.innerHTML = '<div class="nav-lbl">Main Navigation</div>';
+
+  NAV_ITEMS.forEach(item => {
+    if (item.ownerOnly && !_user.isOwner) return;
+    if (item.perm && !_user.isOwner && !(_user.permissions && _user.permissions[item.perm])) return;
+
+    const el = document.createElement(item.href ? 'a' : 'button');
+    el.className = 'nav-item' + (item.id === 'dashboard' ? ' active' : '');
+    if (item.href) {
+      el.href = item.href;
+    } else {
+      el.onclick = () => showPage(item.id);
+    }
+    el.innerHTML = `<span class="nav-icon"><i data-lucide="${item.icon}" class="lucide"></i></span> ${item.label}`;
+    nav.appendChild(el);
+  });
+
+  // Student/Teacher portals
+  nav.innerHTML += '<div class="nav-lbl">Portals</div>';
+  const portals = [
+    { href:'student-login.html', label:'Student Portal', icon:'graduation-cap' },
+    { href:'teacher-login.html', label:'Teacher Portal', icon:'user-tie' },
+    { href:'erp-guide.html',    label:'ERP Guide',       icon:'book-open' },
+  ];
+  portals.forEach(p => {
+    nav.innerHTML += `<a class="nav-item" href="${p.href}" target="_blank" style="text-decoration:none;">
+      <span class="nav-icon"><i data-lucide="${p.icon}" class="lucide"></i></span> ${p.label}
+      <span class="nav-ext"><i data-lucide="arrow-up-right" style="width:11px;height:11px;"></i></span>
+    </a>`;
+  });
+
+  lucide.createIcons();
+}
+
+/* ── PAGES ────────────────────────────────────────────────── */
+const PAGE_META = {
+  dashboard:     { title:'Dashboard',        sub:'School overview' },
+  announcements: { title:'Announcements',    sub:'Manage school announcements' },
+  team:          { title:'Team Members',     sub:'Manage staff access' },
+  settings:      { title:'Settings',         sub:'School configuration' },
+};
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const pg = document.getElementById('page-' + name);
+  if (pg) pg.classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    if ((btn.textContent||'').trim().toLowerCase().includes(name.replace('-',' '))) {
+      btn.classList.add('active');
+    }
+  });
+
+  const meta = PAGE_META[name] || {};
+  if (document.getElementById('tb-title')) document.getElementById('tb-title').textContent = meta.title || name;
+  if (document.getElementById('tb-sub'))   document.getElementById('tb-sub').textContent   = meta.sub || '';
+
+  if (name === 'dashboard')     renderDashboard();
+  if (name === 'announcements') renderAnnouncements();
+  if (name === 'team')          renderTeam();
+  if (name === 'settings')      loadSettings();
+
+  lucide.createIcons();
+  if (window.innerWidth <= 900) {
+    document.getElementById('sidebar').classList.remove('mob-open');
+    document.getElementById('sbOverlay').classList.remove('open');
+  }
+}
+
+function toggleSB() {
+  document.getElementById('sidebar').classList.toggle('mob-open');
+  document.getElementById('sbOverlay').classList.toggle('open');
+}
+
+function closeModal(id) {
+  const m = document.getElementById(id);
+  if (m) m.classList.remove('open');
+}
+
+/* ── HELPERS ──────────────────────────────────────────────── */
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(d) { return ERP.fmtDate(d); }
+function showToast(m,t,d) { ERP.showToast(m,t,d); }
+
+/* ── DASHBOARD ────────────────────────────────────────────── */
+function renderDashboard() {
+  const data = ERP.loadData();
+  const students = (data.students||[]).filter(s=>s.active!==false);
+  const teachers = (data.teachers||[]).filter(t=>t.active!==false);
+  const payments = data.feePayments || [];
+  const totalPaid= payments.filter(p=>p.status==='Paid').reduce((s,p)=>s+(p.amountPaid||0),0);
+  const totalDue = payments.filter(p=>p.status!=='Paid').reduce((s,p)=>s+(p.balance||p.netAmount||0),0);
+
+  const sv = id => document.getElementById(id);
+  if (sv('s-students'))     sv('s-students').textContent     = students.length;
+  if (sv('s-teachers'))     sv('s-teachers').textContent     = teachers.length;
+  if (sv('s-fees'))         sv('s-fees').textContent         = ERP.fmtMoney(totalPaid);
+  if (sv('s-dues'))         sv('s-dues').textContent         = ERP.fmtMoney(totalDue);
+  if (sv('s-students-sub')) sv('s-students-sub').textContent = `Session ${data.settings.currentSession||''}`;
+  if (sv('s-fees-sub'))     sv('s-fees-sub').textContent     = `Session ${data.settings.currentSession||''}`;
+
+  // Quick portal grid
+  const grid = document.getElementById('quickPortalGrid');
+  if (grid) {
+    const portals = [
+      { href:'students.html',      label:'Students',       icon:'backpack',       perm:'students',      color:'rgba(59,130,246,.12)',  sc:'#3B82F6' },
+      { href:'teachers.html',      label:'Teachers',       icon:'user-check',     perm:'teachers',      color:'rgba(34,197,94,.12)',   sc:'#22C55E' },
+      { href:'fees.html',          label:'Fees',           icon:'indian-rupee',   perm:'fees',          color:'rgba(255,179,71,.12)',  sc:'#FFB347' },
+      { href:'marks.html',         label:'Marks',          icon:'bar-chart-2',    perm:'marks',         color:'rgba(155,127,212,.12)',sc:'#9B7FD4' },
+      { href:'docs.html',          label:'Certificates',   icon:'award',          perm:'docs',          color:'rgba(20,184,166,.12)', sc:'#14B8A6' },
+      { href:'timetable.html',     label:'Timetable',      icon:'calendar',       perm:'timetable',     color:'rgba(239,68,68,.1)',   sc:'#EF4444' },
+      { href:'student-login.html', label:'Student Portal', icon:'graduation-cap', perm:null,            color:'rgba(59,130,246,.08)', sc:'#3B82F6' },
+      { href:'teacher-login.html', label:'Teacher Portal', icon:'user-tie',       perm:'teachers',      color:'rgba(34,197,94,.08)',  sc:'#22C55E' },
+    ];
+    grid.innerHTML = portals.map(p => {
+      const locked = p.perm && !_user.isOwner && !(_user.permissions && _user.permissions[p.perm]);
+      return `<a class="portal-card${locked?' locked':''}" href="${locked?'#':p.href}" ${locked?'':'target="_blank"'} style="text-decoration:none;">
+        <div class="pc-icon" style="background:${p.color};">
+          <i data-lucide="${p.icon}" style="width:22px;height:22px;stroke:${p.sc};stroke-width:1.75;"></i>
+        </div>
+        <div class="pc-name">${p.label}</div>
+        ${locked?'<div class="pc-desc" style="color:var(--red);font-size:10px;">No access</div>':''}
+      </a>`;
+    }).join('');
+  }
+
+  // Activity feed
+  const actEl = document.getElementById('actList');
+  if (actEl) {
+    const acts = [];
+    if (students.length) acts.push({ dot:'#3B82F6', text:`<strong>${students.length} students</strong> enrolled this session`, time:'Active' });
+    if (teachers.length) acts.push({ dot:'#22C55E', text:`<strong>${teachers.length} teachers</strong> on staff`, time:'Active' });
+    if (payments.length) acts.push({ dot:'#FFB347', text:`<strong>${payments.length}</strong> fee records · ${ERP.fmtMoney(totalPaid)} collected`, time:'Session' });
+    if (!acts.length) acts.push({ dot:'#3A3A5A', text:'No activity yet — start by adding students!', time:'' });
+    actEl.innerHTML = acts.map(a =>
+      `<div class="act-item"><div class="act-dot" style="background:${a.dot};"></div><div class="act-text">${a.text}</div><div class="act-time">${a.time}</div></div>`
+    ).join('');
+  }
+
+  // Announcements
+  const annEl = document.getElementById('dashAnn');
+  if (annEl) {
+    const anns = ERP.getActiveAnnouncements('Staff');
+    if (!anns.length) {
+      annEl.innerHTML = '<div class="empty"><div class="empty-ic"><i data-lucide="inbox" class="lucide"></i></div><div class="empty-tx">No active announcements</div></div>';
+    } else {
+      annEl.innerHTML = anns.slice(0,3).map(a =>
+        `<div class="ann-card"><div class="ann-title">${esc(a.title)}</div><div class="ann-body">${esc(a.body)}</div></div>`
+      ).join('');
+    }
+  }
+
+  lucide.createIcons();
+}
+
+/* ── ANNOUNCEMENTS ────────────────────────────────────────── */
+function renderAnnouncements() {
+  const data = ERP.loadData();
+  const anns = (data.announcements||[]).sort((a,b)=>new Date(b.publishDate)-new Date(a.publishDate));
+  const el   = document.getElementById('annList');
+  if (!el) return;
+
+  if (!anns.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-ic"><i data-lucide="megaphone" class="lucide"></i></div><div class="empty-tx">No announcements yet — click New to add one</div></div>';
+    lucide.createIcons(); return;
+  }
+
+  el.innerHTML = anns.map(a => {
+    const pri = a.priority==='Urgent'?'pill-red':a.priority==='Important'?'pill-gold':'pill-gray';
+    return `<div class="ann-card">
+      <div class="ann-title">${esc(a.title)}</div>
+      <div class="ann-meta">
+        <span class="pill ${pri}">${esc(a.priority||'Normal')}</span>
+        <span>→ ${esc(a.targetRole||'All')}</span>
+        ${a.targetClass?`<span>Class ${esc(a.targetClass)}</span>`:''}
+        <span>${ERP.fmtDate(a.publishDate)}</span>
+        ${a.expiryDate?`<span>Expires ${ERP.fmtDate(a.expiryDate)}</span>`:''}
+        <span class="pill ${a.active?'pill-green':'pill-gray'}">${a.active?'Active':'Inactive'}</span>
+      </div>
+      <div class="ann-body">${esc(a.body)}</div>
+      <div class="ann-actions">
+        <button class="btn btn-blue btn-sm" onclick="editAnn('${esc(a.id)}')">
+          <i data-lucide="pencil" style="width:12px;height:12px;stroke:currentColor;"></i> Edit
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="toggleAnn('${esc(a.id)}')">
+          ${a.active?'Deactivate':'Activate'}
+        </button>
+        <button class="btn btn-red btn-sm" onclick="deleteAnn('${esc(a.id)}')">
+          <i data-lucide="trash-2" style="width:12px;height:12px;stroke:currentColor;"></i>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+  lucide.createIcons();
+}
+
+function openAnnModal(id) {
+  document.getElementById('ann-edit-id').value  = id || '';
+  document.getElementById('ann-title').value    = '';
+  document.getElementById('ann-body').value     = '';
+  document.getElementById('ann-target').value   = 'All';
+  document.getElementById('ann-priority').value = 'Normal';
+  document.getElementById('ann-class').value    = '';
+  document.getElementById('ann-expiry').value   = '';
+  document.getElementById('annModalTitle').textContent = id ? 'Edit Announcement' : 'New Announcement';
+
+  if (id) {
+    const a = (ERP.loadData().announcements||[]).find(x=>x.id===id);
+    if (a) {
+      document.getElementById('ann-title').value    = a.title    || '';
+      document.getElementById('ann-body').value     = a.body     || '';
+      document.getElementById('ann-target').value   = a.targetRole || 'All';
+      document.getElementById('ann-priority').value = a.priority || 'Normal';
+      document.getElementById('ann-class').value    = a.targetClass || '';
+      document.getElementById('ann-expiry').value   = a.expiryDate || '';
+    }
+  }
+  document.getElementById('annModal').classList.add('open');
+}
+
+function closeAnnModal() { closeModal('annModal'); }
+
+function saveAnn() {
+  const id    = document.getElementById('ann-edit-id').value;
+  const title = document.getElementById('ann-title').value.trim();
+  const body  = document.getElementById('ann-body').value.trim();
+  if (!title || !body) { ERP.showToast('⚠️ Title and message are required.', 'warning'); return; }
+
+  const data = ERP.loadData();
+  if (!data.announcements) data.announcements = [];
+
+  if (id) {
+    const i = data.announcements.findIndex(a=>a.id===id);
+    if (i>-1) {
+      data.announcements[i] = { ...data.announcements[i],
+        title, body,
+        targetRole:  document.getElementById('ann-target').value,
+        priority:    document.getElementById('ann-priority').value,
+        targetClass: document.getElementById('ann-class').value.trim() || '',
+        expiryDate:  document.getElementById('ann-expiry').value || '',
+      };
+    }
+  } else {
+    data.announcements.push({
+      id:          ERP.generateID('ANN'),
+      title, body,
+      targetRole:  document.getElementById('ann-target').value,
+      priority:    document.getElementById('ann-priority').value,
+      targetClass: document.getElementById('ann-class').value.trim() || '',
+      publishDate: ERP.todayStr(),
+      expiryDate:  document.getElementById('ann-expiry').value || '',
+      postedBy:    _user.name,
+      active:      true,
+      createdAt:   new Date().toISOString(),
+    });
+  }
+  ERP.saveData(data);
+  closeAnnModal();
+  renderAnnouncements();
+  ERP.showToast('✅ Announcement saved!', 'success');
+}
+
+function editAnn(id)    { openAnnModal(id); }
+
+function toggleAnn(id) {
+  const data = ERP.loadData();
+  const a    = (data.announcements||[]).find(x=>x.id===id);
+  if (!a) return;
+  a.active = !a.active;
+  ERP.saveData(data);
+  renderAnnouncements();
+}
+
+function deleteAnn(id) {
+  ERP.confirm('Delete this announcement?', () => {
+    const data = ERP.loadData();
+    data.announcements = (data.announcements||[]).filter(a=>a.id!==id);
+    ERP.saveData(data);
+    renderAnnouncements();
+    ERP.showToast('Deleted.', 'info');
+  }, 'Delete Announcement?');
+}
+
+/* ── TEAM ─────────────────────────────────────────────────── */
+function renderTeam() {
+  const members = ERP.getStaffList();
+  const el = document.getElementById('teamList');
+  if (!el) return;
+
+  // Show owner name
+  const ownerEl = document.getElementById('owner-name-disp');
+  if (ownerEl) ownerEl.textContent = ERP.loadData().settings.schoolName ? `Owner · ${ERP.loadData().settings.schoolName}` : 'Owner';
+
+  if (!members.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-ic"><i data-lucide="users-2" class="lucide"></i></div><div class="empty-tx">No staff members yet. Click Add Member to create one.</div></div>';
+    lucide.createIcons(); return;
+  }
+
+  el.innerHTML = members.map(m => {
+    const perms = m.permissions || {};
+    const ptags = Object.entries(perms).filter(([,v])=>v).map(([k])=>
+      `<span class="ptag">${k}</span>`).join('');
+    return `<div class="member-card">
+      <div class="member-av">${ERP.getInitials(m.name)}</div>
+      <div style="flex:1;">
+        <div class="member-name">${esc(m.name)}</div>
+        <div class="member-role">${esc(m.role||'Staff')} · <span style="font-size:11px;color:var(--text-dim);">${esc(m.id)}</span></div>
+        <div class="perm-tags" style="margin-top:6px;">${ptags||'<span class="ptag" style="color:var(--red);">No permissions</span>'}</div>
+      </div>
+      <span class="pill pill-blue">Staff</span>
+    </div>`;
+  }).join('');
+  lucide.createIcons();
+}
+
+function openAddMemberModal() {
+  // Pre-fill auto ID
+  const yr  = new Date().getFullYear();
+  const cnt = ERP.getStaffList().length + 1;
+  document.getElementById('nm-id').value   = `STF-${yr}-${String(cnt).padStart(3,'0')}`;
+  document.getElementById('nm-name').value  = '';
+  document.getElementById('nm-role').value  = '';
+  document.getElementById('nm-pwd').value   = '';
+  // Build perm grid
+  const grid = document.getElementById('permGrid');
+  const perms = ['teachers','students','fees','marks','docs','timetable','announcements','export','settings'];
+  grid.innerHTML = perms.map(p =>
+    `<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);background:var(--bg-raised);border:1px solid var(--border);border-radius:6px;padding:7px 10px;cursor:pointer;">
+      <input type="checkbox" id="perm-${p}" checked style="width:13px;height:13px;accent-color:var(--accent);"> ${p}
+    </label>`
+  ).join('');
+  document.getElementById('addMemberModal').classList.add('open');
+}
+
+function closeAddMemberModal() { closeModal('addMemberModal'); }
+
+function generateMemberConfig() {
+  const name = document.getElementById('nm-name').value.trim();
+  const role = document.getElementById('nm-role').value.trim();
+  const pwd  = document.getElementById('nm-pwd').value.trim();
+  const id   = document.getElementById('nm-id').value.trim();
+  if (!name || !role || !pwd) { ERP.showToast('⚠️ Name, role and password are required.', 'warning'); return; }
+
+  const perms = ['teachers','students','fees','marks','docs','timetable','announcements','export','settings'];
+  const permObj = {};
+  perms.forEach(p => { permObj[p] = document.getElementById('perm-'+p)?.checked || false; });
+
+  const config = `  {
+    id:       '${id}',
+    name:     '${name}',
+    role:     '${role}',
+    password: '${pwd}',
+    active:   true,
+    permissions: {
+      teachers:      ${permObj.teachers},
+      students:      ${permObj.students},
+      fees:          ${permObj.fees},
+      marks:         ${permObj.marks},
+      docs:          ${permObj.docs},
+      timetable:     ${permObj.timetable},
+      announcements: ${permObj.announcements},
+      export:        ${permObj.export},
+      settings:      ${permObj.settings},
+    }
+  },`;
+
+  const blob = new Blob([config], {type:'text/plain'});
+  const a    = Object.assign(document.createElement('a'), {
+    href:     URL.createObjectURL(blob),
+    download: `member-${id}.txt`
+  });
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  closeAddMemberModal();
+  ERP.showToast(`✅ Config for ${name} downloaded! Paste it into school_data.js → STAFF_MEMBERS array.`, 'success', 5000);
+}
+
+/* ── SETTINGS ─────────────────────────────────────────────── */
+function loadSettings() {
+  const s = ERP.loadData().settings;
+  const fields = {
+    'cfg-name':      s.schoolName,
+    'cfg-tag':       s.schoolTagline,
+    'cfg-addr':      s.schoolAddress,
+    'cfg-phone':     s.schoolPhone,
+    'cfg-email':     s.schoolEmail,
+    'cfg-aff':       s.affiliationNo,
+    'cfg-code':      s.schoolCode,
+    'cfg-principal': s.principalName,
+    'cfg-sess':      s.currentSession,
+  };
+  Object.entries(fields).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val || '';
+  });
+  const sessStart = document.getElementById('cfg-sessStart');
+  const sessEnd   = document.getElementById('cfg-sessEnd');
+  if (sessStart) sessStart.value = s.sessionStart || 'April';
+  if (sessEnd)   sessEnd.value   = s.sessionEnd   || 'March';
+
+  // Classes/subjects display
+  const clsEl = document.getElementById('cls-list');
+  const subEl = document.getElementById('sub-list');
+  if (clsEl) clsEl.innerHTML = (s.classes||[]).map(c=>`<span class="pill pill-blue" style="cursor:pointer;margin:3px;" onclick="removeClass('${esc(c)}')">${esc(c)} ✕</span>`).join('');
+  if (subEl) subEl.innerHTML = (s.subjects||[]).map(x=>`<span class="pill pill-gray" style="cursor:pointer;margin:3px;" onclick="removeSubject('${esc(x)}')">${esc(x)} ✕</span>`).join('');
+}
+
+function saveSettings() {
+  const data = ERP.loadData();
+  const s    = data.settings;
+  const gv   = id => (document.getElementById(id)||{}).value || '';
+
+  s.schoolName    = gv('cfg-name');
+  s.schoolTagline = gv('cfg-tag');
+  s.schoolAddress = gv('cfg-addr');
+  s.schoolPhone   = gv('cfg-phone');
+  s.schoolEmail   = gv('cfg-email');
+  s.affiliationNo = gv('cfg-aff');
+  s.schoolCode    = gv('cfg-code');
+  s.principalName = gv('cfg-principal');
+  s.currentSession= gv('cfg-sess');
+  s.sessionStart  = gv('cfg-sessStart');
+  s.sessionEnd    = gv('cfg-sessEnd');
+
+  ERP.saveData(data);
+  document.getElementById('sb-school').textContent  = s.schoolName || 'School ERP';
+  document.getElementById('mob-school').textContent = s.schoolName || 'School ERP';
+  document.getElementById('sb-sess').textContent    = s.currentSession || '';
+  ERP.showToast('✅ Settings saved!', 'success');
+}
+
+function addClass() {
+  const inp = document.getElementById('cfg-newClass');
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val) return;
+  const data = ERP.loadData();
+  if (!data.settings.classes.includes(val)) data.settings.classes.push(val);
+  ERP.saveData(data); inp.value = ''; loadSettings();
+  ERP.showToast('Class added.', 'success');
+}
+
+function removeClass(cls) {
+  const data = ERP.loadData();
+  data.settings.classes = data.settings.classes.filter(c=>c!==cls);
+  ERP.saveData(data); loadSettings();
+}
+
+function addSubject() {
+  const inp = document.getElementById('cfg-newSub');
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val) return;
+  const data = ERP.loadData();
+  if (!data.settings.subjects.includes(val)) data.settings.subjects.push(val);
+  ERP.saveData(data); inp.value = ''; loadSettings();
+  ERP.showToast('Subject added.', 'success');
+}
+
+function removeSubject(sub) {
+  const data = ERP.loadData();
+  data.settings.subjects = data.settings.subjects.filter(s=>s!==sub);
+  ERP.saveData(data); loadSettings();
+}
+
+function exportData()    { ERP.exportData(); }
+function openImportModal(){ ERP.openImportModal(); }
+
+/* ── BOOT ─────────────────────────────────────────────────── */
+(function boot() {
+  // Init lucide
+  if (window.lucide) lucide.createIcons();
+
+  // Try restore session
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('erp_admin'));
+    if (saved) { _user = saved; unlockApp(); return; }
+  } catch(e){}
+
+  // Show school name on login screen
+  try {
+    const d  = ERP.loadData();
+    const el = document.getElementById('lc-school');
+    if (el) el.textContent = d.settings.schoolName || 'School ERP';
+    const mob = document.getElementById('mob-school');
+    if (mob) mob.textContent = d.settings.schoolName || 'School ERP';
+  } catch(e){}
+
+  if (window.lucide) lucide.createIcons();
+})();
+</script>
 </body>
 </html>

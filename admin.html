@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+GIT<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -830,12 +830,16 @@ function getStudentAccountIDs() { return STUDENT_ACCOUNTS.map(a => a.id); }
    §3  SESSION  (sessionStorage — clears on tab close)
    ══════════════════════════════════════════════════════════════ */
 
-function setAdminSession(u)   { sessionStorage.setItem('erp_admin', JSON.stringify(u)); }
-function getAdminSession()    { try { return JSON.parse(sessionStorage.getItem('erp_admin')); } catch(e){ return null; } }
-function setStudentSession(s) { sessionStorage.setItem('erp_stu',   JSON.stringify(s)); }
-function getStudentSession()  { try { return JSON.parse(sessionStorage.getItem('erp_stu'));   } catch(e){ return null; } }
-function logoutAdmin()        { sessionStorage.removeItem('erp_admin'); window.location.href='admin.html'; }
-function logoutStudent()      { sessionStorage.removeItem('erp_stu');   window.location.href='student-login.html'; }
+/* Session in localStorage with 12-hour expiry — shared across all tabs */
+const _ADM_SESSION_TTL = 12 * 60 * 60 * 1000;
+function _setAdmSess(key,val){ try{localStorage.setItem(key,JSON.stringify({v:val,exp:Date.now()+_ADM_SESSION_TTL}));}catch(e){} }
+function _getAdmSess(key){ try{const r=localStorage.getItem(key);if(!r)return null;const p=JSON.parse(r);if(p.exp&&Date.now()>p.exp){localStorage.removeItem(key);return null;}return p.v;}catch(e){return null;} }
+function setAdminSession(u)   { _setAdmSess('erp_admin', u); }
+function getAdminSession()    { return _getAdmSess('erp_admin'); }
+function setStudentSession(s) { _setAdmSess('erp_stu', s); }
+function getStudentSession()  { return _getAdmSess('erp_stu'); }
+function logoutAdmin()        { localStorage.removeItem('erp_admin'); window.location.href='admin.html'; }
+function logoutStudent()      { localStorage.removeItem('erp_stu');   window.location.href='student-login.html'; }
 
 function requireAdminLogin(redir) {
   const u = getAdminSession();
@@ -1335,6 +1339,7 @@ const ALL_NAV = [
   { section:'Documents', items:[
     { id:'docs', label:'Certificates', icon:'file-text', perm:'docs', href:'docs.html' },
     { id:'student-portal', label:'Student Portal', icon:'user-circle', perm:null, href:'student-login.html', blank:true },
+    { id:'teacher-portal', label:'Teacher Portal', icon:'graduation-cap', perm:null, href:'teacher-login.html', blank:true },
     { id:'erp-guide', label:'Help & Guide', icon:'book-open', perm:null, href:'erp-guide.html', blank:true },
   ]},
   { section:'System', items:[
@@ -1518,6 +1523,7 @@ const PORTAL_DEFS = [
   { href:'docs.html',     icon:'file-text',   color:'#FF6B35', bg:'rgba(255,107,53,.1)',   name:'Certificates',  desc:'TC, Bonafide, ID card',   perm:'docs' },
   { href:'timetable.html',icon:'calendar-days',color:'#3B82F6',bg:'rgba(59,130,246,.1)', name:'Timetable',     desc:'Class schedules',         perm:'timetable' },
   { href:'student-login.html', icon:'user-circle', color:'#FF3CAC', bg:'rgba(255,60,172,.1)', name:'Student Portal', desc:'Self-service login', perm:null, blank:true },
+  { href:'teacher-login.html', icon:'graduation-cap', color:'#14B8A6', bg:'rgba(20,184,166,.1)', name:'Teacher Portal', desc:'Teacher login', perm:null, blank:true },
   { href:'erp-guide.html', icon:'book-open', color:'#9B7FD4', bg:'rgba(155,127,212,.12)', name:'Help & Guide', desc:'Training & setup docs', perm:null, blank:true },
   { internal:'settings',  icon:'settings-2',  color:'#7A7A9A', bg:'rgba(120,120,160,.1)', name:'Settings',      desc:'School configuration',    perm:'settings' },
 ];

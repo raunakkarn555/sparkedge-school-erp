@@ -184,15 +184,29 @@ function getStudentAccountIDs() { return STUDENT_ACCOUNTS.map(a => a.id); }
    §4  SESSION (sessionStorage — clears on tab close)
    ══════════════════════════════════════════════════════════════ */
 
-function setAdminSession(u)    { sessionStorage.setItem('erp_admin',   JSON.stringify(u)); }
-function getAdminSession()     { try { return JSON.parse(sessionStorage.getItem('erp_admin'));   } catch(e){ return null; } }
-function setTeacherSession(t)  { sessionStorage.setItem('erp_teacher', JSON.stringify(t)); }
-function getTeacherSession()   { try { return JSON.parse(sessionStorage.getItem('erp_teacher')); } catch(e){ return null; } }
-function setStudentSession(s)  { sessionStorage.setItem('erp_stu',     JSON.stringify(s)); }
-function getStudentSession()   { try { return JSON.parse(sessionStorage.getItem('erp_stu'));     } catch(e){ return null; } }
-function logoutAdmin()         { sessionStorage.removeItem('erp_admin');   window.location.href='admin.html'; }
-function logoutTeacher()       { sessionStorage.removeItem('erp_teacher'); window.location.href='teacher-login.html'; }
-function logoutStudent()       { sessionStorage.removeItem('erp_stu');     window.location.href='student-login.html'; }
+/* Session stored in localStorage with 12-hour expiry so all tabs share login */
+const _SESSION_TTL = 12 * 60 * 60 * 1000; // 12 hours in ms
+function _setSession(key, val) {
+  try { localStorage.setItem(key, JSON.stringify({ v: val, exp: Date.now() + _SESSION_TTL })); } catch(e){}
+}
+function _getSession(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const p = JSON.parse(raw);
+    if (p.exp && Date.now() > p.exp) { localStorage.removeItem(key); return null; }
+    return p.v;
+  } catch(e){ return null; }
+}
+function setAdminSession(u)    { _setSession('erp_admin', u); }
+function getAdminSession()     { return _getSession('erp_admin'); }
+function setTeacherSession(t)  { _setSession('erp_teacher', t); }
+function getTeacherSession()   { return _getSession('erp_teacher'); }
+function setStudentSession(s)  { _setSession('erp_stu', s); }
+function getStudentSession()   { return _getSession('erp_stu'); }
+function logoutAdmin()         { localStorage.removeItem('erp_admin');   window.location.href='admin.html'; }
+function logoutTeacher()       { localStorage.removeItem('erp_teacher'); window.location.href='teacher-login.html'; }
+function logoutStudent()       { localStorage.removeItem('erp_stu');     window.location.href='student-login.html'; }
 
 function requireAdminLogin(redir) {
   const u = getAdminSession();

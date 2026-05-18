@@ -725,7 +725,7 @@ function doLogin(){
     setTimeout(()=>document.querySelector('.lc').classList.remove('shake'),400);
     return;
   }
-  if(!u.permissions.marks){
+  if(!u.isOwner && !u.permissions.marks){
     const err=document.getElementById('lc-err');
     err.querySelector('span').textContent='Access denied — you do not have Marks permission.';
     err.style.display='flex';
@@ -1660,7 +1660,7 @@ function buildReportCardHTML(markId, data){
 (function init(){
   lucide.createIcons();
   const u = ERP.getAdminSession();
-  if(u && u.permissions && u.permissions.marks){
+  if(u && (u.isOwner || (u.permissions && u.permissions.marks))){
     bootPortal(u);
   } else {
     const data = ERP.loadData();

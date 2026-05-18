@@ -753,6 +753,43 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
       <div class="f full"><label>Remarks / Notes</label><textarea id="tch-remarks" placeholder="Any additional notes…"></textarea></div>
 
+      <!-- LOGIN CONFIGURATION -->
+      <div class="modal-section-title" style="color:var(--teal,#14B8A6);border-color:rgba(20,184,166,.3);">🔐 LOGIN CONFIGURATION (school_data.js)</div>
+      <div style="background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.18);border-radius:10px;padding:14px 16px;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;line-height:1.6;">
+          After saving, add these credentials to <code style="background:var(--bg-raised);padding:1px 5px;border-radius:4px;color:#14B8A6;">school_data.js</code> → <code style="background:var(--bg-raised);padding:1px 5px;border-radius:4px;color:#14B8A6;">TEACHER_ACCOUNTS</code> array, then git push.
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+          <div class="f">
+            <label>Auto-Generated Teacher ID</label>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input id="tch-preview-id" readonly placeholder="Save to generate ID…" style="background:var(--bg);border-color:rgba(20,184,166,.3);color:#14B8A6;font-weight:700;font-family:monospace;font-size:13px;flex:1;"/>
+              <button type="button" onclick="copyField('tch-preview-id')" title="Copy ID" style="padding:9px 11px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.25);border-radius:8px;cursor:pointer;color:#14B8A6;display:flex;align-items:center;">
+                <i data-lucide="copy" style="width:13px;height:13px;stroke:currentColor;"></i>
+              </button>
+            </div>
+          </div>
+          <div class="f">
+            <label>Set Login Password</label>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input id="tch-login-pwd" placeholder="e.g. Priya@teacher26" style="flex:1;"/>
+              <button type="button" onclick="genTchPassword()" title="Generate password" style="padding:9px 11px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-radius:8px;cursor:pointer;color:var(--blue);display:flex;align-items:center;">
+                <i data-lucide="refresh-cw" style="width:13px;height:13px;stroke:currentColor;"></i>
+              </button>
+              <button type="button" onclick="copyField('tch-login-pwd')" title="Copy password" style="padding:9px 11px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.25);border-radius:8px;cursor:pointer;color:#14B8A6;display:flex;align-items:center;">
+                <i data-lucide="copy" style="width:13px;height:13px;stroke:currentColor;"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:10px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px;">PASTE INTO school_data.js → TEACHER_ACCOUNTS</div>
+          <pre id="tch-config-snippet" style="font-size:11px;color:var(--text-muted);white-space:pre;overflow-x:auto;font-family:monospace;line-height:1.7;"></pre>
+        </div>
+        <button type="button" onclick="copyTeacherConfig()" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.3);border-radius:8px;font-size:12px;font-weight:700;color:#14B8A6;cursor:pointer;">
+          <i data-lucide="clipboard-copy" style="width:13px;height:13px;stroke:currentColor;"></i> Copy Config Block
+        </button>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-secondary" onclick="closeTchModal()">Cancel</button>
@@ -1188,12 +1225,49 @@ function openTchModal(id) {
     }
   } else {
     document.getElementById('tchModalTitle').textContent = 'Add Teacher';
+    // Show preview ID for new teacher
+    const prevId = document.getElementById('tch-preview-id');
+    if (prevId) { prevId.value = genTchID(); }
+    updateTchConfigPreview();
   }
   document.getElementById('tchModal').classList.add('open');
+  const pwdEl = document.getElementById('tch-login-pwd');
+  if (pwdEl) pwdEl.oninput = updateTchConfigPreview;
   if (window.lucide) setTimeout(() => lucide.createIcons(), 50);
 }
 
 function closeTchModal() { document.getElementById('tchModal').classList.remove('open'); }
+
+/* ── Teacher login config helpers ── */
+function updateTchConfigPreview() {
+  const previewIdEl = document.getElementById('tch-preview-id');
+  const snippetEl   = document.getElementById('tch-config-snippet');
+  if (!previewIdEl || !snippetEl) return;
+  const eid = document.getElementById('tch-edit-id').value;
+  const tid = eid ? eid : genTchID();
+  previewIdEl.value = tid;
+  const pwd = document.getElementById('tch-login-pwd').value || '(set password above)';
+  snippetEl.textContent =
+`  {\n    id:       '${tid}',\n    password: '${pwd}',\n  },`;
+}
+function genTchPassword() {
+  const name = (document.getElementById('tch-name').value.trim().split(' ')[0] || 'Teacher');
+  const yr   = new Date().getFullYear();
+  const num  = Math.floor(Math.random()*900)+100;
+  const pwd  = name.charAt(0).toUpperCase() + name.slice(1,5).toLowerCase() + '@tch' + String(yr).slice(-2) + num;
+  document.getElementById('tch-login-pwd').value = pwd;
+  updateTchConfigPreview();
+}
+function copyTeacherConfig() {
+  const txt = document.getElementById('tch-config-snippet').textContent;
+  if (!txt || txt.includes('(set password')) { showToast('⚠️ Set a password first!','warning'); return; }
+  navigator.clipboard.writeText(txt).then(()=>showToast('✅ Config copied! Paste in school_data.js','success',3000));
+}
+function copyField(id) {
+  const el = document.getElementById(id);
+  if (!el || !el.value) { showToast('⚠️ Nothing to copy yet','warning'); return; }
+  navigator.clipboard.writeText(el.value).then(()=>showToast('✅ Copied!','success',1500));
+}
 
 function clearTchForm() {
   ['tch-edit-id','tch-name','tch-empcode','tch-dept','tch-subjects','tch-qual',

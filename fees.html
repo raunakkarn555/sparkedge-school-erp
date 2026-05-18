@@ -1817,7 +1817,7 @@ function _boot(){
 
   // Restore session
   try {
-    const saved=JSON.parse(sessionStorage.getItem('erp_admin'));
+    const saved = ERP.getAdminSession();
     if(saved){ _user=saved; unlockApp(); }
   } catch(e){}
 }

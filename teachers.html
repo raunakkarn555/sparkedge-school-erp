@@ -806,6 +806,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
+<script src="school_data.js"></script>
+<script src="firebase_sync.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════
    TEACHERS.HTML — SELF-CONTAINED
@@ -1521,27 +1523,26 @@ function esc(s)        { return String(s||'').replace(/&/g,'&amp;').replace(/</g
 /* ──────────────────────────────────────────────────────────────
    §14  BOOT — Restore session or show login
    ────────────────────────────────────────────────────────────── */
-(function(){
-  // Set school name on login screen
+// Boot is handled after school_data.js loads (see script at bottom)
+function _portalBoot() {
+  try { if(window.lucide) lucide.createIcons(); } catch(e) {}
   try {
-    const d = loadData();
     const nameEl = document.getElementById('lc-school');
-    if (nameEl) nameEl.textContent = d.settings.schoolName || 'School ERP';
+    if (nameEl && window.ERP) nameEl.textContent = ERP.loadData().settings.schoolName || 'School ERP';
   } catch(e) {}
-
-  // Init Lucide
-  function initLucide() { if(window.lucide) lucide.createIcons(); }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initLucide);
-  else initLucide();
-
-  // Restore session
   try {
-    const saved = JSON.parse(ERP.getAdminSession() && JSON.stringify(ERP.getAdminSession()));
+    const saved = window.ERP ? ERP.getAdminSession() : JSON.parse(sessionStorage.getItem('erp_admin') || 'null');
     if (saved) { _user = saved; setTimeout(() => unlockApp(), 50); }
   } catch(e) {}
-})();
+}
 </script>
-<script src="school_data.js"></script>
-<script src="firebase_sync.js"></script>
+<script>
+  // school_data.js is now loaded — safe to boot
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { if(typeof _portalBoot==='function') _portalBoot(); });
+  } else {
+    if(typeof _portalBoot==='function') _portalBoot();
+  }
+</script>
 </body>
 </html>

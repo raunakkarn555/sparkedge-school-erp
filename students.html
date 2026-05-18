@@ -681,6 +681,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
+<script src="school_data.js"></script>
+<script src="firebase_sync.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════
    STUDENTS.HTML — SELF-CONTAINED PORTAL  v2.0
@@ -1424,7 +1426,13 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
   } catch(e){}
 })();
 </script>
-<script src="school_data.js"></script>
-<script src="firebase_sync.js"></script>
+<script>
+  // school_data.js is now loaded — safe to boot
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { if(typeof _portalBoot==='function') _portalBoot(); });
+  } else {
+    if(typeof _portalBoot==='function') _portalBoot();
+  }
+</script>
 </body>
 </html>

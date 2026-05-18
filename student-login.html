@@ -247,7 +247,7 @@ tbody td{padding:11px 14px;vertical-align:middle;}
 
     <div class="lc-hint">
       <i data-lucide="info" style="width:11px;height:11px;stroke:currentColor;"></i>
-      Your ID &amp; password were shared by your school.
+      Your ID &amp; password were shared by your school. Contact admin if you need help.
     </div>
     <div style="border-top:1px solid #1E1E30;margin-top:16px;padding-top:14px;text-align:center;">
       <div style="font-family:'Syne',system-ui,sans-serif;font-size:13px;font-weight:800;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:3px;">SparkEdge</div>
@@ -259,19 +259,6 @@ tbody td{padding:11px 14px;vertical-align:middle;}
         &nbsp;&middot;&nbsp;
         <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="color:#FF6B35;text-decoration:none;font-weight:600;">&#127760; sparkedge.in</a>
       </div>
-    </div>
-
-    <!-- Data sync buttons -->
-    <div style="margin-top:18px;border-top:1px solid var(--border);padding-top:18px;display:flex;flex-direction:column;gap:8px;">
-      <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-dim);text-align:center;margin-bottom:2px;">FIRST TIME? LOAD SCHOOL DATA</div>
-      <button onclick="doGDriveSync()" id="syncDriveBtn" style="width:100%;padding:11px;background:rgba(34,197,94,.09);border:1px solid rgba(34,197,94,.28);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;" onmouseover="this.style.background='rgba(34,197,94,.16)'" onmouseout="this.style.background='rgba(34,197,94,.09)'">
-        <i data-lucide="refresh-cw" style="width:14px;height:14px;stroke:currentColor;"></i>
-        🔄 Sync from school (Google Drive)
-      </button>
-      <button onclick="ERP.openImportModal()" style="width:100%;padding:11px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.22);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;" onmouseover="this.style.background='rgba(59,130,246,.16)'" onmouseout="this.style.background='rgba(59,130,246,.08)'">
-        <i data-lucide="upload" style="width:14px;height:14px;stroke:currentColor;"></i>
-        📂 Upload JSON data file
-      </button>
     </div>
   </div>
 </div>
@@ -336,13 +323,13 @@ tbody td{padding:11px 14px;vertical-align:middle;}
   </nav>
 
   <div class="sb-foot">
-    <a class="sb-foot-btn" href="erp-guide.html" target="_blank" style="text-decoration:none;">
-      <i data-lucide="book-open" style="width:13px;height:13px;stroke:currentColor;"></i> Help &amp; Guide
-    </a>
     <button class="sb-foot-btn red" onclick="doLogout()">
       <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Sign Out
     </button>
   </div>
+  <a class="sb-foot-btn" href="erp-guide.html#student-guide" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;font-size:12px;color:var(--text-muted);text-decoration:none;">
+    <i data-lucide="book-open" style="width:13px;height:13px;stroke:currentColor;"></i> Student Guide
+  </a>
   <div class="sb-footer-brand"><strong style="font-family:'Syne',sans-serif;">SparkEdge</strong> &copy; 2026 Raunak Karn</div>
 </aside>
 
@@ -492,7 +479,7 @@ tbody td{padding:11px 14px;vertical-align:middle;}
 
   <footer style="padding:14px 24px;border-top:1px solid var(--border);background:var(--bg-card);font-size:10px;color:var(--text-dim);display:flex;align-items:center;justify-content:space-between;letter-spacing:.4px;text-transform:uppercase;">
     <span>Student Portal</span>
-    <span>School ERP v2.0</span>
+    <span>SparkEdge Internal Tools</span>
   </footer>
 </div>
 
@@ -569,34 +556,9 @@ function doLogout(){
   ERP.logoutStudent();
 }
 
-/* ── DRIVE SYNC ── */
-function doGDriveSync(){
-  const btn = document.getElementById('syncDriveBtn');
-  if(btn){ btn.textContent = '⏳ Syncing…'; btn.disabled = true; }
-  ERP.syncFromDrive(
-    (merged) => {
-      // success - reload page so student can login with fresh data
-      showToast('✅ Data synced! You can now log in.', 'success', 3000);
-      setTimeout(() => location.reload(), 1800);
-    },
-    (err) => {
-      if(btn){ btn.innerHTML = '<i data-lucide="refresh-cw" style="width:14px;height:14px;stroke:currentColor;"></i> 🔄 Sync from school (Google Drive)'; btn.disabled = false; lucide.createIcons(); }
-    }
-  );
-}
-
-/* ── IMPORT HOOK ── */
-ERP.onImportSuccess = function(merged) {
-  showToast('✅ Data imported! You can now log in.', 'success', 3000);
-  setTimeout(() => location.reload(), 1500);
-};
-
 /* ── BOOT ── */
 function bootApp(){
   if(!_stu) return;
-  // Always re-fetch fresh student record from localStorage (fixes stale session bug)
-  const fresh = ERP.getStudent(_stu.id);
-  if (fresh) _stu = fresh;
   const data = ERP.loadData();
   const s    = data.settings;
 
@@ -1313,28 +1275,10 @@ function _boot(){
 <!-- Scripts at end of body so DOM is ready -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="school_data.js"></script>
+<script src="firebase_sync.js"></script>
 <script>
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',_boot);
   else _boot();
 </script>
-
-<!-- SparkEdge Copyright Footer -->
-<div id="_sparkedge_footer" style="position:fixed;bottom:0;left:0;right:0;z-index:9990;background:rgba(8,8,16,.95);backdrop-filter:blur(10px);border-top:1px solid #1E1E30;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-family:'DM Sans',system-ui,sans-serif;">
-  <div style="display:flex;align-items:center;gap:7px;">
-    <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="display:flex;align-items:center;gap:6px;text-decoration:none;">
-      <div style="width:20px;height:20px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;font-family:'Syne',system-ui,sans-serif;">S</div>
-      <span style="font-size:12px;font-weight:800;font-family:'Syne',system-ui,sans-serif;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">SparkEdge</span>
-    </a>
-    <span style="font-size:10px;color:#3A3A52;">|</span>
-    <span style="font-size:10px;color:#4A4A62;">&copy; 2026 Raunak Karn &middot; All rights reserved.</span>
-  </div>
-  <div style="display:flex;gap:12px;align-items:center;">
-    <a href="terms.html" target="_blank" style="font-size:10px;color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Terms</a>
-    <a href="privacy.html" target="_blank" style="font-size:10px;color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Privacy</a>
-    <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="font-size:10px;color:#FF6B35;text-decoration:none;font-weight:600;" onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">&#127760; sparkedge.in</a>
-  </div>
-</div>
-<div style="height:44px;"></div><!-- spacer for footer -->
-
 </body>
 </html>

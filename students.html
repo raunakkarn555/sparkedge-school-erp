@@ -269,13 +269,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="lc-hint">
       <i data-lucide="lock" style="width:11px;height:11px;stroke:currentColor;"></i>
       All data stored locally · GitHub Pages hosted
-    </div>    <div style="border-top:1px solid var(--border);margin-top:18px;padding-top:14px;text-align:center;">
-      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;">SparkEdge</div>
-      <div style="font-size:10px;color:var(--text-dim);line-height:1.8;">
-        © 2026 <strong style="color:var(--text-muted);">Raunak Karn</strong> · All rights reserved<br>
-        <a href="terms.html" target="_blank" style="color:var(--text-dim);text-decoration:none;margin:0 4px;">Terms</a>·
-        <a href="privacy.html" target="_blank" style="color:var(--text-dim);text-decoration:none;margin:0 4px;">Privacy</a>·
-        <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="color:var(--accent);text-decoration:none;margin:0 4px;">🌐 sparkedge.in</a>
+    </div>
+    <div style="border-top:1px solid #1E1E30;margin-top:16px;padding-top:14px;text-align:center;">
+      <div style="font-family:'Syne',system-ui,sans-serif;font-size:13px;font-weight:800;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:3px;">SparkEdge</div>
+      <div style="font-size:10px;color:#5A5A7A;line-height:1.9;">
+        &copy; 2026 <span style="color:#7A7A9A;">Raunak Karn</span> &middot; All rights reserved<br>
+        <a href="terms.html" target="_blank" style="color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Terms</a>
+        &nbsp;&middot;&nbsp;
+        <a href="privacy.html" target="_blank" style="color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Privacy</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="color:#FF6B35;text-decoration:none;font-weight:600;">&#127760; sparkedge.in</a>
       </div>
     </div>
   </div>
@@ -331,9 +334,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <span class="nav-icon"><i data-lucide="indian-rupee" class="lucide"></i></span> Fee Management
       <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
     </a>
-  
-    <a class="nav-item" href="teacher-login.html" target="_blank" style="text-decoration:none;"><span class="nav-icon"><i data-lucide="user-check" class="lucide"></i></span> Teacher Portal <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">&#x2197;</span></a>
-    <a class="nav-item" href="erp-guide.html" target="_blank" style="text-decoration:none;"><span class="nav-icon"><i data-lucide="book-open" class="lucide"></i></span> ERP Guide <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">&#x2197;</span></a>
+    <div class="nav-lbl">Help</div>
+    <a class="nav-item" href="erp-guide.html" target="_blank">
+      <span class="nav-icon"><i data-lucide="book-open" class="lucide"></i></span> Training Guide
+      <span class="nav-ext"><i data-lucide="arrow-up-right" class="lucide" style="width:11px;height:11px;"></i></span>
+    </a>
   </nav>
   <div class="sb-foot">
     <button class="sb-foot-btn" id="btn-export" onclick="doExport()" style="display:none;">
@@ -342,6 +347,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="sb-foot-btn" id="btn-import" onclick="openImportModal()" style="display:none;">
       <i data-lucide="upload" style="width:13px;height:13px;stroke:currentColor;"></i> Import Data
     </button>
+    <a class="sb-foot-btn" href="erp-guide.html" target="_blank">
+      <i data-lucide="book-open" style="width:13px;height:13px;stroke:currentColor;"></i> Help & Guide
+    </a>
     <button class="sb-foot-btn red" onclick="doLogout()">
       <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
     </button>
@@ -565,22 +573,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
             <div class="f"><label>Full Name *</label><input id="stu-name" placeholder="e.g. Ananya Sharma"/></div>
             <div class="f"><label>Date of Birth</label><input type="date" id="stu-dob"/></div>
           </div>
-          <div class="fg" style="margin-bottom:12px;">
-            <div class="f">
-              <label>Student ID <span style="color:var(--text-dim);font-weight:400;">(auto-generated)</span></label>
-              <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--blue);font-family:monospace;font-weight:700;display:flex;align-items:center;gap:8px;">
-                <i data-lucide="hash" style="width:13px;height:13px;stroke:var(--blue);flex-shrink:0;"></i>
-                <span id="stu-id-preview">—</span>
-              </div>
-            </div>
-            <div class="f">
-              <label>Login Password *</label>
-              <div style="position:relative;">
-                <input id="stu-password" placeholder="Set a password for this student" type="text" style="padding-right:36px;"/>
-                <button type="button" onclick="document.getElementById('stu-password').value=generateStuPassword()" title="Auto-generate" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:5px;color:var(--blue);cursor:pointer;font-size:10px;padding:3px 7px;font-weight:700;">AUTO</button>
-              </div>
-            </div>
-          </div>
           <div class="fg-4">
             <div class="f"><label>Gender</label>
               <select id="stu-gender"><option value="">Select…</option><option>Male</option><option>Female</option><option>Other</option></select>
@@ -752,7 +744,8 @@ function _empty() {
 }
 
 function saveData(d) {
-  try { d.settings.updatedAt = new Date().toISOString(); localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); return true; }
+  try { d.settings.updatedAt = new Date().toISOString(); localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+    if (window._firebaseSaveData) window._firebaseSaveData(d); return true; }
   catch(e) { showToast('❌ Save failed — storage full?','error'); return false; }
 }
 
@@ -770,6 +763,7 @@ function genStuID() {
 let _user = null;
 
 function authAdmin(pwd) {
+  if (window.ERP && ERP.authenticateAdmin) return ERP.authenticateAdmin(pwd);
   if (pwd === OWNER_PASSWORD) return { id:'owner', name:OWNER_NAME, role:'Owner', isOwner:true, permissions:{ teachers:true,students:true,fees:true,marks:true,docs:true,timetable:true,announcements:true,export:true,settings:true } };
   const m = STAFF_MEMBERS.find(x => x.password === pwd && x.active !== false);
   if (m) return { id:m.id, name:m.name, role:m.role, isOwner:false, permissions:m.permissions||{} };
@@ -789,12 +783,12 @@ function doLogin() {
     return;
   }
   _user = u;
-  sessionStorage.setItem('erp_admin', JSON.stringify(u));
+  if (window.ERP) ERP.setAdminSession(u); else sessionStorage.setItem('erp_admin', JSON.stringify(u));
   unlockApp();
 }
 
 function doLogout() {
-  erp_confirm('Log out of Students Portal?', () => { sessionStorage.removeItem('erp_admin'); window.location.reload(); }, 'Log Out?');
+  if (window.ERP) ERP.confirm('Log out of Students Portal?', () => ERP.logoutAdmin(), 'Log Out?'); else { sessionStorage.removeItem('erp_admin'); window.location.reload(); }
 }
 
 function toggleEye() {
@@ -1045,12 +1039,6 @@ function openStuModal(id) {
     if (!s) return;
     document.getElementById('stuModalTitle').textContent = 'Edit Student';
     document.getElementById('stu-edit-id').value  = s.id;
-    // Show existing ID
-    const previewEl = document.getElementById('stu-id-preview');
-    if (previewEl) previewEl.textContent = s.id;
-    // Show existing password
-    const pwdEl = document.getElementById('stu-password');
-    if (pwdEl) pwdEl.value = s.autoPassword || '';
     document.getElementById('stu-name').value     = s.name||'';
     document.getElementById('stu-dob').value      = s.dob||'';
     document.getElementById('stu-gender').value   = s.gender||'';
@@ -1085,13 +1073,6 @@ function openStuModal(id) {
     document.getElementById('stuModalTitle').textContent = 'Enroll Student';
     // Auto-fill today's admission date
     document.getElementById('stu-admdate').value = new Date().toISOString().slice(0,10);
-    // Show preview of auto-generated ID
-    const previewId = genStuID();
-    const previewEl = document.getElementById('stu-id-preview');
-    if (previewEl) previewEl.textContent = previewId;
-    // Clear password field
-    const pwdEl = document.getElementById('stu-password');
-    if (pwdEl) pwdEl.value = '';
   }
   document.getElementById('stuModal').classList.add('open');
   if(window.lucide) setTimeout(()=>lucide.createIcons(),50);
@@ -1099,23 +1080,15 @@ function openStuModal(id) {
 
 function closeStuModal() { document.getElementById('stuModal').classList.remove('open'); }
 
-function generateStuPassword() {
-  const adj = ['Blue','Star','Moon','Sun','Sky','Ace'];
-  const num = String(Math.floor(100 + Math.random() * 900));
-  return adj[Math.floor(Math.random() * adj.length)] + '@' + num;
-}
-
 function clearStuForm() {
   ['stu-edit-id','stu-name','stu-dob','stu-aadhaar','stu-roll','stu-admno','stu-admdate',
    'stu-prevschool','stu-gname','stu-gphone','stu-gemail','stu-goccup','stu-address',
-   'stu-city','stu-state','stu-pin','stu-remarks','stu-password'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+   'stu-city','stu-state','stu-pin','stu-remarks'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   ['stu-gender','stu-blood','stu-category','stu-class','stu-section','stu-grel'].forEach(id => {
     const el=document.getElementById(id); if(el) el.value='';
   });
   document.getElementById('stu-active').value = 'true';
   document.getElementById('stu-session').value = (loadData().settings.currentSession)||'';
-  const previewEl = document.getElementById('stu-id-preview');
-  if (previewEl) previewEl.textContent = '—';
   clearPhoto();
 }
 
@@ -1123,14 +1096,27 @@ let _photoData = null;
 function handlePhoto(evt) {
   const file = evt.target.files[0];
   if (!file) return;
-  if (file.size > 500000) { showToast('⚠️ Photo too large (max 500 KB)','warning'); return; }
+  if (file.size > 5000000) { showToast('⚠️ Photo bahut badi hai (max 5 MB)','warning'); return; }
   const r = new FileReader();
   r.onload = e => {
-    _photoData = e.target.result;
-    document.getElementById('photoPreview').src = _photoData;
-    document.getElementById('photoPreview').style.display = 'block';
-    document.getElementById('photoIcon').style.display = 'none';
-    document.getElementById('photoLabel').style.display = 'none';
+    const img = new Image();
+    img.onload = () => {
+      // Compress: max 200x200px, JPEG quality 0.7
+      const MAX = 200;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
+      else        { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      _photoData = canvas.toDataURL('image/jpeg', 0.7);
+      document.getElementById('photoPreview').src = _photoData;
+      document.getElementById('photoPreview').style.display = 'block';
+      document.getElementById('photoIcon').style.display = 'none';
+      document.getElementById('photoLabel').style.display = 'none';
+      showToast('✅ Photo compressed & ready!','success');
+    };
+    img.src = e.target.result;
   };
   r.readAsDataURL(file);
 }
@@ -1147,14 +1133,11 @@ function saveStudent() {
   const gname  = document.getElementById('stu-gname').value.trim();
   const gphone = document.getElementById('stu-gphone').value.trim();
   const cls    = document.getElementById('stu-class').value;
-  const eid_check = document.getElementById('stu-edit-id').value;
-  const manualPwd = document.getElementById('stu-password') ? document.getElementById('stu-password').value.trim() : '';
 
   if (!name)   { showToast('⚠️ Student name is required.','warning'); return; }
   if (!cls)    { showToast('⚠️ Class is required.','warning'); return; }
   if (!gname)  { showToast('⚠️ Guardian name is required.','warning'); return; }
   if (!gphone) { showToast('⚠️ Guardian phone is required.','warning'); return; }
-  if (!eid_check && !manualPwd) { showToast('⚠️ Password is required for new student.','warning'); return; }
 
   const data = loadData();
   const eid  = document.getElementById('stu-edit-id').value;
@@ -1192,28 +1175,14 @@ function saveStudent() {
     const idx = data.students.findIndex(s=>s.id===eid);
     if (idx > -1) {
       if (!_photoData) obj.photo = data.students[idx].photo || null;
-      // Update password if changed
-      const editPwd = document.getElementById('stu-password') ? document.getElementById('stu-password').value.trim() : '';
-      if (editPwd) obj.autoPassword = editPwd;
       data.students[idx] = { ...data.students[idx], ...obj };
       showToast('✅ Student updated!','success');
     }
   } else {
     obj.id        = genStuID();
     obj.createdAt = new Date().toISOString();
-    // Use manually entered password (with fallback)
-    const manualPwdFinal = document.getElementById('stu-password') ? document.getElementById('stu-password').value.trim() : '';
-    const firstName = name.split(' ')[0];
-    const rollPart  = obj.rollNumber || String(obj.id).split('-').pop();
-    obj.autoPassword = manualPwdFinal || (firstName + '@' + rollPart);
     data.students.push(obj);
-    saveData(data);
-    closeStuModal();
-    renderStats();
-    renderList();
-    _photoData = null;
-    showCredentialsModal(obj.id, obj.autoPassword, 'student');
-    return;
+    showToast(`✅ Student enrolled! ID: ${obj.id}`,'success', 5000);
   }
 
   saveData(data);
@@ -1454,135 +1423,8 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
     if (saved) { _user=saved; setTimeout(()=>unlockApp(),50); }
   } catch(e){}
 })();
-<script>
-function showCredentialsModal(id, password, type) {
-  const isTeacher = type === 'teacher';
-  const loginUrl  = isTeacher ? 'teacher-login.html' : 'student-login.html';
-  const emoji     = isTeacher ? '\u{1F468}\u200D\u{1F3EB}' : '\u{1F393}';
-  const label     = isTeacher ? 'Teacher' : 'Student';
-  const color     = isTeacher ? '#14B8A6' : '#FF6B35';
-
-  const old = document.getElementById('_cred_modal');
-  if (old) old.remove();
-
-  const modal = document.createElement('div');
-  modal.id = '_cred_modal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;';
-
-  // Build the code snippet
-  const codeSnippet = isTeacher
-    ? `{ id: '${id}', password: '${password}' }, // → TEACHER_ACCOUNTS array`
-    : `{ id: '${id}', password: '${password}' }, // → STUDENT_ACCOUNTS array`;
-
-  const inner = document.createElement('div');
-  inner.style.cssText = 'background:#0E0E1A;border:1px solid #2A2A40;border-radius:18px;width:100%;max-width:460px;overflow:hidden;animation:_cfade .2s ease;';
-  inner.innerHTML = \`
-    <style>@keyframes _cfade{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}</style>
-    <div style="background:linear-gradient(135deg,\${color}22,#0E0E1A);padding:22px 24px 16px;border-bottom:1px solid #1E1E30;">
-      <div style="font-size:26px;margin-bottom:8px;">\${emoji}</div>
-      <div style="font-family:'Syne',system-ui,sans-serif;font-size:17px;font-weight:800;color:#F0F0FA;">\${label} Added Successfully!</div>
-      <div style="font-size:13px;color:#7A7A9A;margin-top:4px;">Share these credentials with the \${label.toLowerCase()} / guardian</div>
-    </div>
-    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:12px;">
-      <div style="background:#141422;border:1px solid #1E1E30;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:11px;font-weight:700;color:#7A7A9A;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Login Credentials</div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <span style="font-size:12px;color:#7A7A9A;">\${label} ID</span>
-          <span style="font-family:monospace;font-size:14px;font-weight:700;color:#F0F0FA;">\${id}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <span style="font-size:12px;color:#7A7A9A;">Password</span>
-          <span style="font-family:monospace;font-size:14px;font-weight:700;color:\${color};">\${password}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:12px;color:#7A7A9A;">Login Page</span>
-          <span style="font-family:monospace;font-size:12px;color:#3B82F6;">\${loginUrl}</span>
-        </div>
-      </div>
-      <div style="background:#141422;border:1px solid rgba(245,158,11,.22);border-radius:10px;padding:12px 14px;">
-        <div style="font-size:12px;color:#F59E0B;line-height:1.6;margin-bottom:8px;">
-          \u26A0\uFE0F <strong>Important:</strong> Add this to <code style="background:#1E1E30;padding:1px 5px;border-radius:3px;">school_data.js</code> to activate login:
-        </div>
-        <div style="background:#0A0A14;border:1px solid #1E1E30;border-radius:6px;padding:10px;font-family:monospace;font-size:12px;color:#F0F0FA;line-height:1.8;word-break:break-all;">\${codeSnippet}</div>
-      </div>
-      <div id="_cred_copy_msg" style="display:none;text-align:center;font-size:12px;color:#22C55E;font-weight:600;">\u2705 Copied to clipboard!</div>
-    </div>
-    <div style="padding:14px 24px;border-top:1px solid #1E1E30;display:flex;gap:10px;">
-      <button id="_cred_copy_btn" style="flex:1;background:#141422;border:1px solid #1E1E30;border-radius:10px;padding:10px;font-size:13px;font-weight:600;color:#F0F0FA;cursor:pointer;">\u{1F4CB} Copy</button>
-      <button id="_cred_wa_btn" style="flex:1;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);border-radius:10px;padding:10px;font-size:13px;font-weight:600;color:#25D166;cursor:pointer;">\u{1F4AC} WhatsApp</button>
-      <button id="_cred_done_btn" style="flex:1;background:linear-gradient(135deg,\${color},\${color}CC);border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">Done \u2713</button>
-    </div>
-  \`;
-
-  modal.appendChild(inner);
-  document.body.appendChild(modal);
-
-  // Attach events after appending (avoids template literal escaping issues)
-  document.getElementById('_cred_copy_btn').onclick = function() {
-    copyCredentials(id, password, loginUrl);
-  };
-  document.getElementById('_cred_wa_btn').onclick = function() {
-    shareWhatsApp(id, password, loginUrl, label);
-  };
-  document.getElementById('_cred_done_btn').onclick = function() {
-    const m = document.getElementById('_cred_modal');
-    if (m) m.remove();
-  };
-  modal.addEventListener('click', function(e) {
-    if (e.target === modal) modal.remove();
-  });
-}
-
-function copyCredentials(id, pwd, url) {
-  const txt = 'Login ID: ' + id + '\nPassword: ' + pwd + '\nLogin Page: ' + (window.location.origin || '') + '/' + url;
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(txt).then(function() {
-      var msg = document.getElementById('_cred_copy_msg');
-      if (msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 2000); }
-    }).catch(function() {
-      // Fallback
-      try { var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } catch(e){}
-      var msg = document.getElementById('_cred_copy_msg');
-      if (msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 2000); }
-    });
-  } else {
-    try { var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } catch(e){}
-    var msg = document.getElementById('_cred_copy_msg');
-    if (msg) { msg.style.display = 'block'; setTimeout(function(){ msg.style.display = 'none'; }, 2000); }
-  }
-}
-
-function shareWhatsApp(id, pwd, url, label) {
-  var data = loadData();
-  var schoolName = (data.settings && data.settings.schoolName) || 'School ERP';
-  var text = encodeURIComponent(
-    '*' + schoolName + ' \u2014 ' + label + ' Login*\n\n' +
-    '*' + label + ' ID:* ' + id + '\n' +
-    '*Password:* ' + pwd + '\n' +
-    '*Login URL:* ' + (window.location.origin || '') + '/' + url + '\n\n' +
-    '_Please keep your credentials safe._'
-  );
-  window.open('https://wa.me/?text=' + text, '_blank');
-}
 </script>
-
-<!-- SparkEdge Copyright Footer -->
-<div id="_sparkedge_footer" style="position:fixed;bottom:0;left:0;right:0;z-index:9990;background:rgba(8,8,16,.95);backdrop-filter:blur(10px);border-top:1px solid #1E1E30;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-family:'DM Sans',system-ui,sans-serif;">
-  <div style="display:flex;align-items:center;gap:7px;">
-    <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="display:flex;align-items:center;gap:6px;text-decoration:none;">
-      <div style="width:20px;height:20px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;font-family:'Syne',system-ui,sans-serif;">S</div>
-      <span style="font-size:12px;font-weight:800;font-family:'Syne',system-ui,sans-serif;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">SparkEdge</span>
-    </a>
-    <span style="font-size:10px;color:#3A3A52;">|</span>
-    <span style="font-size:10px;color:#4A4A62;">&copy; 2026 Raunak Karn &middot; All rights reserved.</span>
-  </div>
-  <div style="display:flex;gap:12px;align-items:center;">
-    <a href="terms.html" target="_blank" style="font-size:10px;color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Terms</a>
-    <a href="privacy.html" target="_blank" style="font-size:10px;color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Privacy</a>
-    <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="font-size:10px;color:#FF6B35;text-decoration:none;font-weight:600;" onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">&#127760; sparkedge.in</a>
-  </div>
-</div>
-<div style="height:44px;"></div>
-
+<script src="school_data.js"></script>
+<script src="firebase_sync.js"></script>
 </body>
 </html>

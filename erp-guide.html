@@ -469,19 +469,6 @@ body{
   </div>
 
   <div class="sb-section">
-    <div class="sb-section-label">✋ Manual vs Automatic</div>
-    <a href="#manual-vs-auto" class="sb-link"><span class="sb-link-icon">⚡</span> Kya Manual? Kya Auto? <span class="sb-badge badge-tip">NEW</span></a>
-    <a href="#add-staff-workflow" class="sb-link"><span class="sb-link-icon">🧑‍💼</span> New Staff Add Karna <span class="sb-badge badge-tip">NEW</span></a>
-  </div>
-
-  <div class="sb-section">
-    <div class="sb-section-label">📖 Complete Workflows</div>
-    <a href="#owner-workflow" class="sb-link"><span class="sb-link-icon">👑</span> Owner Workflow (Ananya) <span class="sb-badge badge-tip">NEW</span></a>
-    <a href="#teacher-workflow" class="sb-link"><span class="sb-link-icon">👩‍🏫</span> Teacher Workflow (Rahul) <span class="sb-badge badge-tip">NEW</span></a>
-    <a href="#student-workflow" class="sb-link"><span class="sb-link-icon">🎓</span> Student Workflow (Arjun) <span class="sb-badge badge-tip">NEW</span></a>
-  </div>
-
-  <div class="sb-section">
     <div class="sb-section-label">Staff / Teacher</div>
     <a href="#staff-guide" class="sb-link"><span class="sb-link-icon">🧑‍💼</span> Staff Login & Access</a>
     <a href="#staff-marks" class="sb-link"><span class="sb-link-icon">✏️</span> Entering Marks</a>
@@ -506,6 +493,7 @@ body{
     <a href="#hardcoded-editing" class="sb-link"><span class="sb-link-icon">🛠️</span> Editing school_data.js</a>
     <a href="#permissions" class="sb-link"><span class="sb-link-icon">🔐</span> Permissions System</a>
     <a href="#github-pages" class="sb-link"><span class="sb-link-icon">🌐</span> GitHub Pages Hosting</a>
+    <a href="#firebase-sync" class="sb-link"><span class="sb-link-icon">🔥</span> Firebase Sync Setup</a>
     <a href="#tips" class="sb-link"><span class="sb-link-icon">💡</span> Pro Tips & Best Practices</a>
   </div>
 </nav>
@@ -1900,582 +1888,89 @@ const STAFF_MEMBERS = [
 <!-- ════════════════════════════════════════════════════════
      PRO TIPS
 ════════════════════════════════════════════════════════ -->
-
-<!-- ══════════════════════════════════════════
-     MANUAL VS AUTOMATIC
-══════════════════════════════════════════ -->
-<div class="section" id="manual-vs-auto">
+<!-- FIREBASE SYNC SECTION -->
+<div class="section" id="firebase-sync">
   <div class="section-header">
-    <div class="section-eyebrow">⚡ Important</div>
-    <div class="section-title">Kya Manual Karna Padega? Kya Automatic Hai?</div>
-    <div class="section-sub">Ek baar yeh samajh lo — phir sab clear ho jaayega. Daily kaam mein koi code nahi likhna padta.</div>
+    <div class="section-eyebrow">🔥 Cloud Sync</div>
+    <div class="section-title">Firebase Sync — Har Device Pe Same Data</div>
+    <div class="section-sub">Firebase integrate karne ke baad admin ka data automatically saare devices pe sync hota hai — koi manual export-import nahi karna padega. 1000 students tak free mein kaam karta hai.</div>
   </div>
 
+  <div class="info-box" style="margin-bottom:24px;">
+    <div class="ib-title">✅ Aapke ERP mein Firebase Already Add Ho Gaya Hai</div>
+    Agar aapne <code>firebase_sync.js</code> GitHub repo mein push kar diya hai aur har HTML file mein script tag add kar diya hai, toh yeh section auto-kaam karta hai. Neeche sirf reference ke liye details hain.
+  </div>
+
+  <h3 style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 16px;">Firebase Kaise Kaam Karta Hai Is System Mein?</h3>
+
   <table class="data-table">
-    <thead>
-      <tr>
-        <th>Kaam</th>
-        <th>Automatic ✅</th>
-        <th>Manual ✏️</th>
-        <th>Frequency</th>
-      </tr>
-    </thead>
+    <thead><tr><th>Cheez</th><th>Pehle (localStorage only)</th><th>Ab (Firebase)</th></tr></thead>
     <tbody>
-      <tr>
-        <td><strong>Student enroll karna</strong></td>
-        <td>UI se hota hai — ID auto-generate</td>
-        <td><code>STUDENT_ACCOUNTS</code> mein password add + git push</td>
-        <td>Har naye student pe ek baar</td>
-      </tr>
-      <tr>
-        <td><strong>Teacher add karna</strong></td>
-        <td>UI se hota hai — ID auto-generate</td>
-        <td><code>TEACHER_ACCOUNTS</code> mein password add + git push</td>
-        <td>Har naye teacher pe ek baar</td>
-      </tr>
-      <tr>
-        <td><strong>Staff/Admin add karna</strong></td>
-        <td>admin.html → Team Members → config download</td>
-        <td><code>STAFF_MEMBERS</code> mein config paste + git push</td>
-        <td>Har naye staff pe ek baar</td>
-      </tr>
-      <tr>
-        <td><strong>Owner password change</strong></td>
-        <td>—</td>
-        <td><code>school_data.js</code> line 34 edit + git push</td>
-        <td>Kabhi kabhi</td>
-      </tr>
-      <tr>
-        <td><strong>Fees collect karna</strong></td>
-        <td>✅ fees.html se — Firebase sync auto</td>
-        <td>—</td>
-        <td>Daily</td>
-      </tr>
-      <tr>
-        <td><strong>Marks enter karna</strong></td>
-        <td>✅ marks.html se — Firebase sync auto</td>
-        <td>—</td>
-        <td>Exam ke baad</td>
-      </tr>
-      <tr>
-        <td><strong>Timetable update</strong></td>
-        <td>✅ timetable.html se — Firebase sync auto</td>
-        <td>—</td>
-        <td>Semester mein</td>
-      </tr>
-      <tr>
-        <td><strong>Certificates banana</strong></td>
-        <td>✅ docs.html se — auto generate + print</td>
-        <td>—</td>
-        <td>On demand</td>
-      </tr>
-      <tr>
-        <td><strong>Announcements</strong></td>
-        <td>✅ admin.html se — students/teachers dekhen</td>
-        <td>—</td>
-        <td>Daily/weekly</td>
-      </tr>
-      <tr>
-        <td><strong>Student data update</strong></td>
-        <td>✅ students.html → Edit → Save</td>
-        <td>—</td>
-        <td>As needed</td>
-      </tr>
-      <tr>
-        <td><strong>Data backup</strong></td>
-        <td>Export button se — JSON download</td>
-        <td>Google Drive pe manually save karo</td>
-        <td>Mahine mein ek baar</td>
-      </tr>
+      <tr><td><strong>Data kahan hai?</strong></td><td>Sirf us browser mein</td><td>☁️ Firebase cloud mein — sab jagah</td></tr>
+      <tr><td><strong>Doosra device?</strong></td><td>❌ Data nahi milega</td><td>✅ Automatic sync — turant</td></tr>
+      <tr><td><strong>Admin save kare</strong></td><td>Sirf admin ke browser mein</td><td>30 sec mein sab jagah update</td></tr>
+      <tr><td><strong>Student login kare</strong></td><td>Empty data</td><td>✅ Latest data Firebase se load hoga</td></tr>
+      <tr><td><strong>Export-Import?</strong></td><td>Har baar manually karna tha</td><td>Zaroorat nahi — auto sync</td></tr>
+      <tr><td><strong>Offline kaam?</strong></td><td>✅ Haan</td><td>✅ Haan — locally kaam karta hai, online hone pe sync hota hai</td></tr>
     </tbody>
   </table>
 
-  <div class="info-box orange" style="margin-top:20px;">
-    <div class="ib-title">📌 Short Mein Yaad Rakho</div>
-    <strong style="color:var(--text);">Sirf 3 kaam mein</strong> <code>school_data.js</code> edit + <code>git push</code> lagta hai:
-    <ol style="margin:8px 0 0 16px;font-size:13px;color:var(--text-muted);line-height:2.2;">
-      <li>Naya <strong style="color:var(--text);">student</strong> add karo → STUDENT_ACCOUNTS mein password line add karo</li>
-      <li>Naya <strong style="color:var(--text);">teacher</strong> add karo → TEACHER_ACCOUNTS mein password line add karo</li>
-      <li>Naya <strong style="color:var(--text);">staff/admin</strong> add karo → STAFF_MEMBERS mein config block paste karo</li>
-    </ol>
-    Baaki sab <strong style="color:var(--text);">100% UI se</strong> hota hai — koi code nahi!
-  </div>
-</div>
+  <h3 style="font-size:16px;font-weight:700;color:var(--text);margin:24px 0 16px;">Firebase Free Plan — Kitne Students?</h3>
+  <table class="data-table">
+    <thead><tr><th>Resource</th><th>Free Limit</th><th>Aapka Use (1000 students)</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Storage</strong></td><td>1 GB</td><td>~8 MB</td><td>✅ Sirf 0.8% use</td></tr>
+      <tr><td><strong>Reads/day</strong></td><td>50,000</td><td>~2,500</td><td>✅ Sirf 5% use</td></tr>
+      <tr><td><strong>Writes/day</strong></td><td>20,000</td><td>~100</td><td>✅ Bahut kam</td></tr>
+      <tr><td><strong>Cost</strong></td><td>₹0</td><td>₹0</td><td>✅ Free</td></tr>
+    </tbody>
+  </table>
 
-<!-- ══════════════════════════════════════════
-     NEW STAFF ADD KARNA
-══════════════════════════════════════════ -->
-<div class="section" id="add-staff-workflow">
-  <div class="section-header">
-    <div class="section-eyebrow">🧑‍💼 Step by Step</div>
-    <div class="section-title">Naya Staff / Admin Member Kaise Add Karein?</div>
-    <div class="section-sub">Example: Priya Sharma (Accountant) ko add karna hai jo sirf fees aur students dekh sake</div>
-  </div>
+  <h3 style="font-size:16px;font-weight:700;color:var(--text);margin:24px 0 16px;">Status Badge — Kya Matlab Hai?</h3>
+  <p style="font-size:14px;color:var(--text-muted);line-height:1.7;margin:0 0 12px;">Har page ke <strong>bottom-left corner</strong> mein ek badge dikhta hai:</p>
+  <table class="data-table">
+    <thead><tr><th>Badge</th><th>Matlab</th><th>Kya Karna Hai</th></tr></thead>
+    <tbody>
+      <tr><td><span style="background:#0A1A10;border:1px solid rgba(34,197,94,.4);color:#22C55E;padding:2px 10px;border-radius:10px;font-size:12px;">🟢 Firebase Synced</span></td><td>Sab theek hai</td><td>Kuch nahi — normal hai</td></tr>
+      <tr><td><span style="background:#1A140A;border:1px solid rgba(245,158,11,.4);color:#F59E0B;padding:2px 10px;border-radius:10px;font-size:12px;">🟡 Syncing...</span></td><td>Data upload ho raha hai</td><td>Wait karo — 2-3 sec mein ho jaayega</td></tr>
+      <tr><td><span style="background:#1A0A0A;border:1px solid rgba(239,68,68,.4);color:#EF4444;padding:2px 10px;border-radius:10px;font-size:12px;">🔴 Sync Error</span></td><td>Firebase config galat hai</td><td>firebase_sync.js mein config check karo</td></tr>
+      <tr><td><span style="background:#0A0E1A;border:1px solid rgba(59,130,246,.4);color:#3B82F6;padding:2px 10px;border-radius:10px;font-size:12px;">⚫ Offline</span></td><td>Internet nahi hai</td><td>Online hone pe auto-sync hoga</td></tr>
+    </tbody>
+  </table>
 
-  <div class="step-group">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <div class="step-title">admin.html kholo → Owner password se login karo</div>
-        <div class="step-desc">Sirf Owner hi nayi staff add kar sakta hai.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <div class="step-title">Left sidebar → "Team Members" click karo</div>
-        <div class="step-desc">Wahan "Add Member" button dikhega top-right mein.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <div class="step-title">Form bharo</div>
-        <div class="step-desc">
-          Name: <strong style="color:var(--text);">Priya Sharma</strong><br>
-          Role: <strong style="color:var(--text);">Accountant</strong><br>
-          Password: <strong style="color:var(--text);">Priya@2025</strong> (aap choose karo)<br>
-          Permissions: Teachers ❌ Students ✅ Fees ✅ Marks ❌ Docs ✅ Settings ❌
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-body">
-        <div class="step-title">"Add Member" click karo → ID auto-generate hogi</div>
-        <div class="step-desc">ID milegi: <code>STF-2025-002</code> — aur ek <strong style="color:var(--text);">config card</strong> dikhega</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">5</div>
-      <div class="step-body">
-        <div class="step-title">"Download Config" button dabao</div>
-        <div class="step-desc">Ek <code>.txt</code> file download hogi jisme ready-to-paste code block hoga. Iske andar kuch aisa hoga:</div>
-        <div class="code-block">{
-  id:       'STF-2025-002',
-  name:     'Priya Sharma',
-  role:     'Accountant',
-  password: 'Priya@2025',
-  active:   true,
-  permissions: {
-    teachers: false, students: true,
-    fees: true,  marks: false,
-    docs: true,  timetable: false,
-    announcements: false, export: true, settings: false,
-  }
-},</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">6</div>
-      <div class="step-body">
-        <div class="step-title">VS Code → school_data.js kholo</div>
-        <div class="step-desc"><code>STAFF_MEMBERS = [</code> array dhundho (line ~43). Uske andar existing members ke baad yeh block paste karo.</div>
-        <div class="code-block">const STAFF_MEMBERS = [
-  {
-    id: 'STF-2026-001',
-    name: 'Rahul Raj',
-    // ... existing member ...
-  },
-  <span style="color:#22C55E;">// ← YAHAN PRIYA KA BLOCK PASTE KARO</span>
-  {
-    id: 'STF-2025-002',
-    name: 'Priya Sharma',
-    role: 'Accountant',
-    password: 'Priya@2025',
-    ...
-  },
-];</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">7</div>
-      <div class="step-body">
-        <div class="step-title">git push karo</div>
-        <div class="step-desc">
-          <div class="code-block">git add .
-git commit -m "Add staff: Priya Sharma"
-git push</div>
-          60 seconds mein GitHub Pages update → Priya ab <code>admin.html</code> pe apne password se login kar sakti hai ✅
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">8</div>
-      <div class="step-body">
-        <div class="step-title">Priya ko WhatsApp karo</div>
-        <div class="step-desc">
-          URL: <code>yourschool.github.io/school-erp/admin.html</code><br>
-          Password: <code>Priya@2025</code><br>
-          Woh login karegi → sirf Students, Fees, Docs dikhe — baaki sections locked rahenge
-        </div>
-      </div>
-    </div>
+  <h3 style="font-size:16px;font-weight:700;color:var(--text);margin:24px 0 12px;">Photos — Kaise Store Hoti Hain?</h3>
+  <div class="info-box orange" style="margin-bottom:12px;">
+    <div class="ib-title">📸 Photos Ke Baare Mein Jaanna Zaroor Hai</div>
+    Student aur teacher photos <strong>base64 format</strong> mein compress hokar data ke saath store hoti hain. System automatically photo ko <strong>200×200px</strong> mein resize karta hai aur JPEG quality 70% pe compress karta hai — ek photo ~8-15 KB ki hoti hai. 1000 students ki photos = ~10-15 MB — Firebase free limit mein fit hota hai.
   </div>
+  <table class="data-table">
+    <thead><tr><th>Step</th><th>Kya Hota Hai</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1. Photo select karo</strong></td><td>Click karo photo box pe → gallery ya camera se choose karo (koi bhi size)</td></tr>
+      <tr><td><strong>2. Auto compress</strong></td><td>System automatically 200×200px mein resize karta hai, JPEG 70% quality — ~10 KB ho jaati hai</td></tr>
+      <tr><td><strong>3. Preview dikhe</strong></td><td>"Photo compressed & ready!" toast aata hai — preview box mein dikh jaati hai</td></tr>
+      <tr><td><strong>4. Save karo</strong></td><td>Student/Teacher save karo — photo data ke saath Firebase pe sync ho jaati hai</td></tr>
+      <tr><td><strong>5. Sab jagah dikhe</strong></td><td>Kisi bhi device pe woh student ka card kholo — photo wahan dikhe</td></tr>
+    </tbody>
+  </table>
 
   <div class="info-box" style="margin-top:16px;">
-    <div class="ib-title">💡 Staff Disable Karna</div>
-    <code>school_data.js</code> mein us member ka <code>active: true</code> → <code>active: false</code> kar do → git push → woh login nahi kar payega. Record delete mat karo.
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     OWNER COMPLETE WORKFLOW — ANANYA
-══════════════════════════════════════════ -->
-<div class="section" id="owner-workflow">
-  <div class="section-header">
-    <div class="section-eyebrow">👑 Owner Workflow</div>
-    <div class="section-title">Complete Example: Dummy Student "Arjun Verma" — Start to End</div>
-    <div class="section-sub">Owner (Principal Raunak) ek nayi student ko enroll karta hai, fees collect karta hai, marks enter karta hai, aur certificate deta hai. Poora process yahan hai.</div>
+    <div class="ib-title">💡 Photo Tips</div>
+    <ul style="margin:8px 0 0 16px;font-size:13px;color:var(--text-muted);line-height:2;">
+      <li>Passport size ya close-up face photo best kaam karta hai</li>
+      <li>Koi bhi format chalega — JPG, PNG, HEIC (iPhone wali)</li>
+      <li>Size koi bhi ho — system khud compress kar deta hai</li>
+      <li>Photo optional hai — bina photo ke bhi student/teacher ka record banta hai</li>
+      <li>Photo change karni ho toh record edit karo → new photo click karo</li>
+    </ul>
   </div>
 
-  <div class="info-box" style="margin-bottom:20px;">
-    <div class="ib-title">📋 Scenario</div>
-    <strong style="color:var(--text);">Student:</strong> Arjun Verma &nbsp;|&nbsp; <strong style="color:var(--text);">Class:</strong> 10-A &nbsp;|&nbsp;
-    <strong style="color:var(--text);">Guardian:</strong> Suresh Verma &nbsp;|&nbsp; <strong style="color:var(--text);">Phone:</strong> 9876543210
-  </div>
-
-  <h3 style="font-size:15px;font-weight:700;color:var(--text);margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);">Phase 1 — Student Enroll Karo (students.html)</h3>
-  <div class="step-group">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <div class="step-title">students.html → Owner password → Login</div>
-        <div class="step-desc">Password: <code>Raunak@123</code></div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <div class="step-title">"Add Student" button → Form bharo</div>
-        <div class="step-desc">
-          Full Name: <strong style="color:var(--text);">Arjun Verma</strong><br>
-          Class: <strong style="color:var(--text);">10</strong> &nbsp; Section: <strong style="color:var(--text);">A</strong> &nbsp; Roll No: <strong style="color:var(--text);">15</strong><br>
-          DOB: 14/03/2010 &nbsp; Gender: Male &nbsp; Category: General<br>
-          Admission No: <strong style="color:var(--text);">ADM-2025-015</strong><br>
-          Guardian Name: <strong style="color:var(--text);">Suresh Verma</strong><br>
-          Guardian Phone: <strong style="color:var(--text);">9876543210</strong><br>
-          Photo upload karo (optional — koi bhi size chalega, auto compress hoga)
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <div class="step-title">"Save Student" click karo</div>
-        <div class="step-desc">
-          ✅ Auto ID milega: <strong style="color:#FF6B35;">STU-2025-015</strong><br>
-          ✅ Ek popup dikhega — Credentials Modal:<br>
-          &nbsp;&nbsp; ID: <code>STU-2025-015</code> &nbsp; Password: <code>Arjun@15</code><br>
-          &nbsp;&nbsp; Copy button ya WhatsApp button — directly Suresh Verma ko bhejo!
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num" style="background:rgba(245,158,11,.2);color:#F59E0B;">⚠️</div>
-      <div class="step-body">
-        <div class="step-title">MANUAL STEP — school_data.js mein add karo</div>
-        <div class="step-desc">
-          VS Code → <code>school_data.js</code> → <code>STUDENT_ACCOUNTS</code> array mein:
-          <div class="code-block">const STUDENT_ACCOUNTS = [
-  { id: 'STU-2025-015', password: 'Arjun@15' }, <span style="color:#22C55E;">// ← add karo</span>
-];</div>
-          Phir:
-          <div class="code-block">git add . && git commit -m "Arjun login" && git push</div>
-          60 sec mein Arjun student-login.html pe login kar sakta hai ✅
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <h3 style="font-size:15px;font-weight:700;color:var(--text);margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);">Phase 2 — Fee Structure & Collection (fees.html) — ✅ Fully Automatic</h3>
-  <div class="step-group">
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-body">
-        <div class="step-title">fees.html → "Fee Structures" tab → Add Structure (ek baar)</div>
-        <div class="step-desc">
-          Name: <strong style="color:var(--text);">Tuition Fee — Class 10</strong><br>
-          Amount: <strong style="color:var(--text);">₹5,000/month</strong> &nbsp; Classes: 10 &nbsp; Due Day: 10<br>
-          Late Fine: ₹50/day &nbsp; → Save ✅
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">5</div>
-      <div class="step-body">
-        <div class="step-title">"Collect Fee" → Arjun ki fee lo</div>
-        <div class="step-desc">
-          Student: <strong style="color:var(--text);">Arjun Verma (STU-2025-015)</strong><br>
-          Fee Type: Tuition Fee — Class 10 &nbsp; Month: April<br>
-          Amount: ₹5,000 &nbsp; Payment Mode: Cash<br>
-          → Save ✅ → Receipt auto-generate → Print karo
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num" style="background:rgba(34,197,94,.2);color:#22C55E;">✅</div>
-      <div class="step-body">
-        <div class="step-title">Arjun ka portal — Fee Status turant update</div>
-        <div class="step-desc">Firebase sync — 30 sec mein Arjun apne phone pe dekhe: April Paid ₹5,000 ✅</div>
-      </div>
-    </div>
-  </div>
-
-  <h3 style="font-size:15px;font-weight:700;color:var(--text);margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);">Phase 3 — Exam & Marks (marks.html) — ✅ Fully Automatic</h3>
-  <div class="step-group">
-    <div class="step">
-      <div class="step-num">6</div>
-      <div class="step-body">
-        <div class="step-title">marks.html → "Create Exam"</div>
-        <div class="step-desc">
-          Name: <strong style="color:var(--text);">Half Yearly 2025</strong> &nbsp; Class: 10-A<br>
-          Subjects: English (100/33), Math (100/33), Science (100/33), Hindi (100/33), SST (100/33)<br>
-          → Save ✅
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">7</div>
-      <div class="step-body">
-        <div class="step-title">Exam select → Arjun ke marks enter karo</div>
-        <div class="step-desc">
-          English: <strong style="color:var(--text);">82</strong> &nbsp; Math: <strong style="color:var(--text);">91</strong> &nbsp;
-          Science: <strong style="color:var(--text);">76</strong> &nbsp; Hindi: <strong style="color:var(--text);">85</strong> &nbsp; SST: <strong style="color:var(--text);">79</strong><br>
-          → Save ✅
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num" style="background:rgba(34,197,94,.2);color:#22C55E;">✅</div>
-      <div class="step-body">
-        <div class="step-title">Auto-calculate — Arjun ka Result</div>
-        <div class="step-desc">
-          Total: 413/500 = <strong style="color:#22C55E;">82.6%</strong> &nbsp; Grade: <strong style="color:#22C55E;">A</strong> &nbsp; Result: <strong style="color:#22C55E;">PASS</strong><br>
-          Arjun apne portal pe turant marks dekh sakta hai ✅<br>
-          Marksheet print: marks.html → Arjun → "View Marksheet" → Print
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <h3 style="font-size:15px;font-weight:700;color:var(--text);margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);">Phase 4 — Certificates (docs.html) — ✅ Fully Automatic</h3>
-  <div class="step-group">
-    <div class="step">
-      <div class="step-num">8</div>
-      <div class="step-body">
-        <div class="step-title">docs.html → Issue Certificate → Bonafide</div>
-        <div class="step-desc">
-          Student: Arjun Verma &nbsp; Purpose: <strong style="color:var(--text);">Bank Account Opening</strong><br>
-          → Issue → Print/Download ✅ Certificate auto-generate with school letterhead
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">9</div>
-      <div class="step-body">
-        <div class="step-title">ID Card generate karo</div>
-        <div class="step-desc">docs.html → ID Card → Arjun → Generate → Print — photo bhi aayegi ✅</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="info-box" style="margin-top:16px;background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);">
-    <div class="ib-title" style="color:#22C55E;">🎉 Summary — Owner ne kya manually kiya?</div>
-    Sirf ek cheez: <code>school_data.js</code> mein 1 line add ki + git push. Baaki sab 100% UI se! ✅
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     TEACHER COMPLETE WORKFLOW — RAHUL
-══════════════════════════════════════════ -->
-<div class="section" id="teacher-workflow">
-  <div class="section-header">
-    <div class="section-eyebrow">👩‍🏫 Teacher Workflow</div>
-    <div class="section-title">Complete Example: Teacher "Rahul Raj" ka Daily Kaam</div>
-    <div class="section-sub">Rahul Science teacher hai — Class 10-A ka. Owner ne uska login setup kar diya hai. Ab Rahul kya kya kar sakta hai?</div>
-  </div>
-
-  <div class="info-box" style="margin-bottom:20px;">
-    <div class="ib-title">📋 Rahul ka Profile</div>
-    <strong style="color:var(--text);">Teacher ID:</strong> TCH-2025-001 &nbsp;|&nbsp;
-    <strong style="color:var(--text);">Password:</strong> Rahul@teach001 &nbsp;|&nbsp;
-    <strong style="color:var(--text);">Subject:</strong> Science &nbsp;|&nbsp;
-    <strong style="color:var(--text);">Class:</strong> 10-A &nbsp;|&nbsp;
-    <strong style="color:var(--text);">Login:</strong> teacher-login.html
-  </div>
-
-  <h3 style="font-size:15px;font-weight:700;color:var(--text);margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);">Phase 1 — Teacher ko System mein Add Karna (Owner karta hai)</h3>
-  <div class="step-group">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <div class="step-title">Owner → teachers.html → "Add Teacher"</div>
-        <div class="step-desc">
-          Name: <strong style="color:var(--text);">Rahul Raj</strong> &nbsp; Designation: <strong style="color:var(--text);">Science Teacher</strong><br>
-          Dept: <strong style="color:var(--text);">Science</strong> &nbsp; Subjects: <strong style="color:var(--text);">Physics, Chemistry, Biology</strong><br>
-          Class Assigned: <strong style="color:var(--text);">10</strong> &nbsp; Section: <strong style="color:var(--text);">A</strong> &nbsp; Is Class Teacher: ✅<br>
-          Phone: 9876500001 &nbsp; Joining Date: 01/04/2024<br>
-          Extra Classes: "+ Add Class" → 9-A (Science), 9-B (Science)<br>
-          → Save ✅
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <div class="step-title">Credentials Modal — Auto popup</div>
-        <div class="step-desc">
-          ID: <code>TCH-2025-001</code> &nbsp; Password: <code>Rahul@teach001</code><br>
-          WhatsApp button → Rahul ko bhejo ✅
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num" style="background:rgba(245,158,11,.2);color:#F59E0B;">⚠️</div>
-      <div class="step-body">
-        <div class="step-title">MANUAL — school_data.js update karo</div>
-        <div class="step-desc">
-          <div class="code-block">const TEACHER_ACCOUNTS = [
-  { id: 'TCH-2025-001', password: 'Rahul@teach001' }, <span style="color:#22C55E;">// ← add karo</span>
-];</div>
-          <div class="code-block">git add . && git commit -m "Rahul teacher login" && git push</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <h3 style="font-size:15px;font-weight:700;color:var(--text);margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);">Phase 2 — Rahul ka Daily Teacher Portal Kaam — ✅ Fully Automatic</h3>
-  <div class="step-group">
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <div class="step-title">teacher-login.html → TCH-2025-001 + Rahul@teach001</div>
-        <div class="step-desc">Login hone ke baad dashboard dikhega — Rahul ka naam, class, subjects, announcements</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-body">
-        <div class="step-title">My Students tab — apni class ke students dekhe</div>
-        <div class="step-desc">10-A ke saare students list mein dikhenge — Arjun Verma bhi. Attendance mark kar sakta hai.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">5</div>
-      <div class="step-body">
-        <div class="step-title">Marks Entry — admin panel se (agar permission ho)</div>
-        <div class="step-desc">
-          marks.html → "Half Yearly 2025" → Class 10-A → Science marks enter karo<br>
-          Arjun: <strong style="color:var(--text);">76/100</strong> → Save ✅ → Firebase sync → Students turant dekhen
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">6</div>
-      <div class="step-body">
-        <div class="step-title">Timetable dekhe</div>
-        <div class="step-desc">teacher-login.html → My Timetable → Class 10-A ka schedule dikhe — kis period mein Science hai</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">7</div>
-      <div class="step-body">
-        <div class="step-title">Announcements dekhe</div>
-        <div class="step-desc">Dashboard pe teacher-targeted announcements dikhen — Principal ne koi notice dala ho to wahan milega</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="info-box" style="margin-top:16px;background:rgba(20,184,166,.08);border-color:rgba(20,184,166,.2);">
-    <div class="ib-title" style="color:#14B8A6;">📌 Teacher kya NAHI kar sakta?</div>
-    Teacher portal read-only hai mostly. Fees collect karna, student delete karna, settings change karna — yeh sirf Owner/Staff se hota hai jise permission ho.
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     STUDENT COMPLETE WORKFLOW — ARJUN
-══════════════════════════════════════════ -->
-<div class="section" id="student-workflow">
-  <div class="section-header">
-    <div class="section-eyebrow">🎓 Student Workflow</div>
-    <div class="section-title">Arjun Verma apna Portal Kaise Use Karta Hai?</div>
-    <div class="section-sub">Owner ne enroll kiya, login setup kiya — ab Arjun apne phone se kya dekh sakta hai?</div>
-  </div>
-
-  <div class="info-box" style="margin-bottom:20px;">
-    <div class="ib-title">📋 Arjun ka Login</div>
-    <strong style="color:var(--text);">URL:</strong> yourschool.github.io/school-erp/student-login.html &nbsp;|&nbsp;
-    <strong style="color:var(--text);">Student ID:</strong> STU-2025-015 &nbsp;|&nbsp;
-    <strong style="color:var(--text);">Password:</strong> Arjun@15
-  </div>
-
-  <div class="step-group">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <div class="step-title">student-login.html kholo — ID + Password</div>
-        <div class="step-desc">Mobile pe bhi perfectly kaam karta hai — responsive design hai</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <div class="step-title">Dashboard — Profile dikhe</div>
-        <div class="step-desc">
-          Naam, Class, Section, Roll No, Admission No, Photo — sab dikhe<br>
-          Fee Status summary: April ✅ Paid &nbsp; Attendance %
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <div class="step-title">"My Marks" tab → Results dekhe</div>
-        <div class="step-desc">
-          Half Yearly 2025:<br>
-          English: 82 &nbsp; Math: 91 &nbsp; Science: 76 &nbsp; Hindi: 85 &nbsp; SST: 79<br>
-          Total: 413/500 = 82.6% &nbsp; Grade: A &nbsp; Result: PASS<br>
-          Marksheet download button bhi dikhe
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-body">
-        <div class="step-title">"Fee Status" tab</div>
-        <div class="step-desc">
-          April 2025: Tuition Fee ₹5,000 ✅ Paid (Cash) — Receipt number dikhe<br>
-          May 2025: ₹5,000 ⏳ Due — guardian ko reminder
-        </div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">5</div>
-      <div class="step-body">
-        <div class="step-title">"Timetable" tab</div>
-        <div class="step-desc">Class 10-A ka full weekly schedule dikhe — aaj ka schedule highlight hoga</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">6</div>
-      <div class="step-body">
-        <div class="step-title">"Announcements" tab</div>
-        <div class="step-desc">School ke notices, holidays, exam dates — Principal ne jo bhi dala ho</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">7</div>
-      <div class="step-body">
-        <div class="step-title">"Documents" tab — Issued certificates dekhe</div>
-        <div class="step-desc">Bonafide certificate, ID card — jo bhi issue hua ho list mein dikhe. Marksheet download bhi yahan</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="info-box" style="margin-top:16px;background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2);">
-    <div class="ib-title" style="color:#818CF8;">📌 Student kya NAHI kar sakta?</div>
-    Student portal read-only hai — Arjun apna data dekh sakta hai, edit nahi kar sakta. Fees pay karna bhi system mein nahi hai — cash/online school ko dena padta hai, admin collect karta hai.
+  <h3 style="font-size:16px;font-weight:700;color:var(--text);margin:24px 0 12px;">Manual Sync Controls (Zaroorat Pad Jaaye Toh)</h3>
+  <p style="font-size:14px;color:var(--text-muted);line-height:1.7;margin:0 0 8px;">Badge click karne se manually latest data Firebase se pull hota hai. Ya browser console mein:</p>
+  <div style="background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-family:monospace;font-size:13px;color:var(--text);margin:0 0 8px;">
+    fbPull()  <span style="color:var(--text-muted);">// Firebase se latest data khecho</span><br>
+    fbPush()  <span style="color:var(--text-muted);">// Local data Firebase pe push karo</span><br>
+    fbStatus() <span style="color:var(--text-muted);">// Connection status check karo</span>
   </div>
 </div>
 
@@ -2618,24 +2113,5 @@ document.querySelectorAll('.sb-link').forEach(l => {
   });
 });
 </script>
-
-<!-- SparkEdge Copyright Footer -->
-<div id="_sparkedge_footer" style="position:fixed;bottom:0;left:0;right:0;z-index:9990;background:rgba(8,8,16,.92);backdrop-filter:blur(8px);border-top:1px solid #1E1E30;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:'DM Sans',system-ui,sans-serif;">
-  <div style="display:flex;align-items:center;gap:8px;">
-    <a href="sparkedge.html" target="_blank" style="display:flex;align-items:center;gap:7px;text-decoration:none;">
-      <div style="width:22px;height:22px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;font-family:'Syne',system-ui,sans-serif;">S</div>
-      <span style="font-size:12px;font-weight:800;font-family:'Syne',system-ui,sans-serif;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">SparkEdge</span>
-    </a>
-    <span style="font-size:11px;color:#3A3A52;">|</span>
-    <span style="font-size:11px;color:#4A4A62;">© 2025 SparkEdge. All rights reserved.</span>
-  </div>
-  <div style="display:flex;gap:14px;align-items:center;">
-    <a href="sparkedge.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;">About</a>
-    <a href="terms.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;">Terms</a>
-    <a href="privacy.html" target="_blank" style="font-size:11px;color:#5A5A7A;text-decoration:none;">Privacy</a>
-  </div>
-</div>
-<div style="height:42px;"></div>
-
 </body>
 </html>

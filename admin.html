@@ -343,6 +343,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="sb-foot-btn" id="sb-import-btn" onclick="ERP.openImportModal()" style="display:none;">
       <i data-lucide="upload" style="width:13px;height:13px;stroke:currentColor;"></i> Import Data
     </button>
+    <a class="sb-foot-btn" href="erp-guide.html" target="_blank">
+      <i data-lucide="book-open" style="width:13px;height:13px;stroke:currentColor;"></i> Help & Guide
+    </a>
     <button class="sb-foot-btn red" onclick="doLogout()">
       <i data-lucide="log-out" style="width:13px;height:13px;stroke:currentColor;"></i> Log Out
     </button>
@@ -739,6 +742,25 @@ const STAFF_MEMBERS = [
   //   }
   // },
   // ──────────────────────────────────────────
+
+    {
+    id:       'STF-2026-001',
+    name:     'Nitin Kumar',
+    role:     'Manager',
+    password: 'Nitin@123',
+    active:   true,
+    permissions: {
+      teachers:      true ,   // Teachers portal
+      students:      true ,   // Students portal
+      fees:          true ,   // Fee Management
+      marks:         true ,   // Marks & Results
+      docs:          true ,   // Certificates
+      timetable:     true ,   // Timetable
+      announcements: true ,   // Announcements
+      export:        true ,   // Export / Import data
+      settings:      false,   // School Settings
+    }
+  },
 ];
 
 // ── STUDENT ACCOUNTS ──────────────────────────────────────────
@@ -882,6 +904,7 @@ function saveData(data) {
   try {
     data.settings.updatedAt = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    if (window._firebaseSaveData) window._firebaseSaveData(data);
     return true;
   } catch(e) { showToast('❌ Save failed — storage full?','error'); return false; }
 }
@@ -1020,25 +1043,6 @@ function downloadDocHTML(htmlContent, filename) {
 </div>
 ${htmlContent}
 <script>function _dl(){const b=new Blob([document.documentElement.outerHTML],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='${fname}';a.click();}<\/script>
-
-<!-- SparkEdge Copyright Footer -->
-<div id="_sparkedge_footer" style="position:fixed;bottom:0;left:0;right:0;z-index:9990;background:rgba(8,8,16,.95);backdrop-filter:blur(10px);border-top:1px solid #1E1E30;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-family:'DM Sans',system-ui,sans-serif;">
-  <div style="display:flex;align-items:center;gap:7px;">
-    <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="display:flex;align-items:center;gap:6px;text-decoration:none;">
-      <div style="width:20px;height:20px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;font-family:'Syne',system-ui,sans-serif;">S</div>
-      <span style="font-size:12px;font-weight:800;font-family:'Syne',system-ui,sans-serif;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">SparkEdge</span>
-    </a>
-    <span style="font-size:10px;color:#3A3A52;">|</span>
-    <span style="font-size:10px;color:#4A4A62;">&copy; 2026 Raunak Karn &middot; All rights reserved.</span>
-  </div>
-  <div style="display:flex;gap:12px;align-items:center;">
-    <a href="terms.html" target="_blank" style="font-size:10px;color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Terms</a>
-    <a href="privacy.html" target="_blank" style="font-size:10px;color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Privacy</a>
-    <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="font-size:10px;color:#FF6B35;text-decoration:none;font-weight:600;" onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">&#127760; sparkedge.in</a>
-  </div>
-</div>
-<div style="height:44px;"></div><!-- spacer for footer -->
-
 </body></html>`);
   win.document.close();
 }
@@ -1221,6 +1225,7 @@ window.getGrade   = getGrade;
 console.log('%c[School ERP] school_data.js v2 ✓  Staff:'+STAFF_MEMBERS.length+'  Students:'+STUDENT_ACCOUNTS.length,'color:#FF6B35;font-weight:800;font-size:12px;');
 
 </script>
+<script src="firebase_sync.js"></script>
 <script>
 /* ═══════════════════════════════════════
    AUTH + PERMISSION SYSTEM
@@ -1330,10 +1335,7 @@ const ALL_NAV = [
   { section:'Documents', items:[
     { id:'docs', label:'Certificates', icon:'file-text', perm:'docs', href:'docs.html' },
     { id:'student-portal', label:'Student Portal', icon:'user-circle', perm:null, href:'student-login.html', blank:true },
-    { id:'teacher-portal', label:'Teacher Portal', icon:'user-check', perm:null, href:'teacher-login.html', blank:true },
-  ]},
-  { section:'Help', items:[
-    { id:'erp-guide', label:'ERP Guide', icon:'book-open', perm:null, href:'erp-guide.html', blank:true },
+    { id:'erp-guide', label:'Help & Guide', icon:'book-open', perm:null, href:'erp-guide.html', blank:true },
   ]},
   { section:'System', items:[
     { id:'team', label:'Team Members', icon:'shield-check', perm:null, ownerOnly:true, internal:true },
@@ -1516,6 +1518,7 @@ const PORTAL_DEFS = [
   { href:'docs.html',     icon:'file-text',   color:'#FF6B35', bg:'rgba(255,107,53,.1)',   name:'Certificates',  desc:'TC, Bonafide, ID card',   perm:'docs' },
   { href:'timetable.html',icon:'calendar-days',color:'#3B82F6',bg:'rgba(59,130,246,.1)', name:'Timetable',     desc:'Class schedules',         perm:'timetable' },
   { href:'student-login.html', icon:'user-circle', color:'#FF3CAC', bg:'rgba(255,60,172,.1)', name:'Student Portal', desc:'Self-service login', perm:null, blank:true },
+  { href:'erp-guide.html', icon:'book-open', color:'#9B7FD4', bg:'rgba(155,127,212,.12)', name:'Help & Guide', desc:'Training & setup docs', perm:null, blank:true },
   { internal:'settings',  icon:'settings-2',  color:'#7A7A9A', bg:'rgba(120,120,160,.1)', name:'Settings',      desc:'School configuration',    perm:'settings' },
 ];
 

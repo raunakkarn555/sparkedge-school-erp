@@ -454,14 +454,16 @@ function doLogin(){
   const tch  = data.teachers.find(t => t.id === tid && t.active !== false);
   if (!tch){ showErr('Teacher ID not found. Ask admin to check your record.'); shake(); return; }
 
-  // Password check: uses TEACHER_ACCOUNTS if defined in school_data.js,
-  // otherwise falls back to owner password (for initial setup)
+  // Password check: uses ERP.authenticateTeacher (school_data.js)
   let authenticated = false;
-  if (typeof TEACHER_ACCOUNTS !== 'undefined') {
+  if (window.ERP && ERP.authenticateTeacher) {
+    const authResult = ERP.authenticateTeacher(tid, pwd);
+    if (authResult) { authenticated = true; }
+  } else if (typeof TEACHER_ACCOUNTS !== 'undefined') {
     const acc = TEACHER_ACCOUNTS.find(a => a.id === tid && a.password === pwd);
     if (acc) authenticated = true;
   }
-  // fallback: owner password lets any teacher log in (for setup/testing)
+  // fallback: owner password lets any teacher log in (for initial setup)
   if (!authenticated && typeof OWNER_PASSWORD !== 'undefined' && pwd === OWNER_PASSWORD) {
     authenticated = true;
   }
@@ -474,7 +476,8 @@ function doLogin(){
 
   // Always fetch fresh teacher record
   _tch = ERP.loadData().teachers.find(t => t.id === tid) || tch;
-  sessionStorage.setItem('erp_teacher', JSON.stringify({ id: _tch.id, name: _tch.name }));
+  const tchSess = { id: _tch.id, name: _tch.name };
+  if (window.ERP) ERP.setTeacherSession(tchSess); else sessionStorage.setItem('erp_teacher', JSON.stringify(tchSess));
   bootApp();
 }
 
@@ -498,8 +501,7 @@ function toggleEye(){
 }
 
 function doLogout(){
-  sessionStorage.removeItem('erp_teacher');
-  location.reload();
+  if (window.ERP) ERP.logoutTeacher(); else { sessionStorage.removeItem('erp_teacher'); location.reload(); }
 }
 
 /* ── DRIVE SYNC ── */

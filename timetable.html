@@ -280,20 +280,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <span class="nav-icon"><i data-lucide="calendar" class="lucide"></i></span>Timetable
     </a>
     <div class="nav-lbl">Help</div>
-    <a href="erp-guide.html" class="nav-item" target="_blank">
-      <span class="nav-icon"><i data-lucide="book-open" class="lucide"></i></span>ERP Guide <span style="margin-left:auto;font-size:10px;color:var(--text-dim);">↗</span>
+    <a href="erp-guide.html#step6-timetable" class="nav-item" target="_blank">
+      <span class="nav-icon"><i data-lucide="book-open" class="lucide"></i></span>Timetable Guide
     </a>
   </nav>
 
   <div class="sb-foot">
-    <button class="sb-foot-btn" onclick="ERP.exportData()">
-      <i data-lucide="download" class="lucide"></i>Export Data
-    </button>
-    <button class="sb-foot-btn" onclick="ERP.openImportModal()">
-      <i data-lucide="upload" class="lucide"></i>Import Data
-    </button>
-    <a class="sb-foot-btn" href="erp-guide.html" target="_blank" style="text-decoration:none;">
-      <i data-lucide="book-open" class="lucide"></i>Help &amp; Guide
+    <a class="sb-foot-btn" href="erp-guide.html" target="_blank">
+      <i data-lucide="book-open" style="width:13px;height:13px;stroke:currentColor;"></i> Help & Guide
     </a>
     <button class="sb-foot-btn" onclick="ERP.logoutAdmin()">
       <i data-lucide="log-out" class="lucide"></i>Sign Out
@@ -316,12 +310,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="tb-right">
       <button class="btn btn-ghost btn-sm" onclick="window.print()">
         <i data-lucide="printer" class="lucide"></i>Print
-      </button>
-      <button class="btn btn-green btn-sm" onclick="ERP.exportData()">
-        <i data-lucide="download" class="lucide"></i>Export
-      </button>
-      <button class="btn btn-blue btn-sm" onclick="ERP.openImportModal()">
-        <i data-lucide="upload" class="lucide"></i>Import
       </button>
       <button class="btn btn-primary btn-sm" onclick="openAddModal()" id="btnAddEntry">
         <i data-lucide="plus" class="lucide"></i>Add Period
@@ -481,6 +469,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="school_data.js"></script>
+<script src="firebase_sync.js"></script>
 
 <script>
 'use strict';
@@ -962,29 +951,9 @@ function deleteTimetable(id){
     const data = ERP.loadData();
     const nameEl = document.querySelector('.lc-title');
     if(nameEl && data.settings.schoolName) nameEl.textContent = data.settings.schoolName;
-  ERP.onImportSuccess = () => { ERP.showToast('✅ Imported! Refreshing…','success'); setTimeout(()=>location.reload(),700); };
     lucide.createIcons();
   }
 })();
 </script>
-
-<!-- SparkEdge Copyright Footer -->
-<div id="_sparkedge_footer" style="position:fixed;bottom:0;left:0;right:0;z-index:9990;background:rgba(8,8,16,.95);backdrop-filter:blur(10px);border-top:1px solid #1E1E30;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-family:'DM Sans',system-ui,sans-serif;">
-  <div style="display:flex;align-items:center;gap:7px;">
-    <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="display:flex;align-items:center;gap:6px;text-decoration:none;">
-      <div style="width:20px;height:20px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;font-family:'Syne',system-ui,sans-serif;">S</div>
-      <span style="font-size:12px;font-weight:800;font-family:'Syne',system-ui,sans-serif;background:linear-gradient(135deg,#FF6B35,#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">SparkEdge</span>
-    </a>
-    <span style="font-size:10px;color:#3A3A52;">|</span>
-    <span style="font-size:10px;color:#4A4A62;">&copy; 2026 Raunak Karn &middot; All rights reserved.</span>
-  </div>
-  <div style="display:flex;gap:12px;align-items:center;">
-    <a href="terms.html" target="_blank" style="font-size:10px;color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Terms</a>
-    <a href="privacy.html" target="_blank" style="font-size:10px;color:#5A5A7A;text-decoration:none;" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#5A5A7A'">Privacy</a>
-    <a href="https://sparkedge555.github.io/sparkedgeagency/" target="_blank" style="font-size:10px;color:#FF6B35;text-decoration:none;font-weight:600;" onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">&#127760; sparkedge.in</a>
-  </div>
-</div>
-<div style="height:44px;"></div><!-- spacer for footer -->
-
 </body>
 </html>
